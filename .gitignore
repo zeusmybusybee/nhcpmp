@@ -1,16 +1,16 @@
-# WordPress core
-/wp-admin/
-/wp-includes/
-/*.php
+# # WordPress core
+# /wp-admin/
+# /wp-includes/
+# /*.php
 
-# Uploads
-/wp-content/uploads/
+# # Uploads
+# /wp-content/uploads/
 
-# Config
-wp-config.php
-.env
+# # Config
+# wp-config.php
+# .env
 
-# OS / tools
-.DS_Store
-Thumbs.db
-node_modules/
+# # OS / tools
+# .DS_Store
+# Thumbs.db
+# node_modules/
