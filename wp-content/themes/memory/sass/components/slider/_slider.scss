@@ -1,0 +1,35 @@
+@import "slider-1";
+
+.slick-dots {
+	bottom: 20px;
+	li button {
+		width: 40px;
+		height: 15px;
+		padding: 0;
+		&:before {
+			@include font-size(0.6);
+			line-height: 20px;
+			position: absolute;
+			width: 40px;
+			height: 3px;
+			content: '';
+			opacity: 1;
+			text-align: center;
+			background: $color__white;
+			top: 6px;
+		}
+		&:hover:before {
+			background: var(--main-color);
+		}
+	}
+	li.slick-active button {
+		&:before {
+			background: var(--main-color);
+		}
+	}
+	li {
+		list-style: none;
+		width: 40px;
+		height: 3px;
+	}
+}

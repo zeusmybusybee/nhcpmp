@@ -1,0 +1,123 @@
+.container {
+	max-width: 1170px;
+	margin: 0 auto;
+	padding: 0;
+}
+@media(max-width: 1199px) {
+	.container {
+		padding: 0 30px;
+	}
+}
+@media(max-width: 767px) {
+	.container {
+		padding: 0 20px;
+	}
+}
+
+.site {
+	position: relative;
+}
+.site-content {
+	display: flex;
+	flex-flow: row wrap;
+	clear: both;
+	justify-content: space-between;
+
+	margin-bottom: 60px;
+	position: relative;
+	z-index: 1;
+}
+.main-content {
+	width: 100%; // the container display flex, so the layout will be broken if the width of this section is too big (ex: Page Image Alignment)
+	margin-top: 60px;
+	@media (max-width: 767px) {
+		margin-top: 30px;
+	}
+}
+.content-area {
+	width: 65.812%; // percentage( 770 / 1170 );
+	margin: 0;
+	float: left;
+	.site-main {
+		background: $color__white;
+	}
+	@media (max-width: 991px) {
+		width: 100%;
+		margin: 0;
+	}
+}
+.widget-area {
+	width: 31.6239%; // percentage( 370 / 1170 );
+	float: right;
+	padding-bottom: 30px;
+	@media (max-width: 991px) {
+		margin-top: 60px;
+	}
+}
+
+@media (max-width: 991px) {
+	.content-area,
+	.widget-area {
+		width: 100%;
+	}
+}
+.no-sidebar {
+	.content-area,
+	.blog-grid-sidebar .col-md-8 {
+		margin: 0 auto;
+		float: unset;
+	}
+}
+
+/* Sticky sidebar */
+.sticky-sidebar {
+	.widget-area {
+		position: sticky;
+		top: 30px;
+	}
+	&.sticky-header .widget-area {
+		top: 30px + 68px;
+	}
+
+	&.admin-bar .widget-area {
+		top: 30px + 32px;
+	}
+	&.sticky-header.admin-bar .widget-area {
+		top: 30px + 32px + 68px;
+	}
+	@media (max-width: 991px) {
+		.widget-area {
+			top: 0;
+			position: static;
+		}
+	}
+}
+.border-one-solid {
+	.header-top,
+	.header-branding,
+	.widget-area .widget-title,
+	.page-header {
+		border-bottom: 1px solid var(--border-header-color);
+		&:before {
+			display: none;
+		}
+	}
+	.site-footer .site-info {
+		border-top: 1px solid var(--border-header-color);
+		&:after {
+			display: none;
+		}
+	}
+	.header-subscription,
+	.footer-subscription,
+	.info-box-sharing,
+	.post-navigation,
+	.footer-instagram .instagram-pics {
+		border-top: 1px solid var(--border-header-color);
+		border-bottom: 1px solid var(--border-header-color);
+		&:before,
+		&:after {
+			display: none;
+		}
+	}
+}

@@ -1,0 +1,15 @@
+.searchform-modal {
+	.search-popup .search-form .search-submit {
+		background: var(--main-color);
+		border-color: var(--main-color);
+		opacity: 1;
+		i:before {
+			color: #fff;
+		}
+		&:hover {
+			background: var(--main-color);
+			border-color: var(--main-color);
+			opacity: .7;
+		}
+	}
+}

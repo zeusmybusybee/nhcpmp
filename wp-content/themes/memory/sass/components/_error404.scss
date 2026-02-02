@@ -1,0 +1,56 @@
+.search-no-results,
+.error404,
+.category-uncategorized {
+	.load-more-post {
+		margin: 0;
+	}
+}
+.error404 .site-content {
+	margin-top: 30px;
+	.not-found h2 {
+		margin-top: 0;
+	}
+}
+.search-no-results .not-found {
+	margin: 0 0 30px;
+}
+.not-found {
+	width: 100%;
+	text-align: center;
+	background: $color__white;
+	padding: 30px 30px 40px;
+	margin: 0 -15px 30px;
+	@media (max-width: 991px) {
+		margin: 0 0 30px;
+	}
+	.page-header {
+		border: 0;
+		&:before {
+			display: none;
+		}
+	}
+	.search-form {
+		width: 70%;
+		margin: 0 auto;
+		input[type='text'] {
+			width: 100%;
+			padding: 12px 50px 12px 22px;
+			border-radius: 100px;
+			@include font-size(1.4);
+			color: $color__meta;
+		}
+		.search-submit {
+			position: absolute;
+			right: 10px;
+			background: none;
+			border: none;
+			@include font-size(1.4);
+			color: $color__meta;
+			&:hover {
+				background: none;
+				border: none;
+				color: var(--main-color);
+			}
+		}
+	}
+}

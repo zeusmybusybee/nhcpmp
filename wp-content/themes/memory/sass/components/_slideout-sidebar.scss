@@ -1,0 +1,215 @@
+.slideout-sidebar-enabel {
+	.site > .page-overlay {
+		background: rgba(0, 0, 0, 0.8);
+		cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAVBAMAAABbObilAAAAMFBMVEVMaXH////////////////////////////////////////////////////////////6w4mEAAAAD3RSTlMAlAX+BKLcA5+b6hJ7foD4ZP1OAAAAkUlEQVR4XkWPoQ3CUBQAL4SktoKAbCUjgAKLJZ2ABYosngTJCHSD6joUI6BZgqSoB/+Shqde7sS9x3OGk81fdO+texMtRVTia+TsQtHEUJLdohJfgNNPJHyEJPZTsWLoxShqsWITazEwqePAn69Sw2TUxk1+euPis3EwaXy8RMHSZBIlRcKKnC5hRctjMf57/wJbBlAIs9k1BAAAAABJRU5ErkJggg==), progress;
+	}
+	.menu-toggle:before {
+		border-color: var(--icon-header-color);
+		width: 18px;
+		height: 15px;
+	}
+	.menu-toggle:hover:before {
+		border-color: var(--hover-icon-header-color);
+	}
+}
+
+.slideout-sidebar__header {
+	.header__close {
+		background: transparent;
+		border: 0;
+		padding: 5px 0 0 5px;
+		i:before {
+			content: '\eee4';
+			color: var(--icon-header-color);
+			font-family: 'IcoFont';
+			speak: none;
+			font: normal normal normal 16px/1 'IcoFont';
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			@include font-size(2.5);
+			font-weight: 600;
+			transition: all .3s;
+		}
+	}
+}
+
+.slideout-sidebar__body {
+	padding: 40px 50px;
+	@media (max-width: 374px) {
+		padding: 30px 27px;
+	}
+	.widget_nav_menu .menu .sub-menu.sub-menu {
+		background: $color__white;
+	}
+	.widget_nav_menu .menu > li {
+		border-bottom: 1px solid $color__border;
+	}
+	.add-widget-link {
+		color: var(--main-color);
+	}
+}
+.slideout-sidebar__footer {
+	display: none;
+}
+
+.slideout-sidebar {
+	background: $color__white;
+
+	.hamburger-title {
+		color: var(--heading-color);
+	}
+	.widget {
+		color: $color__black;
+
+		select option,
+		select {
+			color: $color__black;
+		}
+
+		a {
+			color: $color__black;
+			&:hover {
+				color: var(--main-color);
+			}
+		}
+	}
+	.widget_text .img-about {
+		border-radius: 50%;
+	}
+	.widget_nav_menu {
+		.menu {
+			a {
+				color: $color__black;
+			}
+			.fa-angle-down,
+			.fa-angle-up,
+			.dropToggle {
+				color: $color__black;
+				margin-top: 3px;
+			}
+			.dropToggle:not(.is-toggled):before {
+				content: '\f107';
+			}
+			.dropToggle.is-toggled {
+				content: '\f106';
+			}
+		}
+	}
+	.tagcloud {
+		a:hover {
+			color: $color__white;
+		}
+	}
+	#wp-calendar#wp-calendar {
+		tbody td {
+			border-color: $color__border;
+			color: $color__black;
+		}
+		caption {
+			color: $color__black;
+		}
+	}
+	.jetpack_widget_social_icons {
+		padding-bottom: 0;
+		.jetpack-social-widget-list {
+			margin: 37px 0 10px;
+			list-style: none;
+			display: flex;
+			flex-flow: row wrap;
+			justify-content: space-between;
+		}
+		svg {
+			display: none;
+		}
+		.jetpack-social-widget-item {
+			margin: 0 0 28px 0;
+			padding-top: 0;
+			border: none;
+			display: inline-block;
+			a {
+				&:hover:before {
+					color: $color__white;
+					background-color: var(--main-color);
+					border-color: var(--main-color);
+					transition: all .3s ease;
+				}
+				&:before {
+					padding: 12px;
+				}
+			}
+		}
+	}
+	.widget_nav_menu.widget_nav_menu {
+		.menu li.current-page-item > a,
+		.menu li.current-menu-item > a {
+			color: $color__black;
+		}
+	}
+	.gt-addons_recent_posts {
+		.recent-post__text {
+			flex: 1;
+			@media (max-width: 574px) {
+				.entry-title {
+					@include font-size(1.4);
+				}
+			}
+		}
+	}
+	.widget_search .search-submit {
+		height: 100%;
+		&:hover {
+			background: none;
+			border: 0;
+		}
+	}
+	.slideout-sidebar__header {
+		border-bottom: 1px solid rgba(0, 0, 0, 0.11);
+		.header__site-title {
+			letter-spacing: 1px;
+			font-family: $font__main;
+			color: var(--heading-color);
+			margin-bottom: -5px;
+		}
+	}
+}
+.slideout-sidebar div[class*='widget widget_'] {
+	& > ul {
+		padding: 0;
+		margin: 20px 0 25px;
+		list-style: none;
+		li {
+			& + li {
+				margin-top: 10px;
+				padding-top: 10px;
+				border-top: 1px solid $color__border;
+			}
+			a {
+				@include font-size(1.4);
+				color: $color__black;
+				text-decoration: none;
+				font-weight: 500;
+				margin-right: 5px;
+				&:before {
+					content: '\ea98';
+					@include ico-font();
+					@include font-size(1.4);
+					color: $color__meta;
+					margin-right: 15px;
+					transition: all .3s ease;
+				}
+				&:hover:before,
+				&:hover {
+					color: var(--main-color);
+				}
+			}
+			ul {
+				list-style: none;
+				li {
+					margin-top: 15px;
+					padding-top: 15px;
+					border-top: 1px dashed $color__border;
+				}
+			}
+		}
+	}
+}

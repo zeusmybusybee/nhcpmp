@@ -1,0 +1,51 @@
+.page {
+	.content-area .entry-content > p {
+		margin-top: 0;
+	}
+	.content-area .banner-post {
+		img {
+			width: 100%;
+			height: 100px;
+			padding: 0;
+			margin: 20px 0 30px;
+		}
+	}
+	.left-sidebar {
+		.widget-area {
+			float: left;
+		}
+		.content-area {
+			float: right;
+		}
+	}
+	.no-sidebar {
+		.widget-area {
+			display: none;
+		}
+		.content-area {
+			width: 100%;
+		}
+	}
+	.site-main {
+		.entry-info {
+			padding: 45px 60px 60px;
+			@media (max-width: 767px) {
+				padding: 30px;
+			}
+		}
+	}
+}
+
+.page-template-full-width {
+	.site-content.container {
+		max-width: inherit;
+		padding: 0;
+	}
+	.content-area {
+		width: 100%;
+		float: inherit;
+	}
+	.entry-media img {
+		max-height: 600px;
+	}
+}

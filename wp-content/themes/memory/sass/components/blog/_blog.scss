@@ -1,0 +1,50 @@
+/*--------------------------------------------------------------
+# Content Blog
+--------------------------------------------------------------*/
+@import "content";
+
+/*--------------------------------------------------------------
+# Blog Layout simple
+--------------------------------------------------------------*/
+@import "list";
+
+/*--------------------------------------------------------------
+# Blog Layout simple
+--------------------------------------------------------------*/
+@import "grid-two-column-sidebar";
+
+/*--------------------------------------------------------------
+# Sticky post
+--------------------------------------------------------------*/
+article.sticky .article-container {
+	border: 2px dashed #e3e3e3;
+}
+.full-width {
+	padding: 0 30px;
+	width: 100%;
+	@media (max-width: 767px) {
+		padding: 0 20px;
+	}
+}
+
+.no-overlap {
+	.blog-grid,
+	.blog-grid-sidebar,
+	.blog-grid-fw,
+	.blog-grid-fw-sidebar,
+	.blog-grid-one,
+	.blog-grid-one-sidebar,
+	.blog-grid-three {
+		.blog-article .article-container {
+			margin: 0;
+		}
+	}
+
+}
+.blog-article .format-quote .article-container {
+	display: none;
+}
+
+.blog-list .format-quote .entry-media {
+    width: 100%;
+}

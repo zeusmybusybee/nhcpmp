@@ -1,0 +1,1213 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Memory\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-12-04 08:46+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.2.0; wp-4.9.8"
+
+#: inc/dashboard/sections/welcome.php:30
+msgid " Share"
+msgstr ""
+
+#: inc/dashboard/sections/welcome.php:31
+msgid " Tweet"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:130
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:162
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:195
+msgid "%"
+msgstr ""
+
+#. 1: list of tags.
+#: inc/template-tags.php:61 inc/template-tags.php:91
+#, php-format
+msgid "%1$s"
+msgstr ""
+
+#. theme name.
+#: inc/dashboard/class-memory-dashboard.php:143
+#, php-format
+msgid "%1$s needs %2$s to working properly. Please install and activate it."
+msgstr ""
+
+#. theme name.
+#: inc/dashboard/class-memory-dashboard.php:138
+#, php-format
+msgid ""
+"%s needs some plugins to working properly. Please install and activate our "
+"required plugins."
+msgstr ""
+
+#. theme name.
+#: inc/dashboard/sections/actions.php:25
+#, php-format
+msgid ""
+"%s uses Jetpack to support featured content, social menu. Connect to Jetpack "
+"to use these features as well as variety of other tools."
+msgstr ""
+
+#: lib/components/widgets/recent-posts-widget/recent-posts-widget.php:66
+msgid "(Leave 0 to get full title)"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:112
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-settings.php:119
+msgid "+ Add Element"
+msgstr ""
+
+#. used between list items, there is a space after the comma
+#: inc/template-tags.php:58
+msgid ", "
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:158
+msgid "-"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:79
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:211
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-font-family-control.php:38
+msgid "- No change -"
+msgstr ""
+
+#: lib/components/widgets/recent-posts-widget/recent-posts-widget.php:158
+msgid "..."
+msgstr ""
+
+#: template-parts/blog/grid-fw-sidebar.php:34
+#: template-parts/blog/grid-fw.php:32
+#: template-parts/blog/grid-one-column-sidebar.php:33
+#: template-parts/blog/grid-one-column.php:33
+#: template-parts/blog/grid-three-column.php:32
+#: template-parts/blog/grid-two-column-sidebar.php:31
+#: template-parts/blog/grid-two-column.php:32
+#: template-parts/blog/list-sidebar.php:32 template-parts/blog/list.php:31
+msgid "<i class=\"icofont icofont-rounded-double-left\"></i>"
+msgstr ""
+
+#: template-parts/blog/grid-fw-sidebar.php:35
+#: template-parts/blog/grid-fw.php:33
+#: template-parts/blog/grid-one-column-sidebar.php:34
+#: template-parts/blog/grid-one-column.php:34
+#: template-parts/blog/grid-three-column.php:33
+#: template-parts/blog/grid-two-column-sidebar.php:32
+#: template-parts/blog/grid-two-column.php:33
+#: template-parts/blog/list-sidebar.php:33 template-parts/blog/list.php:32
+msgid "<i class=\"icofont icofont-rounded-double-right\"></i>"
+msgstr ""
+
+#. plugin name.
+#: inc/dashboard/class-memory-dashboard.php:155
+#, php-format
+msgid "<strong>%s has been installed and activated</strong>"
+msgstr ""
+
+#: inc/breadcrumbs.php:81
+msgid "A Short Description Goes Here"
+msgstr ""
+
+#: inc/dashboard/sections/tabs.php:11
+msgid "Actions"
+msgstr ""
+
+#: inc/customizer/customizer.php:516
+msgid "Ad Code"
+msgstr ""
+
+#: functions.php:138
+#: lib/components/modules/slideout-sidebar/slideout-sidebar.php:18
+msgid "Add widgets here."
+msgstr ""
+
+#: lib/components/modules/slideout-sidebar/slideout-sidebar.php:46
+msgid "Add your widget here"
+msgstr ""
+
+#: inc/customizer/customizer.php:430
+msgid "Ads Settings"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:45
+#, php-format
+msgid ""
+"After saving, please <a href=\"%s\">go to the Customizer</a> to change the "
+"colors and preview them in real-time."
+msgstr ""
+
+#. %s - URL to the Customizer.
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-settings.php:49
+#, php-format
+msgid ""
+"After saving, please <a href=\"%s\">go to the Customizer</a> to change the "
+"font settings and preview them in real-time."
+msgstr ""
+
+#: inc/breadcrumbs.php:152
+msgid "Archives"
+msgstr ""
+
+#: footer.php:121
+msgid "Back to top"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:129
+msgid "Background Color"
+msgstr ""
+
+#: inc/customizer/customizer.php:370
+msgid "Blog Excerpt Length"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/ultimate-fonts.php:82
+msgid "Body"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:92
+msgid "Bold 700"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:93
+msgid "Bold 700 Italic"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:135
+msgid "Border Color"
+msgstr ""
+
+#. theme name.
+#: inc/dashboard/sections/recommended-themes.php:46
+msgid "Browser All Themes"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:215
+msgid "Capitalize"
+msgstr ""
+
+#: inc/customizer/customizer.php:252
+msgid ""
+"Choose how to display number column in the blog. This option is only for "
+"grid layout."
+msgstr ""
+
+#: inc/customizer/customizer.php:354
+msgid "Choose how to display sidebar in the blog."
+msgstr ""
+
+#: inc/customizer/customizer.php:161
+msgid "Choose how to slider style."
+msgstr ""
+
+#: inc/customizer/customizer.php:293
+msgid "Choose the position of the image. This option is only for list layout "
+msgstr ""
+
+#: inc/customizer/customizer.php:314
+msgid "Choose the style of content. Overlap the image or no "
+msgstr ""
+
+#. Description of the theme
+msgid "Clean and beautiful personal blog theme."
+msgstr ""
+
+#: lib/components/modules/searchform-toggle/searchform-toggle.php:19
+msgid "Close Search Popup"
+msgstr ""
+
+#: comments.php:32
+msgctxt "comments"
+msgid "Comment"
+msgid_plural "Comments"
+msgstr[0] ""
+msgstr[1] ""
+
+#: comments.php:56
+msgid "Comments are closed."
+msgstr ""
+
+#: inc/dashboard/sections/actions.php:28
+msgid "Connect To Jetpack"
+msgstr ""
+
+#: inc/dashboard/sections/actions.php:21
+msgid "Connect Your Site To Jetpack"
+msgstr ""
+
+#. Name of the template
+msgid "Contact"
+msgstr ""
+
+#: inc/customizer/customizer.php:275
+msgid "Container"
+msgstr ""
+
+#: inc/customizer/customizer.php:264
+msgid "container"
+msgstr ""
+
+#: inc/customizer/customizer.php:130
+msgid "Content Color"
+msgstr ""
+
+#: inc/customizer/customizer.php:313
+msgid "Content Overlap The Image"
+msgstr ""
+
+#. %s: Name of current post. Only visible to screen readers
+#: template-parts/content-single.php:45
+#, php-format
+msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
+msgstr ""
+
+#. placeholder replaced with string
+#: lib/components/modules/slideout-sidebar/slideout-sidebar.php:53
+#, php-format
+msgid "Coppyright %1$s %2$s"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-settings.php:127
+msgid "CSS Selectors"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:53
+msgid "Customize"
+msgstr ""
+
+#: inc/dashboard/sections/getting-started.php:23
+msgid "Customize The Theme"
+msgstr ""
+
+#: inc/customizer/customizer.php:295
+msgid "Default"
+msgstr ""
+
+#: inc/admin/import-demo.php:12
+msgid "Demo 1"
+msgstr ""
+
+#: inc/admin/import-demo.php:23
+msgid "Demo 2"
+msgstr ""
+
+#: inc/admin/import-demo.php:34
+msgid "Demo 3"
+msgstr ""
+
+#: inc/admin/import-demo.php:45
+msgid "Demo 4"
+msgstr ""
+
+#: inc/admin/import-demo.php:56
+msgid "Demo 5"
+msgstr ""
+
+#: inc/admin/import-demo.php:67
+msgid "Demo 6"
+msgstr ""
+
+#: inc/admin/import-demo.php:78
+msgid "Demo 7"
+msgstr ""
+
+#: inc/customizer/customizer.php:563
+msgid "Display ads after content."
+msgstr ""
+
+#: inc/customizer/customizer.php:549
+msgid "Display ads before content."
+msgstr ""
+
+#: inc/customizer/customizer.php:183
+msgid "Display like and comment in the slider 3"
+msgstr ""
+
+#: inc/customizer/customizer.php:333
+msgid "Display Sidebar"
+msgstr ""
+
+#: inc/extras.php:73
+msgid "Dribbble"
+msgstr ""
+
+#. %s: Name of current post. Only visible to screen readers
+#: inc/template-tags.php:118
+#, php-format
+msgid "Edit <span class=\"screen-reader-text\">%s</span>"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:87
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-settings.php:94
+msgid "Elements"
+msgstr ""
+
+#. Author of the theme
+msgid "eLightUp"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:128
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:160
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:193
+msgid "em"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:94
+msgid "Extra-Bold 800"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:95
+msgid "Extra-Bold 800 Italic"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:82
+msgid "Extra-Light 200"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:83
+msgid "Extra-Light 200 Italic"
+msgstr ""
+
+#: footer.php:60
+msgid "Facebook"
+msgstr ""
+
+#: inc/extras.php:70
+msgid "Facebook profile URL"
+msgstr ""
+
+#: inc/customizer/customizer.php:53
+msgid "Fix Top Header on Scroll?"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:63
+msgid "Font family"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:110
+msgid "Font size"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:76
+msgid "Font style"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:41
+msgid "Fonts"
+msgstr ""
+
+#: inc/customizer/customizer.php:382
+msgid "Footer Settings"
+msgstr ""
+
+#: inc/customizer/customizer.php:397
+msgid "Footer Subscription"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-settings.php:132
+msgid "Force Style?"
+msgstr ""
+
+#: inc/extras.php:24
+msgid "Full Name *"
+msgstr ""
+
+#. Name of the template
+#: inc/customizer/customizer.php:276
+msgid "Full Width"
+msgstr ""
+
+#: inc/customizer/customizer.php:35
+msgid "General Settings"
+msgstr ""
+
+#: inc/dashboard/sections/tabs.php:10
+msgid "Getting Started"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-settings.php:59
+msgid "Go to Customizer &rarr;"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/config.php:16
+msgid "Google Fonts"
+msgstr ""
+
+#: inc/extras.php:68
+msgid "Google+"
+msgstr ""
+
+#: inc/dashboard/sections/welcome.php:26
+msgid "GretaThemes"
+msgstr ""
+
+#: inc/dashboard/sections/newsletter.php:11
+msgid "GretaThemes Newsletter"
+msgstr ""
+
+#: inc/customizer/customizer.php:235
+msgid "Grid"
+msgstr ""
+
+#: inc/customizer/customizer.php:224
+msgid "grid"
+msgstr ""
+
+#: lib/components/widgets/recent-posts-widget/recent-posts-widget.php:34
+msgid "Gt Addons: Recent Posts"
+msgstr ""
+
+#: inc/customizer/customizer.php:214
+msgid "Header Subscription"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/ultimate-colors.php:73
+msgid "Heading 1 color"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/ultimate-colors.php:78
+msgid "Heading 2 color"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/ultimate-colors.php:83
+msgid "Heading 3 color"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/ultimate-colors.php:88
+msgid "Heading 4 color"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/ultimate-colors.php:93
+msgid "Heading 5 color"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/ultimate-colors.php:98
+msgid "Heading 6 color"
+msgstr ""
+
+#: inc/customizer/customizer.php:111
+msgid "Heading Color"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/ultimate-fonts.php:87
+msgid "Headings"
+msgstr ""
+
+#: inc/customizer/customizer.php:473
+msgid "Hide Ad"
+msgstr ""
+
+#: inc/breadcrumbs.php:21
+msgid "Home"
+msgstr ""
+
+#: inc/customizer/customizer.php:437
+msgid "Home Page"
+msgstr ""
+
+#: inc/customizer/customizer.php:232
+msgid "Homepage Layout"
+msgstr ""
+
+#: inc/customizer/customizer.php:143
+msgid "Homepage Settings"
+msgstr ""
+
+#: inc/customizer/customizer.php:472
+msgid "HTML"
+msgstr ""
+
+#. Author URI of the theme
+msgid "https://elightup.com"
+msgstr ""
+
+#. URI of the theme
+msgid "https://gretathemes.com/wordpress-themes/memory/"
+msgstr ""
+
+#: footer.php:125
+msgid "https://wordpress.org/"
+msgstr ""
+
+#: inc/customizer/customizer.php:471
+msgid "Image"
+msgstr ""
+
+#: inc/customizer/customizer.php:461
+msgid "image"
+msgstr ""
+
+#: inc/customizer/customizer.php:503
+msgid "Image Link URL"
+msgstr ""
+
+#: inc/customizer/customizer.php:292
+msgid "Image Position"
+msgstr ""
+
+#: inc/dashboard/sections/getting-started.php:12
+msgid "Implement Recommended Actions"
+msgstr ""
+
+#: inc/dashboard/sections/actions.php:32
+msgid "Import demo data if you want your website exactly the same as our demo."
+msgstr ""
+
+#: inc/extras.php:72
+msgid "Instagram"
+msgstr ""
+
+#: inc/admin/plugins.php:51
+msgid "Instagram Slider Widget"
+msgstr ""
+
+#. plugin name.
+#: inc/dashboard/class-memory-dashboard.php:145
+#, php-format
+msgid "Install %s"
+msgstr ""
+
+#: inc/dashboard/class-memory-dashboard.php:139
+msgid "Install Plugins"
+msgstr ""
+
+#: inc/dashboard/class-memory-dashboard.php:136
+msgid "Install The Required Plugins"
+msgstr ""
+
+#: 404.php:19
+msgid ""
+"It looks like nothing was found at this location. Maybe try one of the links "
+"below or a search?"
+msgstr ""
+
+#: template-parts/content-none.php:44
+msgid ""
+"It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps "
+"searching can help."
+msgstr ""
+
+#: inc/admin/plugins.php:34
+msgid "Jetpack"
+msgstr ""
+
+#: inc/gt-addons/custom-assets.php:36
+msgctxt "Josefin Sans font: on or off"
+msgid "on"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:116
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-settings.php:123
+msgid "Label"
+msgstr ""
+
+#: lib/components/widgets/recent-posts-widget/recent-posts-widget.php:25
+msgid "Latest Articles"
+msgstr ""
+
+#: footer.php:48
+msgid "Latest Tweets"
+msgstr ""
+
+#: inc/customizer/customizer.php:272
+msgid "Layout"
+msgstr ""
+
+#. %s: post title
+#: inc/template-tags.php:101
+#, php-format
+msgid "Leave a Comment<span class=\"screen-reader-text\"> on %s</span>"
+msgstr ""
+
+#: inc/customizer/customizer.php:356
+msgid "Left"
+msgstr ""
+
+#: inc/customizer/customizer.php:297
+msgid "Left hand"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:175
+msgid "Letter spacing"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:84
+msgid "Light 300"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:85
+msgid "Light 300 Italic"
+msgstr ""
+
+#: inc/customizer/customizer.php:182
+msgid "Like And Comment"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:143
+msgid "Line height"
+msgstr ""
+
+#: inc/extras.php:71
+msgid "Linkedin"
+msgstr ""
+
+#: inc/customizer/customizer.php:234
+msgid "List"
+msgstr ""
+
+#. used between list items, there is a space after the comma
+#: inc/template-tags.php:88
+msgctxt "list item separator"
+msgid ""
+msgstr ""
+
+#: inc/dashboard/sections/recommended-themes.php:36
+msgid "Live Demo"
+msgstr ""
+
+#: inc/extras.php:195
+msgid "Load More Articles"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:213
+msgid "lowercase"
+msgstr ""
+
+#: inc/extras.php:26
+msgid "Mail Address *"
+msgstr ""
+
+#: inc/customizer/customizer.php:92
+msgid "Main Color"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:88
+msgid "Medium 500"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:89
+msgid "Medium 500 Italic"
+msgstr ""
+
+#. Name of the theme
+msgid "Memory"
+msgstr ""
+
+#: inc/admin/plugins.php:45
+msgid "Memory Addons"
+msgstr ""
+
+#: inc/dashboard/sections/recommended-themes.php:21
+msgid "More themes from us"
+msgstr ""
+
+#: inc/dashboard/sections/getting-started.php:30
+msgid ""
+"Need any help to setup and configure the theme? Please check our full "
+"documentation for detailed information on how to use it."
+msgstr ""
+
+#: single.php:25
+msgid "Next Post"
+msgstr ""
+
+#: inc/customizer/customizer.php:56 inc/customizer/customizer.php:75
+#: inc/customizer/customizer.php:185 inc/customizer/customizer.php:316
+#: inc/customizer/customizer.php:335
+msgid "No"
+msgstr ""
+
+#. Name of the template
+msgid "No Sidebar"
+msgstr ""
+
+#: inc/customizer/customizer.php:64
+msgid "no-sticky-sidebar"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:212
+msgid "None"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:86
+msgid "Normal 400"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:87
+msgid "Normal 400 Italic"
+msgstr ""
+
+#: inc/breadcrumbs.php:136
+msgid "Not Found"
+msgstr ""
+
+#: template-parts/content-none.php:14
+msgid "Nothing Found"
+msgstr ""
+
+#: inc/customizer/customizer.php:251
+msgid "Number Column"
+msgstr ""
+
+#: lib/components/widgets/recent-posts-widget/recent-posts-widget.php:69
+msgid "Number of posts to display: "
+msgstr ""
+
+#: inc/customizer/customizer.php:254
+msgid "One Column"
+msgstr ""
+
+#: 404.php:16
+msgid "Oops! That page can&rsquo;t be found."
+msgstr ""
+
+#: lib/components/modules/searchform-toggle/searchform-toggle.php:13
+msgid "Open Search Popup"
+msgstr ""
+
+#: template-parts/content-page.php:32 template-parts/content-single.php:58
+#: template-parts/content.php:43
+msgid "Pages:"
+msgstr ""
+
+#: inc/extras.php:75
+msgid "Pinterest"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:44
+msgid "Please add and configure elements that you want to change colors for."
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-settings.php:45
+msgid "Please add and configure elements that you want to change fonts for."
+msgstr ""
+
+#. theme name and theme slug.
+#: inc/dashboard/class-memory-dashboard.php:112
+#, php-format
+msgid ""
+"Please rate <strong>%1$s</strong> <a href=\"https://wordpress."
+"org/support/theme/%2$s/reviews/?filter=5\" target=\"_blank\">&#9733;&#9733;"
+"&#9733;&#9733;&#9733;</a> on <a href=\"https://wordpress."
+"org/support/theme/%2$s/reviews/?filter=5\" target=\"_blank\">WordPress."
+"org</a> to help us spread the word. Thank you from GretaThemes!"
+msgstr ""
+
+#. theme slug.
+#: inc/dashboard/sections/welcome.php:19
+#, php-format
+msgid ""
+"Please rate us <a href=\"https://wordpress.org/support/theme/%1$s/reviews/?"
+"filter=5\" target=\"_blank\">&#9733;&#9733;&#9733;&#9733;&#9733;</a> on <a "
+"href=\"https://wordpress.org/support/theme/%1$s/reviews/?filter=5\" "
+"target=\"_blank\">WordPress.org</a> to help us spread the word. Thank you "
+"from GretaThemes!"
+msgstr ""
+
+#. %s: post author.
+#: inc/template-tags.php:41
+#, php-format
+msgctxt "post author"
+msgid "author: %s"
+msgstr ""
+
+#: single.php:24
+msgid "Previous Post"
+msgstr ""
+
+#: functions.php:59
+msgid "Primary"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:126
+msgid "Property"
+msgstr ""
+
+#. %s: CMS name, i.e. WordPress.
+#: footer.php:128
+#, php-format
+msgid "Proudly powered by %s"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:127
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:159
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:192
+msgid "px"
+msgstr ""
+
+#: template-parts/content.php:63 template-parts/slider/slider-1.php:45
+#: template-parts/slider/slider-2.php:45 template-parts/slider/slider-3.php:77
+#: template-parts/slider/slider-4.php:52
+msgid "Read ahead"
+msgstr ""
+
+#: inc/dashboard/sections/getting-started.php:32
+msgid "Read Documentation"
+msgstr ""
+
+#: inc/dashboard/sections/getting-started.php:29
+msgid "Read Full Documentation"
+msgstr ""
+
+#. 1: link to WP admin new post page.
+#: template-parts/content-none.php:24
+#, php-format
+msgid ""
+"Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr ""
+
+#: inc/dashboard/sections/getting-started.php:20
+msgid "Recommended Actions"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:129
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:161
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:194
+msgid "rem"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-settings.php:135
+msgid "Remove"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:139
+msgid "Remove element"
+msgstr ""
+
+#: inc/customizer/customizer.php:357
+msgid "Right"
+msgstr ""
+
+#: inc/customizer/customizer.php:296
+msgid "Right hand"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:52
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-settings.php:58
+msgid "Save Changes"
+msgstr ""
+
+#: inc/dashboard/sections/getting-started.php:37
+msgid "screenshot"
+msgstr ""
+
+#: searchform.php:17
+msgid "Search"
+msgstr ""
+
+#: searchform.php:12
+msgid "Search for:"
+msgstr ""
+
+#. search query
+#: inc/breadcrumbs.php:134
+#, php-format
+msgid "Search results for &quot;%s&quot;"
+msgstr ""
+
+#: lib/components/widgets/recent-posts-widget/recent-posts-widget.php:77
+msgid "Select category: "
+msgstr ""
+
+#: inc/customizer/customizer.php:488
+msgid "Select Image"
+msgstr ""
+
+#: inc/customizer/customizer.php:467
+msgid "Select Your Ads Type"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:121
+msgid "Selector"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:90
+msgid "Semi-Bold 600"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:91
+msgid "Semi-Bold 600 Italic"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:123
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-settings.php:129
+msgid "Separate multiple selectors with commas."
+msgstr ""
+
+#: inc/customizer/customizer.php:535
+msgid "Show ads after this number of posts"
+msgstr ""
+
+#: inc/customizer/customizer.php:373
+msgid "Show blog excerpt"
+msgstr ""
+
+#: inc/customizer/customizer.php:400
+msgid "Show footer subscription"
+msgstr ""
+
+#: inc/customizer/customizer.php:202 inc/customizer/customizer.php:217
+msgid "Show header subscription"
+msgstr ""
+
+#: lib/components/widgets/recent-posts-widget/recent-posts-widget.php:73
+msgid "Show latest posts"
+msgstr ""
+
+#: lib/components/widgets/recent-posts-widget/recent-posts-widget.php:74
+msgid "Show posts from a category"
+msgstr ""
+
+#: functions.php:136
+msgid "Sidebar"
+msgstr ""
+
+#. Name of the template
+msgid "Sidebar Left"
+msgstr ""
+
+#: inc/customizer/customizer.php:353
+msgid "Sidebar Position"
+msgstr ""
+
+#: inc/customizer/customizer.php:438
+msgid "Single Post/Page"
+msgstr ""
+
+#: header.php:25
+msgid "Skip to content"
+msgstr ""
+
+#: header.php:44
+#: lib/components/modules/slideout-sidebar/slideout-sidebar.php:16
+msgid "Slide Out Sidebar"
+msgstr ""
+
+#: inc/customizer/customizer.php:163
+msgid "Slider 1"
+msgstr ""
+
+#: inc/customizer/customizer.php:164
+msgid "Slider 2"
+msgstr ""
+
+#: inc/customizer/customizer.php:165
+msgid "Slider 3"
+msgstr ""
+
+#: inc/customizer/customizer.php:166
+msgid "Slider 4"
+msgstr ""
+
+#: inc/customizer/customizer.php:199
+msgid "Slider Excerpt Length"
+msgstr ""
+
+#: inc/customizer/customizer.php:160
+msgid "Slider Style"
+msgstr ""
+
+#: inc/admin/plugins.php:39
+msgid "SOO Demo Importer"
+msgstr ""
+
+#: template-parts/content-none.php:37
+msgid ""
+"Sorry, but nothing matched your search terms. Please try again with some "
+"different keywords."
+msgstr ""
+
+#: inc/dashboard/sections/getting-started.php:26
+msgid "Start Customize"
+msgstr ""
+
+#: inc/dashboard/sections/actions.php:31
+msgid "Step 3 - Import Demo Data (Optional)"
+msgstr ""
+
+#: inc/customizer/customizer.php:52
+msgid "Sticky Header"
+msgstr ""
+
+#: inc/customizer/customizer.php:72
+msgid "Sticky Sidebar"
+msgstr ""
+
+#: inc/extras.php:39
+msgid "Submit"
+msgstr ""
+
+#: inc/dashboard/sections/newsletter.php:15
+msgid "Subscribe"
+msgstr ""
+
+#: inc/dashboard/sections/newsletter.php:13
+msgid ""
+"Subscribe to our newsletter to receive news and tutorials about our themes "
+"and WordPress. We will never spam you."
+msgstr ""
+
+#: inc/customizer/customizer.php:418
+msgid "Subscription Form Background Image"
+msgstr ""
+
+#: inc/dashboard/sections/welcome.php:29
+msgid "Support"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/config.php:4
+msgid "System Fonts"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:132
+msgid "Text Color"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/ultimate-colors.php:68
+msgid "Text color"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:208
+msgid "Text transform"
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:118
+msgid "The element label displayed in the Customizer."
+msgstr ""
+
+#: inc/customizer/customizer.php:25
+msgid "Theme Options"
+msgstr ""
+
+#. %1$s: Theme name, %2$s: Theme author.
+#: footer.php:135
+#, php-format
+msgid "Theme: %1$s by %2$s."
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:80
+msgid "Thin 100"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:81
+msgid "Thin 100 Italic"
+msgstr ""
+
+#: inc/customizer/customizer.php:273
+msgid "This option is only for grid three column."
+msgstr ""
+
+#: inc/customizer/customizer.php:256
+msgid "Three Column"
+msgstr ""
+
+#: lib/components/widgets/recent-posts-widget/recent-posts-widget.php:64
+msgid "Title Length: "
+msgstr ""
+
+#: lib/components/widgets/recent-posts-widget/recent-posts-widget.php:60
+msgid "Title: "
+msgstr ""
+
+#: footer.php:44
+msgid "Twitter"
+msgstr ""
+
+#: inc/extras.php:69
+msgid "Twitter username (without @)"
+msgstr ""
+
+#: inc/customizer/customizer.php:255
+msgid "Two Column"
+msgstr ""
+
+#: searchform.php:13
+msgid "Type and Hit Enter ..."
+msgstr ""
+
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:27
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:28
+#: lib/components/modules/ultimate-colors/inc/class-ultimate-colors-settings.php:43
+msgid "Ultimate Colors"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-settings.php:29
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-settings.php:30
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-settings.php:44
+msgid "Ultimate Fonts"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:96
+msgid "Ultra-Bold 900"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:97
+msgid "Ultra-Bold 900 Italic"
+msgstr ""
+
+#: lib/components/modules/ultimate-fonts/inc/class-ultimate-fonts-customizer.php:214
+msgid "UPPERCASE"
+msgstr ""
+
+#: inc/dashboard/sections/getting-started.php:24
+msgid ""
+"Using the WordPress Customizer you can easily customize every aspect of the "
+"theme."
+msgstr ""
+
+#. theme name.
+#: inc/dashboard/sections/getting-started.php:16
+#, php-format
+msgid ""
+"We have made a list of steps for you, to make sure you will get the most of "
+"%s. They are easy to follow."
+msgstr ""
+
+#: inc/extras.php:28
+msgid "Website URL"
+msgstr ""
+
+#. %1$s - Theme name, %2$s - Theme version.
+#: inc/dashboard/sections/welcome.php:12
+#, php-format
+msgid "Welcome to %1$s"
+msgstr ""
+
+#: inc/customizer/customizer.php:532
+msgid "Where To Display Post"
+msgstr ""
+
+#: inc/gt-addons/custom-assets.php:40
+msgctxt "Work Sans font: on or off"
+msgid "on"
+msgstr ""
+
+#: inc/extras.php:54
+msgid "Write Your Comments Here..."
+msgstr ""
+
+#: inc/customizer/customizer.php:55 inc/customizer/customizer.php:74
+#: inc/customizer/customizer.php:186 inc/customizer/customizer.php:317
+#: inc/customizer/customizer.php:336
+msgid "Yes"
+msgstr ""
+
+#: inc/customizer/customizer.php:519
+msgid "You can insert code from your ad provider or just simple HTML here"
+msgstr ""
+
+#: inc/dashboard/class-memory-dashboard.php:152
+msgid "You have installed and active all required plugins"
+msgstr ""
+
+#: inc/extras.php:74
+msgid "Youtube"
+msgstr ""

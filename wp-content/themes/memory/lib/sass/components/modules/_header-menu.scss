@@ -1,0 +1,117 @@
+.main-navigation {
+	z-index: 2;
+	flex: 1;
+	ul:not(.children) {
+		&>li >a {
+			padding: 12px 14px;
+		}
+	}
+	ul {
+		display: none;
+		list-style: none;
+		margin: 0;
+		padding-left: 0;
+		ul {
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+			float: left;
+			position: absolute;
+			top: 100%;
+			left: 24px;
+			opacity: 0;
+			visibility: hidden;
+			transform: translateY(10px);
+			z-index: 99999;
+			transition: all .3s;
+			background: #fff;
+			ul {
+				// left: -999em;
+				top: 0;
+				left: 100%;
+			}
+			li {
+				border-bottom: solid 1px #f1f1f1;
+				&:last-child {
+					border-bottom: none;
+				}
+				&:hover > ul,
+				&.focus > ul {
+					left: 100%;
+				}
+			}
+			&> li {
+				padding: 0;
+			}
+			a {
+				width: 220px;
+				padding: 10px;
+				line-height: 1.5;
+				font-size: 13px;
+			}
+		}
+		li:hover > ul,
+		li.focus > ul {
+			opacity: 1;
+			visibility: visible;
+			transform: translateY(0);
+		}
+		&>a {
+			padding: 12px 24px;
+		}
+	}
+	li {
+		float: left;
+		position: relative;
+		&.menu-item-has-children > a:after,
+		&.page_item_has_children > a:after {
+			content: "\f107";
+			padding-left: 7px;
+			display: inline-block;
+			font: normal normal normal 14px/1 FontAwesome; // shortening font declaration
+			font-size: inherit; // can't have font-size inherit on line above, so need to override
+			text-rendering: auto; // optimizelegibility throws things off #1094
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+		}
+		li.menu-item-has-children > a:after,
+		li.page_item_has_children > a:after {
+			content: "\f105";
+			padding-right: 10px;
+			position: absolute;
+			right: 0;
+			top: 37%;
+			display: inline-block;
+			font: normal normal normal 14px/1 FontAwesome; // shortening font declaration
+			font-size: inherit; // can't have font-size inherit on line above, so need to override
+			text-rendering: auto; // optimizelegibility throws things off #1094
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+		}
+	}
+	a {
+		display: block;
+		text-decoration: none;
+		font-weight: bold;
+		line-height: 2.58;
+		color: #111;
+		text-transform: uppercase;
+		font-size: 14px;
+		&:hover {
+			color: #f06560;
+		}
+	}
+}
+
+/* Small menu. */
+
+@media screen and (min-width: 1023px) {
+	.main-navigation ul {
+		display: block;
+	}
+}
+
+@media ( max-width: 1023px) {
+	// Toggle icon for hamburger menu
+	.main-navigation.main-navigation ul {
+		display: none;
+	}
+}

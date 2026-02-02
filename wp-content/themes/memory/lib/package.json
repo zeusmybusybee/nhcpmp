@@ -1,0 +1,6 @@
+{
+	"scripts": {
+		"css": "sass sass:css sass/style.scss:style.css --style=compressed --no-source-map",
+		"watch": "sass sass:css sass/style.scss:style.css --style=compressed --no-source-map --watch"
+	}
+}

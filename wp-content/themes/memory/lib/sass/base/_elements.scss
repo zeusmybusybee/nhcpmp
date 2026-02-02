@@ -1,0 +1,337 @@
+html {
+	box-sizing: border-box;
+	font-size: 10px;
+}
+
+*,
+*:before,
+*:after {
+	/* Inherit box-sizing to make it easier to change the property for components that leverage other behavior; see http://css-tricks.com/inheriting-box-sizing-probably-slightly-better-best-practice/ */
+	box-sizing: inherit;
+}
+
+body {
+	background: #fff;
+	/* Fallback for when there is no custom background color defined. */
+}
+
+blockquote,
+q {
+	quotes: "" "";
+	&:before,
+	&:after {
+		content: "";
+	}
+}
+
+hr {
+	background-color: #ccc;
+	border: 0;
+	height: 1px;
+	margin-bottom: 1.5em;
+}
+
+img {
+	height: auto;
+	/* Make sure images are scaled correctly. */
+	max-width: 100%;
+	/* Adhere to container width. */
+	object-fit: cover;
+	vertical-align: middle;
+	border-style: none;
+}
+
+figure {
+	margin: 1em 0;
+	/* Extra wide images within figure tags don't overflow the content area. */
+}
+
+blockquote,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+	line-height: 1.2;
+	clear: both;
+}
+
+h1,
+.h1 {
+	@include font-size(3.6);
+}
+
+h2,
+.h2 {
+	@include font-size(3);
+}
+
+h3,
+.h3 {
+	@include font-size(2.4);
+}
+
+h4,
+.h4 {
+	@include font-size(1.8);
+}
+
+h5,
+.h5 {
+	@include font-size(1.2);
+}
+
+h6,
+.h6 {
+	@include font-size(1);
+	text-transform: uppercase;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+	font: normal normal normal 14px/1.8 sans-serif;
+	text-align: left;
+	color: #111;
+}
+
+p {
+	margin-bottom: 1.5em;
+}
+
+dfn,
+cite,
+em,
+i {
+	font-style: italic;
+}
+
+blockquote {
+	margin: 0 1.5em;
+}
+
+address {
+	margin: 0 0 1.5em;
+}
+
+pre {
+	background: #eee;
+	@include font-size( 1.5);
+	line-height: 1.6;
+	margin-bottom: 1.6em;
+	max-width: 100%;
+	overflow: auto;
+	padding: 1.6em;
+}
+
+abbr,
+acronym {
+	border-bottom: 1px dotted #dedede;
+	cursor: help;
+}
+
+mark,
+ins {
+	background: #fff9c0;
+	text-decoration: none;
+}
+
+big {
+	font-size: 125%;
+}
+
+/*--------------------------------------------------------------
+# List
+--------------------------------------------------------------*/
+ul,
+ol {
+	margin: 0 0 1.5em;
+	padding-left: 1.5em;
+}
+
+ul {
+	list-style: disc;
+}
+
+ol {
+	list-style: decimal;
+}
+
+li > ul,
+li > ol {
+	margin-bottom: 0;
+	margin-left: 0;
+	padding-left: 1.5em;
+}
+
+dt {
+	font-weight: bold;
+}
+
+dd {
+	margin: 0 1.5em 1.5em;
+}
+
+/*--------------------------------------------------------------
+# Table
+--------------------------------------------------------------*/
+table {
+	margin: 0 0 1.5em;
+	width: 100%;
+}
+
+td,
+th,
+caption {
+	border: 1px solid #dedede;
+	padding: 8px 1.5em;
+	a {
+		color: var(--main-color);
+		&:hover {
+			color: var(--main-color);
+		}
+	}
+}
+
+td, th {
+	text-align: center;
+}
+
+/*--------------------------------------------------------------
+# Button
+--------------------------------------------------------------*/
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+	border: 1px solid;
+	border-radius: 0;
+	background: #111;
+	color: #fff;
+	@include font-size( 1.2);
+	line-height: 1;
+	padding: 1.5rem 2rem;
+	transition: .3s;
+	cursor: pointer;
+	&:hover {
+		border-color: var(--main-color);
+	}
+}
+
+/*--------------------------------------------------------------
+# Fields
+--------------------------------------------------------------*/
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="tel"],
+input[type="range"],
+input[type="date"],
+input[type="month"],
+input[type="week"],
+input[type="time"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="color"],
+textarea {
+	color: #666;
+	border: 1px solid #dedede;
+	border-radius: 0;
+	padding: 8px 10px 7px;
+	&:focus {
+		color: #111;
+	}
+}
+
+input[type="search"] {
+	-webkit-appearance: textfield;
+}
+
+select {
+	border: 1px solid #dedede;
+	padding: 10px 5px;
+	width: 100%;
+}
+
+textarea {
+	width: 100%;
+}
+
+/*--------------------------------------------------------------
+# Captions
+--------------------------------------------------------------*/
+.wp-caption {
+	margin-bottom: 1.5em;
+	max-width: 100%;
+	img[class*="wp-image-"] {
+		@include center-block;
+	}
+	.wp-caption-text {
+		margin: 0.8075em 0 0;
+	}
+}
+
+.wp-caption-text {
+	text-align: center;
+}
+
+/*--------------------------------------------------------------
+# Media
+--------------------------------------------------------------*/
+.page-content .wp-smiley,
+.entry-content .wp-smiley,
+.comment-content .wp-smiley {
+	border: none;
+	margin-bottom: 0;
+	margin-top: 0;
+	padding: 0;
+}
+
+/* Make sure embeds and iframes fit their containers. */
+
+embed,
+iframe,
+object {
+	max-width: 100%;
+}
+
+/*--------------------------------------------------------------
+# Links
+--------------------------------------------------------------*/
+a {
+	color: var(--main-color);
+	text-decoration: none;
+	transition: all .3s;
+
+	&:visited {
+		text-decoration: none;
+		color: inherit;
+	}
+
+	&:hover {
+		color: var(--main-color);
+		text-decoration: none;
+	}
+
+	&:active {
+		text-decoration: none;
+		color: inherit;
+	}
+
+	&:focus {
+		text-decoration: none;
+		color: inherit;
+	}
+}

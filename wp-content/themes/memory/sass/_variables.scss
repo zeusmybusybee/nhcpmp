@@ -1,0 +1,32 @@
+/* variables color */
+:root {
+	/* main color */
+	--main-color: #00a6b6;
+	--text-main: #555;
+	--heading-color: #000;
+
+	/* header color */
+	--bg-header-color: #fff;
+	--text-header-color: #111;
+	--hover-text-header-color: var(--main-color);
+	--icon-header-color: #111;
+	--hover-icon-header-color: var(--main-color);
+	--border-header-color: #e2e2e2;
+	--bg-submenu-color: #fff;
+	--text-submenu-color: #111;
+	--hover-text-submenu-color: var(--main-color);
+	--border-submenu-color: #f1f1f1;
+}
+
+/* color */
+$color__black: #000;
+$color__white: #fff;
+$color__border: #e2e2e2;
+$color__background: #f8f8f8;
+$color__meta: #888888;
+$color__background-comment: #fcfcfc;
+
+/* typography */
+$font__main: 'Josefin Sans', sans-serif;
+$font__secondary: 'Work Sans', sans-serif;
+$font__code: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;

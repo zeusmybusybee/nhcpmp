@@ -1,0 +1,48 @@
+// Rem output with px fallback
+@mixin font-size($sizeValue: 1) {
+	font-size: ($sizeValue * 10) * 1px;
+	font-size: $sizeValue * 1rem;
+}
+
+// Center block
+@mixin center-block {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+@mixin ico-font() {
+	font-family: 'IcoFont';
+	speak: none;
+	font: normal normal normal 16px/1 'IcoFont';
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+@mixin placeholder {
+	&::-webkit-input-placeholder {@content}
+	&::-moz-placeholder          {@content; opacity: 1}
+	&:-ms-input-placeholder      {@content}
+}
+@mixin border-bottom-double() {
+	&:before {
+		content: " ";
+		position: absolute;
+		z-index: 0;
+		left: 0px;
+		right: 0px;
+		bottom: 2px;
+		border-bottom: 1px dashed $color__border;
+	}
+}
+@mixin border-top-double() {
+	&:after {
+		content: " ";
+		position: absolute;
+		z-index: 0;
+		top: 2px;
+		left: 0px;
+		right: 0px;
+		border-top: 1px dashed $color__border;
+	}
+}

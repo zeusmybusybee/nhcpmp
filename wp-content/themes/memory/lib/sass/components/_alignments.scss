@@ -1,0 +1,38 @@
+.alignleft,
+a img.alignleft,
+.wp-block-image .alignleft {
+	display: inline;
+	float: left;
+	margin: 4px 30px 20px 0;
+}
+
+.wp-block-image,
+.wp-block-gallery,
+.wp-block-quote {
+	margin: 1em 0;
+}
+
+.alignright,
+a img.alignright,
+.wp-block-image .alignright {
+	display: inline;
+	float: right;
+	margin: 4px 0 20px 30px;
+}
+
+.aligncenter,
+div.aligncenter {
+	display: block;
+	clear: both;
+	margin: 40px auto;
+}
+
+.entry-content {
+	img {
+
+		&.alignleft,
+		&.alignright {
+			margin-top: 4px;
+		}
+	}
+}

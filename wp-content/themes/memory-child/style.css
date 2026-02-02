@@ -1,0 +1,295 @@
+/*
+ Theme Name:   memory-child
+ Description:  memory-child
+ Template:     memory
+ Text Domain:  memory-child
+*/
+
+@import url("../memory/style.css");
+
+
+:root {
+  --brown: #7a4f1d;
+  --light: #f7f5f2;
+  --text: #4a4a4a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #fff;
+  color: var(--text);
+}
+div#content .ast-container {
+    width: 100% !important;
+    max-width: 100%;
+    padding:0;
+}
+h1 {
+  font-size: 46px; /* 2.25rem */
+}
+
+h2 {
+  font-size: 30px; /* 1.875rem */
+}
+
+h3 {
+  font-size: 24px; /* 1.5rem */
+}
+
+h4 {
+  font-size: 20px; /* 1.25rem */
+}
+
+h5 {
+  font-size: 18px; /* 1.125rem */
+}
+
+p {
+  font-size: 17px; /* 1rem */
+}
+
+.hero {
+  padding: 3rem 1.25rem;
+}
+
+.hero-inner {
+ width: 70%;
+max-width:80%;
+margin: 0 auto;
+text-align: center;
+}
+
+.hero-icon {
+  margin-bottom: 1rem;
+}
+
+.hero h1 {
+  line-height: 1.3;
+  color: var(--brown);
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  line-height: 1.6;
+  margin-bottom: 1.75rem;
+}
+
+.search-box {
+  display: flex;
+  border: 1px solid var(--brown);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  font-size: 0.9rem;
+}
+
+.search-box input:focus {
+  outline: none;
+}
+
+.search-box button {
+  padding: 0 1rem;
+  background: var(--brown);
+  color: #fff;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+@media (min-width: 922px) {
+    .ast-container {
+        max-width: 80%;
+    }
+}
+
+/* 🌐 Tablet & up */
+@media (min-width: 768px) {
+  .hero {
+    padding: 5rem 2rem;
+  }
+}
+
+/* collection */
+/* GRID */
+.collections {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* CARD */
+.collection-card {
+  position: relative;
+  min-height: 300px;
+  padding: 40px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  background-size: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  transition: background-size 0.8s ease;
+  overflow: hidden;
+}
+.collection-card div {
+    width: 63%;
+    margin: auto;
+}
+
+/* DARK OVERLAY */
+.collection-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #704b1047;
+  /* background: rgba(0, 0, 0, 0.6); */
+  transition: opacity 0.4s ease;
+}
+
+/* CONTENT ABOVE OVERLAY */
+.collection-card * {
+  position: relative;
+  z-index: 1;
+}
+
+/* HOVER EFFECTS */
+.collection-card:hover {
+  background-size: 115%;
+}
+
+.collection-card:hover::before {
+  opacity: 0;
+}
+
+/* TEXT */
+.collection-card h2 {
+  margin-bottom: 10px;
+}
+
+.collection-card p {
+  line-height: 1.6;
+}
+
+/* BUTTON */
+.collection-card .btn {
+  margin-top: 15px;
+    padding: 10px 18px;
+    color: #fff;
+    text-decoration: none;
+    background: #ffffff33;
+    width: fit-content;
+    border-radius: 0;
+    text-transform: none;
+     /* NEW */
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.collection-card:hover .btn {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* BACKGROUND IMAGES */
+.books { background-image: url("http://localhost/nhcpmp/wp-content/uploads/2026/02/historical-artifact-display-stockcake.jpg"); }
+.artifacts {  background-image: url("http://localhost/nhcpmp/wp-content/uploads/2026/02/historical-artifact-display-stockcake.jpg"); }
+.heraldry { background-image: url("http://localhost/nhcpmp/wp-content/uploads/2026/02/historical-artifact-display-stockcake.jpg"); }
+.sites { background-image: url("http://localhost/nhcpmp/wp-content/uploads/2026/02/historical-artifact-display-stockcake.jpg"); }
+.towns { background-image: url("http://localhost/nhcpmp/wp-content/uploads/2026/02/historical-artifact-display-stockcake.jpg"); }
+.av { background-image: url("http://localhost/nhcpmp/wp-content/uploads/2026/02/historical-artifact-display-stockcake.jpg"); }
+
+
+/* RESPONSIVE */
+
+/* 🌐 Tablet & up */
+@media (min-width: 768px) {
+.artifacts { text-align: right; background-image: url("http://localhost/nhcpmp/wp-content/uploads/2026/02/historical-artifact-display-stockcake.jpg"); }
+.sites {text-align: right; background-image: url("http://localhost/nhcpmp/wp-content/uploads/2026/02/historical-artifact-display-stockcake.jpg"); }
+.av {text-align: right; background-image: url("http://localhost/nhcpmp/wp-content/uploads/2026/02/historical-artifact-display-stockcake.jpg"); }
+
+}
+
+@media (max-width: 768px) {
+  .collections {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+/* feartured collection */
+.featured-collections {
+  padding: 1.5rem 1rem;
+}
+
+.featured-collections h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.collections-grid {
+  display: grid;
+  grid-template-columns: 1fr; /* mobile default */
+  gap: 1rem;
+}
+
+.card {
+  background: #f2f2f2;
+  border-radius: 8px;
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  height: 6px;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* Card colors */
+.navy::before { background: #2c2f6c; }
+.red::before { background: #c7373f; }
+.purple::before { background: #8e2f8f; }
+.green::before { background: #4f7f3f; }
+.teal::before { background: #1fa3a3; }
+.orange::before { background: #d87434; }
+.darkgreen::before { background: #0f5c2e; }
+.gold::before { background: #c7ad2a; }
+
+.card h3 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.card p {
+  line-height: 1.4;
+}
+
+/* 📱 Tablet */
+@media (min-width: 640px) {
+  .collections-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 💻 Desktop */
+@media (min-width: 1024px) {
+  .collections-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
