@@ -554,7 +554,7 @@ iframe {
   position: relative;
   background: var(--bg-header-color);
 }
-.header-top:before {
+/* .header-top:before {
   content: " ";
   position: absolute;
   z-index: 0;
@@ -562,7 +562,7 @@ iframe {
   right: 0px;
   bottom: 2px;
   border-bottom: 1px dashed #e2e2e2;
-}
+} */
 .header-top .container {
   display: flex;
 }
