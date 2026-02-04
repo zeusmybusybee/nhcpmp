@@ -3,6 +3,16 @@ get_header();
 
 ?>
 <style>
+  .collections-grid .card img {
+    position: absolute;
+    top: -12px;
+    left: 7%;
+    background-size: cover;
+    width: 100%;
+     filter: brightness(0) invert(1);
+    height: auto;
+    max-width: 70px;
+}
   h2 {
   font-size: 38px; /* 1.875rem */
 }
@@ -79,6 +89,30 @@ background: linear-gradient(to bottom, rgba(50, 30, 10, 0.8), rgba(50, 30, 10, 0
     position: absolute;
     left: 0;
 }
+.card::before {
+       content: "";
+    height: 50px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.card {
+    background: #f2f2f2;
+    border-radius: 8px;
+    padding: 8rem 3rem 1rem;
+    position: relative;
+    overflow: hidden;
+}
+/* title color */
+.featured-collections .navy h3 { color: #2c2f6c !important;  }
+.red h3 { color: #c7373f !important; }
+.purple h3 { color: #8e2f8f !important; }
+.green h3{ color: #4f7f3f !important; }
+.teal h3 { color: #1fa3a3 !important; }
+.orange h3 { color: #d87434 !important; }
+.darkgreen h3 { color: #0f5c2e !important; }
+.gold h3 { color: #c7ad2a !important; }
 </style>
 <div id="primary" >
 
@@ -176,41 +210,49 @@ background: linear-gradient(to bottom, rgba(50, 30, 10, 0.8), rgba(50, 30, 10, 0
 
   <div class="collections-grid">
     <article class="card navy">
+       <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
       <h3>Local History</h3>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     </article>
 
     <article class="card red">
+        <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
       <h3>Philippine Revolution</h3>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     </article>
 
     <article class="card purple">
+        <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
       <h3>Women in Philippine History</h3>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     </article>
 
     <article class="card green">
+        <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
       <h3>Philippine Muslim History & Heritage</h3>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     </article>
 
     <article class="card teal">
+        <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
       <h3>NHCP Publications</h3>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     </article>
 
     <article class="card orange">
+        <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
       <h3>Journal of Philippine Local History & Heritage</h3>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     </article>
 
     <article class="card darkgreen">
+        <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
       <h3>Jose Rizal Collection</h3>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     </article>
 
     <article class="card gold">
+        <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
       <h3>Contributed Collections</h3>
       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
     </article>

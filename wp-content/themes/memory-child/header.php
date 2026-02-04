@@ -24,59 +24,77 @@
 	<?php wp_head(); ?>
 </head>
 <style>
-	.site-header{
-		display: block;
-	}
-	.site-branding {
-    width: 20%;
-    text-align: left;
+	h1 {
+  font-size: 48px; /* 2.25rem */
+}
+nav#site-navigation {
+    width: unset;
+}
+.main-navigation {
+    flex: unset;
+}
+.site-branding img {
+    filter: sepia(1) saturate(5) hue-rotate(20deg);
+    width: 100%;
+    max-width: 424px;
+    height: auto;
 }
 .header-top .container {
     align-items: center;
+    justify-content: space-between;
 }
-nav#site-navigation {
+.main-navigation li a {
+    font-size: 18px;
+    text-transform: none;
+    font-weight: 400;
+    margin: 0 34px;
+}
+h2 {
+  font-size: 44px; /* 1.875rem */
+}
+.site-branding {
+    width: auto;
+    text-align: left;
+}
+.hero p {
+    line-height: 1.6;
+    margin-bottom: 1.75rem;
+    width: 80%;
+    margin: 30px  auto 40px;
+}
+.home .search-box {
+    display: flex;
+    border: 1px solid var(--brown);
+    border-radius: 4px;
+    overflow: hidden;
     width: 70%;
+    margin: auto;
 }
-.header-top:before {
-	display:none;
+.hero-inner h1{
+font-weight: 500;
 }
-.menu-search-form {
+.home div#content {
+    background: #F7F7F7;
+}
+.card {
+    background: #f2f2f2;
+    border-radius: 8px;
+    padding: 4rem 3rem 1rem;
     position: relative;
-    display: inline-block;
+    overflow: hidden;
 }
+/* title color */
+.navy h3 { color: #2c2f6c; }
+.red h3 { color: #c7373f; }
+.purple h3 { color: #8e2f8f; }
+.green h3{ color: #4f7f3f; }
+.teal h3 { color: #1fa3a3; }
+.orange h3 { color: #d87434; }
+.darkgreen h3 { color: #0f5c2e; }
+.gold h3 { color: #c7ad2a; }
 
-.menu-search-form input[type="search"] {
-    padding: 5px 40px 5px 15px; /* extra space sa right para sa icon */
-    border: 2px solid #8b5e3c;
-    border-radius: 25px;
-    outline: none;
-    font-size: 14px;
-    width: 420px;
-}
-
-.menu-search-form input[type="search"]:focus {
-    border-color: #5a3d2a;
-}
-
-/* Button icon sa loob ng input */
-.menu-search-form button {
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    color: #8b5e3c;
-}
-
-.menu-search-form button:focus {
-    outline: none;
-}
-h1, h2, h3 {
- font-family: 'Manrope', sans-serif;
-  font-weight: 600;
+input[type=submit]:hover, button[type=submit]:hover {
+    background: unset;
 }
 </style>
 <?php $body_class = array_values( get_body_class() ); ?>
@@ -101,9 +119,9 @@ h1, h2, h3 {
 
 				<!-- LOGO (LEFT) -->
 				<div class="site-branding">
-				<a href="<?php echo home_url(); ?>">
-					<img src="<?php echo get_template_directory_uri(); ?>/assets/images/logo.png" alt="Site Logo">
-				</a>
+					<a href="<?php echo home_url(); ?>">
+					<img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/nmp-logo.png" alt="Site Logo">
+					</a>
 				</div>
 
 				<!-- MENU (RIGHT) -->
@@ -116,7 +134,10 @@ h1, h2, h3 {
 							)
 						);
 						?>
-					</nav><!-- #site-navigation -->
+				</nav><!-- #site-navigation -->
+
+				<?php echo do_shortcode('[menu_search]'); ?>
+
 
 			</div>
 			</div>
@@ -156,5 +177,5 @@ if ( is_front_page() ) :
 <?php if ( is_home() || is_search() || is_archive() ) : ?>
 	<div id="content" class="site-content">
 <?php else : ?>
-	<div id="content" class="site-content container">
+	<div id="content" class="site-content">
 <?php endif; ?>
