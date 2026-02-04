@@ -404,7 +404,7 @@ iframe {
 .content-area {
   width: 65.812%;
   margin: 0;
-  float: left;
+  /* float: left; */
 }
 .content-area .site-main {
   background: #fff;
@@ -5077,4 +5077,7 @@ article.sticky .article-container {
   list-style: none;
   width: 40px;
   height: 3px;
+}
+aside#secondary {
+    display: none;
 }
