@@ -404,7 +404,7 @@ iframe {
 .content-area {
   width: 65.812%;
   margin: 0;
-  float: left;
+  /* float: left; */
 }
 .content-area .site-main {
   background: #fff;
@@ -554,7 +554,7 @@ iframe {
   position: relative;
   background: var(--bg-header-color);
 }
-.header-top:before {
+/* .header-top:before {
   content: " ";
   position: absolute;
   z-index: 0;
@@ -562,7 +562,7 @@ iframe {
   right: 0px;
   bottom: 2px;
   border-bottom: 1px dashed #e2e2e2;
-}
+} */
 .header-top .container {
   display: flex;
 }
@@ -5077,4 +5077,7 @@ article.sticky .article-container {
   list-style: none;
   width: 40px;
   height: 3px;
+}
+aside#secondary {
+    display: none;
 }
