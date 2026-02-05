@@ -1639,7 +1639,6 @@ ol.children {
 # page-header
 --------------------------------------------------------------*/
 .page-header {
-  border-bottom: 1px dashed #e2e2e2;
   background: #fff;
   position: relative;
   word-break: break-all;
@@ -1652,7 +1651,6 @@ ol.children {
   left: 0px;
   right: 0px;
   bottom: 2px;
-  border-bottom: 1px dashed #e2e2e2;
 }
 .page-header h1 {
   margin: 0;

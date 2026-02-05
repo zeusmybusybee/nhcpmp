@@ -4,7 +4,7 @@
 /*.php
 
 # Uploads
-# /wp-content/uploads/
+/wp-content/uploads/
 
 # Config
 wp-config.php
