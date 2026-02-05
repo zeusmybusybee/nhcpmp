@@ -24,60 +24,36 @@
 	<?php wp_head(); ?>
 </head>
 <style>
-	.site-header{
-		display: block;
-	}
-	.site-branding {
-    width: 20%;
-    text-align: left;
+.main-navigation {
+    flex: unset;
 }
-.header-top .container {
-    align-items: center;
+div#content {
+    background: #F7F7F7;
 }
-nav#site-navigation {
-    width: 70%;
-}
-.header-top:before {
-	display:none;
-}
-.menu-search-form {
-    position: relative;
-    display: inline-block;
-}
-
-.menu-search-form input[type="search"] {
-    padding: 5px 40px 5px 15px; /* extra space sa right para sa icon */
-    border: 2px solid #8b5e3c;
-    border-radius: 25px;
-    outline: none;
-    font-size: 14px;
-    width: 420px;
-}
-
-.menu-search-form input[type="search"]:focus {
-    border-color: #5a3d2a;
-}
-
-/* Button icon sa loob ng input */
-.menu-search-form button {
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
+ul#primary-menu li a {
+    font-size: 18px;
+    text-transform: none;
+    font-weight: 400;
+    margin: 0 1rem;
     color: #8b5e3c;
+    padding: 5px 20px;
+}
+ul#primary-menu  li:hover a {
+    background: #8b5e3c;
+    color: #fff ;
+}
+.site-branding {
+    padding: 30px 0 40px;
+    width: 100%;
+    max-width: 360px;
+    filter: sepia(100%) saturate(300%) brightness(70%) hue-rotate(-15deg);
+}
+@media (min-width: 1400px) {
+  .container {
+     max-width: 1440px;
+  }
 }
 
-.menu-search-form button:focus {
-    outline: none;
-}
-h1, h2, h3 {
- font-family: 'Manrope', sans-serif;
-  font-weight: 600;
-}
 </style>
 <?php $body_class = array_values( get_body_class() ); ?>
 <body
@@ -97,33 +73,38 @@ h1, h2, h3 {
 		<a class="skip-link screen-reader-text" href="#content"><?php esc_html_e( 'Skip to content', 'memory' ); ?></a>
 		<header id="masthead" class="site-header">
 			<div id="header-top" class="header-top is-sticky">
-			<div class="container">
+				<div class="container">
+				<div class="d-flex align-items-center justify-content-between">
 
-				<!-- LOGO (LEFT) -->
-				<div class="site-branding">
-				<a href="<?php echo home_url(); ?>">
-					<img src="<?php echo get_template_directory_uri(); ?>/assets/images/logo.png" alt="Site Logo">
-				</a>
-				</div>
+					<!-- LOGO (LEFT) -->
+					<div class="site-branding">
+					<a href="<?php echo home_url(); ?>" class="d-inline-block">
+						<img 
+						src="http://127.0.0.1/nhcpmp/wp-content/uploads/2026/02/nmp-logo-1.png" 
+						alt="Site Logo"
+						class="img-fluid"
+						>
+					</a>
+					</div>
 
-				<!-- MENU (RIGHT) -->
-				<nav id="site-navigation" class="main-navigation">
-						<?php
+					<!-- MENU (RIGHT) -->
+					<nav id="site-navigation" class="main-navigation">
+					<?php
 						wp_nav_menu(
-							array(
-								'theme_location' => 'menu-1',
-								'menu_id'        => 'primary-menu',
-							)
+						array(
+							'theme_location' => 'menu-1',
+							'menu_id'        => 'primary-menu',
+						)
 						);
-						?>
-					</nav><!-- #site-navigation -->
+					?>
+					</nav>
 
+					<?php echo do_shortcode('[menu_search]'); ?>
+				</div>
+				</div>
 			</div>
-			</div>
+		</header>
 
-			</div>
-
-		</header><!-- #masthead -->
 
 <?php
 // Display featured posts and header subscription on the homepage.
@@ -156,5 +137,5 @@ if ( is_front_page() ) :
 <?php if ( is_home() || is_search() || is_archive() ) : ?>
 	<div id="content" class="site-content">
 <?php else : ?>
-	<div id="content" class="site-content container">
+	<div id="content" class="site-content">
 <?php endif; ?>
