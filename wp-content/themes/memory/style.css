@@ -5073,6 +5073,9 @@ article.sticky .article-container {
   width: 40px;
   height: 3px;
 }
-aside#secondary {
+aside#secondary, .breadcrumbs {
     display: none;
+}
+.page-header, .page-header:before {
+  border-bottom: none;
 }

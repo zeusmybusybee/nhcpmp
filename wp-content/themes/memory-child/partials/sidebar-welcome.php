@@ -1,0 +1,1 @@
+<?php echo the_field('welcome_greetings', 'option'); ?>
