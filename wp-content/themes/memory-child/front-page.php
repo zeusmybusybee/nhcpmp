@@ -130,166 +130,188 @@ section.featured-collections h2 {
 
     <div id="content" class="site-content">
 
-<section class="hero">
-  <div class="container-fluid">
-    <div class="row justify-content-center text-center">
-      <div class="col-lg-8">
+<?php
+/* ================================
+ * Static background classes
+ * ================================ */
+$background_keys = [
+  'books',
+  'artifacts',
+  'heraldry',
+  'sites',
+  'towns',
+  'av',
+];
+?>
 
-        <div class="mb-3">
-           <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
-        </div>
+<?php if ( have_rows('homepage_settings') ) : ?>
+  <?php while ( have_rows('homepage_settings') ) : the_row(); ?>
 
-        <h1 class="mb-3 mt-0 fw-medium text-brown">
-          We envision to democratize Philippine History Materials
-        </h1>
+  <?php if ( get_row_layout() === 'hero_banner' ) : ?>
 
-        <p class="mb-4 text-muted mt-5 w-75 m-auto">
-          Since 2020, the NHCP has allotted a budget for the continuous development
-          of an online platform that can hold a great number of high-resolution
-          digitized materials concerning Philippine national and local history.
-        </p>
+      <section class="hero">
+        <div class="container-fluid">
+          <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
 
-        <form class="hero-search d-flex mx-auto mt-5">
-          <input
-            type="text"
-            class="hero-input"
-            placeholder="Search the National Memory Project"
-          >
-          <button type="submit" class="hero-btn">
-            Search
-          </button>
-        </form>
+              <?php if ( get_sub_field('hero_logo_image') ) : ?>
+                <div class="mb-3">
+                  <img 
+                    src="<?php echo esc_url( get_sub_field('hero_logo_image') ); ?>" 
+                    alt="<?php echo esc_attr( get_sub_field('hero_title') ); ?>">
+                </div>
+              <?php endif; ?>
 
-        <div class="container mt-5">
-        <div class="scroll-wrapper d-flex align-items-center justify-content-center">
+              <?php if ( get_sub_field('hero_title') ) : ?>
+                <h1 class="mb-3 mt-0 fw-medium text-brown">
+                  <?php the_sub_field('hero_title'); ?>
+                </h1>
+              <?php endif; ?>
 
-          <div class="arrow-hover">
-            <div class="scroll-text">Scroll down</div>
-           <i class="fa-solid fa-caret-down"></i>
+              <?php if ( get_sub_field('hero_description') ) : ?>
+                <p class="mb-4 text-muted mt-5 w-75 m-auto">
+                  <?php the_sub_field('hero_description'); ?>
+                </p>
+              <?php endif; ?>
+
+              <form class="hero-search d-flex mx-auto mt-5">
+                <input
+                  type="text"
+                  class="hero-input"
+                  placeholder="Search the National Memory Project"
+                >
+                <button type="submit" class="hero-btn">
+                  Search
+                </button>
+              </form>
+
+              <div class="container mt-5">
+                <div class="scroll-wrapper d-flex align-items-center justify-content-center">
+                  <div class="arrow-hover">
+                    <div class="scroll-text">Scroll down</div>
+                    <i class="fa-solid fa-caret-down"></i>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
-
         </div>
-      </div>
+      </section>
+
+    <?php endif; ?>
 
 
-        <!-- arrow -->
-      </div>
-    </div>
-  </div>
-</section>
+    <?php if ( get_row_layout() === 'collection' ) : ?>
+      <section class="collections">
+
+        <?php
+          $i = 0; // counter for static classes
+        ?>
+
+        <?php if ( have_rows('collection_item') ) : ?>
+          <?php while ( have_rows('collection_item') ) : the_row(); ?>
+
+            <?php
+              $bg_class = $background_keys[$i] ?? 'books';
+              $bg_img   = get_sub_field('background'); // IMAGE URL (ACF)
+
+              $title = get_sub_field('title');
+              $desc  = get_sub_field('description');
+              $btn   = get_sub_field('button_link');
+
+              $i++;
+            ?>
+
+            <div class="collection-card <?php echo esc_attr($bg_class); ?>"
+                 style="background-image: url('<?php echo esc_url($bg_img); ?>');">
+
+              <div class="collection-content">
+                <?php if ( $title ) : ?>
+                  <h2><?php echo esc_html($title); ?></h2>
+                <?php endif; ?>
+
+                <?php if ( $desc ) : ?>
+                  <p><?php echo esc_html($desc); ?></p>
+                <?php endif; ?>
+
+                <?php if ( $btn ) : ?>
+                  <a href="<?php echo esc_url($btn); ?>" class="btn">
+                    Explore
+                  </a>
+                <?php endif; ?>
+              </div>
+
+            </div>
+
+          <?php endwhile; ?>
+        <?php endif; ?>
+
+      </section>
+    <?php endif; ?>
 
 
-
-<section class="collections">
-
-  <div class="collection-card books">
-    <div>
-    <h2>Books</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-     <a href="#" class="btn">Explore</a>
-    </div>
-  </div>
-
-  <div class="collection-card artifacts">
-    <div>
-    <h2>Artifacts</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    <a href="#" class="btn">Explore</a>
-    </div>
-  </div>
-
-  <div class="collection-card heraldry">
-    <div>
-    <h2>Philippine Heraldry</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-     <a href="#" class="btn">Explore</a>
-    </div>
-  </div>
-
-  <div class="collection-card sites">
-    <div>
-    <h2>Historic Sites and Structures</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-     <a href="#" class="btn">Explore</a>
-    </div>
-  </div>
-
-  <div class="collection-card towns">
-    <div>
-    <h2>Foundation of Towns</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-     <a href="#" class="btn">Explore</a>
-    </div>
-  </div>
-
-  <div class="collection-card av">
-    <div>
-        
     
-    <h2>Audio-Visual Materials</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-     <a href="#" class="btn">Explore</a>
-  </div>
-  </div>
+    <?php if (get_row_layout() === 'featured_collections') : ?>
+      <section class="featured-collections">
+        <div class="container">
+          <h2 class="mt-0">Featured Collections</h2>
 
-</section>
+          <div class="collections-grid mt-5">
+
+            <?php if (have_rows('featured_collections_item')) : ?>
+
+              <?php
+              $classes = [
+                'navy',
+                'red',
+                'purple',
+                'green',
+                'teal',
+                'orange',
+                'darkgreen',
+                'gold'
+              ];
+              $i = 0;
+              ?>
+
+              <?php while (have_rows('featured_collections_item')) : the_row(); 
+                $title = get_sub_field('title');
+                $description = get_sub_field('description');
+                $card_class = $classes[$i] ?? 'navy';
+              ?>
+
+                <article class="card <?php echo esc_attr($card_class); ?>">
+                  <img 
+                    src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" 
+                    alt="Featured Collection">
+
+                  <?php if ($title) : ?>
+                    <h3><?php echo esc_html($title); ?></h3>
+                  <?php endif; ?>
+
+                  <?php if ($description) : ?>
+                    <p><?php echo esc_html($description); ?></p>
+                  <?php endif; ?>
+                </article>
+
+              <?php 
+                $i++;
+              endwhile; ?>
+
+            <?php endif; ?>
+
+          </div>
+        </div>
+      </section>
+    <?php endif; ?>
 
 
-<section class="featured-collections">
-    <div class="container">
-  <h2 class="mt-0">Featured Collections</h2>
+  <?php endwhile; ?>
+<?php endif; ?>
 
-  <div class="collections-grid mt-5">
-    <article class="card navy">
-       <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
-      <h3>Local History</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </article>
 
-    <article class="card red">
-        <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
-      <h3>Philippine Revolution</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </article>
 
-    <article class="card purple">
-        <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
-      <h3>Women in Philippine History</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </article>
-
-    <article class="card green">
-        <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
-      <h3>Philippine Muslim History & Heritage</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </article>
-
-    <article class="card teal">
-        <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
-      <h3>NHCP Publications</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </article>
-
-    <article class="card orange">
-        <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
-      <h3>Journal of Philippine Local History & Heritage</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </article>
-
-    <article class="card darkgreen">
-        <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
-      <h3>Jose Rizal Collection</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </article>
-
-    <article class="card gold">
-        <img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" alt="">
-      <h3>Contributed Collections</h3>
-      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    </article>
-  </div>
-  </div>
-</section>
 
 
     </div>
