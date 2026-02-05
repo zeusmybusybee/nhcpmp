@@ -6,7 +6,7 @@ function my_menu_search_shortcode()
 ?>
     <form role="search" method="get" class="menu-search-form" action="<?php echo home_url('/'); ?>">
         <input type="search" name="s" placeholder="Search the National Memory Project" />
-        <button type="submit" aria-label="Search">🔍</button>
+        <button type="submit" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
     </form>
 <?php
     return ob_get_clean();

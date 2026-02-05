@@ -24,78 +24,36 @@
 	<?php wp_head(); ?>
 </head>
 <style>
-	h1 {
-  font-size: 48px; /* 2.25rem */
-}
-nav#site-navigation {
-    width: unset;
-}
 .main-navigation {
     flex: unset;
 }
-.site-branding img {
-    filter: sepia(1) saturate(5) hue-rotate(20deg);
-    width: 100%;
-    max-width: 424px;
-    height: auto;
+div#content {
+    background: #F7F7F7;
 }
-.header-top .container {
-    align-items: center;
-    justify-content: space-between;
-}
-.main-navigation li a {
+ul#primary-menu li a {
     font-size: 18px;
     text-transform: none;
     font-weight: 400;
-    margin: 0 34px;
+    margin: 0 1rem;
+    color: #8b5e3c;
+    padding: 5px 20px;
 }
-h2 {
-  font-size: 44px; /* 1.875rem */
+ul#primary-menu  li:hover a {
+    background: #8b5e3c;
+    color: #fff ;
 }
 .site-branding {
-    width: auto;
-    text-align: left;
+    padding: 30px 0 40px;
+    width: 100%;
+    max-width: 360px;
+    filter: sepia(100%) saturate(300%) brightness(70%) hue-rotate(-15deg);
 }
-.hero p {
-    line-height: 1.6;
-    margin-bottom: 1.75rem;
-    width: 80%;
-    margin: 30px  auto 40px;
+@media (min-width: 1400px) {
+  .container {
+     max-width: 1440px;
+  }
 }
-.home .search-box {
-    display: flex;
-    border: 1px solid var(--brown);
-    border-radius: 4px;
-    overflow: hidden;
-    width: 70%;
-    margin: auto;
-}
-.hero-inner h1{
-font-weight: 500;
-}
-.home div#content {
-    background: #F7F7F7;
-}
-.card {
-    background: #f2f2f2;
-    border-radius: 8px;
-    padding: 4rem 3rem 1rem;
-    position: relative;
-    overflow: hidden;
-}
-/* title color */
-.navy h3 { color: #2c2f6c; }
-.red h3 { color: #c7373f; }
-.purple h3 { color: #8e2f8f; }
-.green h3{ color: #4f7f3f; }
-.teal h3 { color: #1fa3a3; }
-.orange h3 { color: #d87434; }
-.darkgreen h3 { color: #0f5c2e; }
-.gold h3 { color: #c7ad2a; }
 
-input[type=submit]:hover, button[type=submit]:hover {
-    background: unset;
-}
 </style>
 <?php $body_class = array_values( get_body_class() ); ?>
 <body
@@ -115,36 +73,38 @@ input[type=submit]:hover, button[type=submit]:hover {
 		<a class="skip-link screen-reader-text" href="#content"><?php esc_html_e( 'Skip to content', 'memory' ); ?></a>
 		<header id="masthead" class="site-header">
 			<div id="header-top" class="header-top is-sticky">
-			<div class="container">
+				<div class="container">
+				<div class="d-flex align-items-center justify-content-between">
 
-				<!-- LOGO (LEFT) -->
-				<div class="site-branding">
-					<a href="<?php echo home_url(); ?>">
-					<img src="http://localhost/nhcpmp/wp-content/uploads/2026/02/nmp-logo.png" alt="Site Logo">
+					<!-- LOGO (LEFT) -->
+					<div class="site-branding">
+					<a href="<?php echo home_url(); ?>" class="d-inline-block">
+						<img 
+						src="http://127.0.0.1/nhcpmp/wp-content/uploads/2026/02/nmp-logo-1.png" 
+						alt="Site Logo"
+						class="img-fluid"
+						>
 					</a>
-				</div>
+					</div>
 
-				<!-- MENU (RIGHT) -->
-				<nav id="site-navigation" class="main-navigation">
-						<?php
+					<!-- MENU (RIGHT) -->
+					<nav id="site-navigation" class="main-navigation">
+					<?php
 						wp_nav_menu(
-							array(
-								'theme_location' => 'menu-1',
-								'menu_id'        => 'primary-menu',
-							)
+						array(
+							'theme_location' => 'menu-1',
+							'menu_id'        => 'primary-menu',
+						)
 						);
-						?>
-				</nav><!-- #site-navigation -->
+					?>
+					</nav>
 
-				<?php echo do_shortcode('[menu_search]'); ?>
-
-
+					<?php echo do_shortcode('[menu_search]'); ?>
+				</div>
+				</div>
 			</div>
-			</div>
+		</header>
 
-			</div>
-
-		</header><!-- #masthead -->
 
 <?php
 // Display featured posts and header subscription on the homepage.
