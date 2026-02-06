@@ -1,0 +1,76 @@
+ .contact-us{
+        padding: 74px 20px;
+  }
+  .contact-us__form .acf-label {
+    display: none;
+}
+ .contact-us__form input[type="text"],
+ .contact-us__form input[type="email"]{
+    width: 100%;
+ }
+  .contact-us__form .acf-field {
+    margin-bottom: 15px;
+}
+.contact-us__form input, .contact-us__form textarea {
+    color: #666;
+    border: 2px solid #6b4a1e;
+    border-radius: 0;
+    padding: 10px 10px 9px;
+    font-size: 18px;
+}
+.contact-us__form input.acf-button.button {
+    background: #6b4a1e;
+    color: #fff;
+    padding: 19px 38px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 500;
+}
+/* Alisin bullet */
+.acf-checkbox-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.acf-checkbox-list li {
+  margin-bottom: 12px;
+}
+
+/* Custom circle checkbox */
+.acf-checkbox-list input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border: 1px solid #000; /* green border */
+  border-radius: 50%;
+  margin-right: 10px;
+  cursor: pointer;
+  position: relative;
+}
+
+/* GREEN kapag checked */
+.acf-checkbox-list input[type="checkbox"]:checked {
+  border-color: #4CAF50;
+}
+
+.acf-checkbox-list input[type="checkbox"]:checked::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background-color: #4CAF50; /* green fill */
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Label */
+.acf-checkbox-list label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+}

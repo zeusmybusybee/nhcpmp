@@ -1,0 +1,30 @@
+.custom-tabs {
+  border-bottom: none;
+}
+
+.custom-tabs .nav-link {
+  background-color: #6b4a1e !important; /* brown */
+  color: #fff !important;
+  border: 1px solid #fff !important;
+  border-radius: 0;
+  padding: 15px 10px;
+  text-align: center;
+  width: 100%;
+}
+
+.custom-tabs .nav-link:hover {
+  background-color: #5a3e18;
+}
+
+.custom-tabs .nav-link.active {
+  background-color: #8b5e2b;
+  color: #fff;
+  border-color: #fff;
+}
+section.custom-tab {
+    padding: 1rem 0;
+}
+.tab-content {
+    padding: 2rem;
+    margin-top:15px;
+}

@@ -14,32 +14,6 @@
 
 get_header();
 ?>
-<style>
-.custom-tabs {
-  border-bottom: none;
-}
-
-.custom-tabs .nav-link {
-  background-color: #6b4a1e; /* brown */
-  color: #fff;
-  border: 1px solid #fff;
-  border-radius: 0;
-  padding: 15px 10px;
-  text-align: center;
-  width: 100%;
-}
-
-.custom-tabs .nav-link:hover {
-  background-color: #5a3e18;
-}
-
-.custom-tabs .nav-link.active {
-  background-color: #8b5e2b;
-  color: #fff;
-  border-color: #fff;
-}
-
-</style>
         <!-- custom content -->
             <?php if ( have_rows('pages_section') ) : ?>
     <?php while ( have_rows('pages_section') ) : the_row(); ?>

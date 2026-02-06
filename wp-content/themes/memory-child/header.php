@@ -79,11 +79,7 @@ ul#primary-menu  li:hover a {
 					<!-- LOGO (LEFT) -->
 					<div class="site-branding">
 					<a href="<?php echo home_url(); ?>" class="d-inline-block">
-						<img 
-						src="http://127.0.0.1/nhcpmp/wp-content/uploads/2026/02/nmp-logo-1.png" 
-						alt="Site Logo"
-						class="img-fluid"
-						>
+						 <?php the_custom_logo(); ?>
 					</a>
 					</div>
 
