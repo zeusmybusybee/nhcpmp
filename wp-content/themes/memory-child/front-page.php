@@ -283,8 +283,9 @@ $background_keys = [
 
                 <article class="card <?php echo esc_attr($card_class); ?>">
                   <img 
-                    src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png" 
+                   src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/about-1.png"
                     alt="Featured Collection">
+                    
 
                   <?php if ($title) : ?>
                     <h3><?php echo esc_html($title); ?></h3>
