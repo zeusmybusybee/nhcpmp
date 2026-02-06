@@ -288,6 +288,86 @@ add_filter('posts_search', function ($search, $query) {
     return $wpdb->prepare($search, $like, $like);
 }, 10, 2);
 
+// Filtering ph-heraldry-registry CPT
+function ph_heraldry_registry_filters($query)
+{
+    if (is_admin() || !$query->is_main_query()) {
+        return;
+    }
+
+    if (is_post_type_archive('ph-heraldry-registry')) {
+
+        $meta_query = [];
+
+        // HERALDRIC ITEMS (ACF checkbox field)
+        if (!empty($_GET['heraldric_items'])) {
+            $heraldric_items = array_map('sanitize_text_field', (array) $_GET['heraldric_items']);
+            $heraldric_query = ['relation' => 'OR'];
+            foreach ($heraldric_items as $item) {
+                $heraldric_query[] = [
+                    'key'     => 'heraldric_items', // ACF field name
+                    'value'   => '"' . $item . '"', // Quote for serialized array match
+                    'compare' => 'LIKE',
+                ];
+            }
+            $meta_query[] = $heraldric_query;
+        }
+
+        // SEALS / LOGOS (ACF checkbox field)
+        if (!empty($_GET['seals_logos'])) {
+            $seals_logos = array_map('sanitize_text_field', (array) $_GET['seals_logos']);
+            $seals_query = ['relation' => 'OR'];
+            foreach ($seals_logos as $seal) {
+                $seals_query[] = [
+                    'key'     => 'seals_logos', // ACF field name
+                    'value'   => '"' . $seal . '"',
+                    'compare' => 'LIKE',
+                ];
+            }
+            $meta_query[] = $seals_query;
+        }
+
+        if (!empty($meta_query)) {
+            $query->set('meta_query', $meta_query);
+        }
+
+        // SEARCH
+        if (!empty($_GET['s'])) {
+            $query->set('s', sanitize_text_field($_GET['s']));
+        }
+
+        // SORTING
+        if (!empty($_GET['sort_by'])) {
+            switch ($_GET['sort_by']) {
+                case 'az':
+                    $query->set('orderby', 'title');
+                    $query->set('order', 'ASC');
+                    break;
+                case 'za':
+                    $query->set('orderby', 'title');
+                    $query->set('order', 'DESC');
+                    break;
+                case 'newest':
+                    $query->set('orderby', 'date');
+                    $query->set('order', 'DESC');
+                    break;
+                case 'oldest':
+                    $query->set('orderby', 'date');
+                    $query->set('order', 'ASC');
+                    break;
+                case 'relevant':
+                default:
+                    $query->set('orderby', 'relevance'); // optional, default WP search
+                    break;
+            }
+        }
+    }
+}
+add_action('pre_get_posts', 'ph_heraldry_registry_filters');
+
+
+
+
 
 
 // Force 404 on empty search results for Articles & Books archives
@@ -297,7 +377,7 @@ function articles_books_search_404()
         ! is_admin() &&
         is_search() &&
         is_main_query() &&
-        is_post_type_archive(['articles', 'book'])
+        is_post_type_archive(['articles', 'book', 'ph-heraldry-registry'])
     ) {
         global $wp_query;
 
@@ -309,4 +389,3 @@ function articles_books_search_404()
     }
 }
 add_action('template_redirect', 'articles_books_search_404');
-

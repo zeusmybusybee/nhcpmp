@@ -165,4 +165,21 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
-
+.input-group {
+    margin-top: 0!important;
+}
+input.form-control.border-0 {
+    background: none!important;
+}
+.form-control:focus{
+    box-shadow: none!important;
+}
+button.box {
+    background: none;
+    border: none;
+}
+button.box a {
+    color: #fff;
+    background: #c2ad7a;
+    border: none;
+}
