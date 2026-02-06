@@ -1,12 +1,25 @@
 <?php get_header(); ?>
 
-<div class="container my-5">
+<div class="container py-5">
 
     <div class="row">
 
         <!-- LEFT: RESULTS -->
         <div class="col-lg-8">
-
+            <!-- Top Bar: Results Count & Pagination -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex align-items-center gap-2">
+                    <small>Top <?php echo $wp_query->post_count; ?> results for <?php single_cat_title(); ?></small>
+                    <select class="form-select form-select-sm" style="width: auto;">
+                        <option selected>10</option>
+                        <option>25</option>
+                        <option>50</option>
+                    </select>
+                </div>
+                <div class="pagination-nav">
+                    <?php the_posts_pagination(['type' => 'list']); ?>
+                </div>
+            </div>
             <?php while (have_posts()) : the_post(); ?>
                 <div class="d-flex gap-4 mb-4 p-4 bg-body-tertiary rounded">
 
