@@ -68,7 +68,7 @@ if ( is_front_page() ) {
 
 
 <?php 
-$post_types = ['book', 'artifacts'];
+$post_types = ['book', 'artifacts', 'ph-heraldry-registry', 'articles', 'historical-sites','a-v-material'];
 if ( is_post_type_archive( $post_types ) || is_singular( $post_types ) ) : ?>
 
 <nav class="collections-nav">
