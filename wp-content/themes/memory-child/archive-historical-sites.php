@@ -24,55 +24,57 @@
                 <?php if (have_posts()) : ?>
                     <?php while (have_posts()) : the_post(); ?>
                         <div class="col-lg-4 col-md-6">
-                            <div class="card h-100 border-0 shadow-sm text-center p-4">
+                            <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
+                                <div class="card h-100 border-0 shadow-sm text-center p-4">
 
-                                <div class="d-flex gap-2 mb-2 flex-wrap">
-                                    <?php
-                                    $status = get_field('status');
+                                    <div class="d-flex gap-2 mb-2 flex-wrap">
+                                        <?php
+                                        $status = get_field('status');
 
-                                    $status_map = [
-                                        'level_1'      => ['label' => 'Level I',    'class' => 'badge-open'],
-                                        'level_2'   => ['label' => 'Level II',        'class' => 'badge-viewing'],
-                                        'delisted'   => ['label' => 'Delisted',        'class' => 'badge-limited'],
-                                        'removed' => ['label' => 'Removed',     'class' => 'badge-exclusive'],
-                                    ];
+                                        $status_map = [
+                                            'level_1'      => ['label' => 'Level I',    'class' => 'badge-open'],
+                                            'level_2'   => ['label' => 'Level II',        'class' => 'badge-viewing'],
+                                            'delisted'   => ['label' => 'Delisted',        'class' => 'badge-limited'],
+                                            'removed' => ['label' => 'Removed',     'class' => 'badge-exclusive'],
+                                        ];
 
-                                    ?>
+                                        ?>
 
-                                    <?php if ($status && isset($status_map[$status])) : ?>
-                                        <span class="access-badge <?php echo esc_attr($status_map[$status]['class']); ?>">
-                                            <?php echo esc_html($status_map[$status]['label']); ?>
-                                        </span>
-                                    <?php endif; ?>
-                                </div>
-
-                                <!-- Thumbnail -->
-                                <?php if (has_post_thumbnail()) : ?>
-                                    <div class="mb-3">
-                                        <?php the_post_thumbnail(
-                                            'small',
-                                            ['class' => 'img-fluid mx-auto d-block']
-                                        ); ?>
+                                        <?php if ($status && isset($status_map[$status])) : ?>
+                                            <span class="access-badge <?php echo esc_attr($status_map[$status]['class']); ?>">
+                                                <?php echo esc_html($status_map[$status]['label']); ?>
+                                            </span>
+                                        <?php endif; ?>
                                     </div>
-                                <?php endif; ?>
 
-                                <!-- TITLE -->
-                                <h6 class="fw-semibold mb-2">
-                                    <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
-                                        <?php the_title(); ?>
-                                    </a>
-                                </h6>
-
-                                <!-- META -->
-                                <div class="text-muted small mt-auto text-start">
-                                    <?php if ($regions = get_field('regions')) : ?>
-                                        <div>Location: <?php echo esc_html($regions); ?> <?php echo esc_html(get_field('province_municipality')); ?></div>
+                                    <!-- Thumbnail -->
+                                    <?php if (has_post_thumbnail()) : ?>
+                                        <div class="mb-3">
+                                            <?php the_post_thumbnail(
+                                                'small',
+                                                ['class' => 'img-fluid mx-auto d-block']
+                                            ); ?>
+                                        </div>
                                     <?php endif; ?>
-                                    <div><?php if (get_field('year_found')): echo 'Year Found:' . get_field('year_found');
-                                            endif; ?></div>
-                                </div>
 
-                            </div>
+                                    <!-- TITLE -->
+                                    <h6 class="fw-semibold mb-2">
+                                        <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
+                                            <?php the_title(); ?>
+                                        </a>
+                                    </h6>
+
+                                    <!-- META -->
+                                    <div class="text-muted small mt-auto text-start">
+                                        <?php if ($regions = get_field('regions')) : ?>
+                                            <div>Location: <?php echo esc_html($regions); ?> <?php echo esc_html(get_field('province_municipality')); ?></div>
+                                        <?php endif; ?>
+                                        <div><?php if (get_field('year_found')): echo 'Year Found:' . get_field('year_found');
+                                                endif; ?></div>
+                                    </div>
+
+                                </div>
+                            </a>
                         </div>
                     <?php endwhile; ?>
 
@@ -124,7 +126,9 @@
                         </select>
 
                         <select name="marker_category" class="form-select">
-                            <option value="">Marker Category</option>
+                             <option value="">-Select-</option>
+                            <option value="structures" <?php selected($_GET['marker_category'] ?? '', 'structures'); ?>>Structures</option>
+                            <option value="buildings" <?php selected($_GET['marker_category'] ?? '', 'buildings'); ?>>Buildings</option>
                         </select>
                     </div>
 
@@ -132,22 +136,19 @@
                     <div class="col-12 mb-3">
                         <h6 class="mb-3 fw-bold">Filter by Place</h6>
 
-                        <select name="region" class="form-select mb-2">
+                        <select id="region_selected" class="form-select mb-2">
                             <option value="">Region</option>
                         </select>
 
-                        <select name="province" class="form-select mb-2">
+                        <select id="province_selected" class="form-select mb-2">
                             <option value="">Province</option>
                         </select>
 
-                        <select name="city" class="form-select mb-2">
+                        <select id="municipality_selected" class="form-select mb-2">
                             <option value="">City / Municipality</option>
                         </select>
-
-                        <select name="international" class="form-select">
-                            <option value="">International</option>
-                        </select>
                     </div>
+
 
                     <!-- FILTER BY TIME -->
                     <div class="col-12">
@@ -172,7 +173,7 @@
                         <button type="submit"
                             class="btn w-100 mt-4 fw-bold"
                             style="background-color:#6b4a1f;color:white;">
-                            Search
+                             Apply Filters
                         </button>
                     </div>
 
@@ -188,6 +189,3 @@
 </div>
 
 <?php get_footer(); ?>
-
-<style>
-</style>
