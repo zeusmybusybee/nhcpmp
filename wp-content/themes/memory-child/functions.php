@@ -649,7 +649,6 @@ function get_municipalities_callback() {
 
     wp_send_json($options);
 }
-
 add_action('acf/input/admin_footer', function () { ?>
 <script>
 (function($){
@@ -772,4 +771,3 @@ add_action('acf/input/admin_footer', function () { ?>
 })(jQuery);
 </script>
 <?php });
-
