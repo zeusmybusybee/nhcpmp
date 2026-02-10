@@ -183,3 +183,122 @@ button.box a {
     background: #c2ad7a;
     border: none;
 }
+/* gallery */
+.nrhss-media-wrapper {
+    display: flex;
+    gap: 12px;
+}
+
+/* MAIN IMAGE */
+.nrhss-featured {
+    flex: 1;
+}
+
+.nrhss-featured-img {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    border-radius: 6px;
+    transition: opacity 0.25s ease-in-out;
+}
+
+/* THUMBNAILS */
+.nrhss-gallery {
+    width: 90px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.nrhss-thumb {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    opacity: 0.75;
+    transition: all 0.2s ease;
+}
+
+.nrhss-thumb:hover {
+    opacity: 1;
+}
+
+.nrhss-thumb.active {
+    border-color: #333;
+    opacity: 1;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .nrhss-media-wrapper {
+        flex-direction: column;
+    }
+
+    .nrhss-gallery {
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .nrhss-thumb {
+        width: 70px;
+        height: 70px;
+    }
+}
+/* badge tags */
+/* Badge styling */
+.list_tags .tag-badge {
+    display: inline-block;
+    background-color: #0073aa;  /* WordPress blue, change as needed */
+    color: #fff;
+    padding: 4px 12px;
+    margin: 2px;
+    border-radius: 12px;        /* rounded pill shape */
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.list_tags .tag-badge:hover {
+    background-color: #005177;  /* darker on hover */
+}
+/* av materials */
+.object-fit-cover {
+    object-fit: cover;
+}
+.card {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.03);
+}
+
+.card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.card:hover::after {
+    opacity: 1;
+}
+
+.bg-darken {
+    background:#000;
+}
+.texting_title {
+    font-size: 18px;
+    font-style: italic;
+    font-weight: 500;
+}
+.card:hover {
+    border: none !important;
+}
