@@ -7,6 +7,21 @@
 
 @import url("../memory/style.css");
 
+@font-face {
+  font-family: 'Ysabeau';
+  src: url('../fonts/Ysabeau-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ysabeau';
+  src: url('../fonts/Ysabeau-Italic-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
 
 :root {
   --brown: #7a4f1d;
@@ -20,7 +35,7 @@
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'Ysabeau', sans-serif;
   background: #fff;
   color: var(--text);
 }
@@ -32,8 +47,8 @@ div#content .ast-container {
 #content {
     padding: 2rem 0;
 }
-h1, h2, h3 {
- font-family: 'Manrope', sans-serif;
+h1, h2, h3 , h4, h5 a {
+ font-family: 'Ysabeau', sans-serif;
   font-weight: 400;
 }
 
