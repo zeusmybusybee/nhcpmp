@@ -67,7 +67,9 @@ if ( is_front_page() ) {
 </style>
 
 
-<?php if ( is_post_type_archive('book') ) : ?>
+<?php 
+$post_types = ['book', 'artifacts'];
+if ( is_post_type_archive( $post_types ) || is_singular( $post_types ) ) : ?>
 
 <nav class="collections-nav">
   <div class="container">
