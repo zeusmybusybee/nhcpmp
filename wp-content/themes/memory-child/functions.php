@@ -128,18 +128,18 @@ function memory_child_pages_page_styles()
 
 // Add class to <li>
 add_filter('nav_menu_css_class', function ($classes, $item, $args) {
-  if ($args->theme_location === 'auxiliary_menu') {
-    $classes[] = 'nav-item';
-  }
-  return $classes;
+    if ($args->theme_location === 'auxiliary_menu') {
+        $classes[] = 'nav-item';
+    }
+    return $classes;
 }, 10, 3);
 
 // Add class to <a>
 add_filter('nav_menu_link_attributes', function ($atts, $item, $args) {
-  if ($args->theme_location === 'auxiliary_menu') {
-    $atts['class'] = 'nav-link';
-  }
-  return $atts;
+    if ($args->theme_location === 'auxiliary_menu') {
+        $atts['class'] = 'nav-link';
+    }
+    return $atts;
 }, 10, 3);
 
 
@@ -542,3 +542,232 @@ function articles_books_search_404()
     }
 }
 add_action('template_redirect', 'articles_books_search_404');
+
+// Fetch Regions
+add_action('wp_ajax_get_regions', 'get_regions_callback');
+add_action('wp_ajax_nopriv_get_regions', 'get_regions_callback');
+function get_regions_callback()
+{
+    $options = [];
+    $response = wp_remote_get("https://philippine-datasets-api.nowcraft.ing/api/regions");
+
+    if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
+        $regions = json_decode(wp_remote_retrieve_body($response), true);
+        if (isset($regions['data']) && is_array($regions['data'])) {
+            foreach ($regions['data'] as $r) {
+                if (!empty($r['psgc_code']) && !empty($r['name'])) {
+                    // Keep 10 digits as string
+                    $code = str_pad((string)$r['psgc_code'], 10, '0', STR_PAD_LEFT);
+                    $options[$code] = $r['name'];
+                }
+            }
+        }
+    }
+
+    wp_send_json($options);
+}
+
+// Fetch Provinces by Region
+add_action('wp_ajax_get_provinces', 'get_provinces_callback');
+add_action('wp_ajax_nopriv_get_provinces', 'get_provinces_callback');
+function get_provinces_callback() {
+    $region_code = sanitize_text_field($_POST['region'] ?? '');
+
+    // Force region code to 10 digits (PSGC format)
+    while (strlen($region_code) < 10) {
+        $region_code .= '0';
+    }
+
+    $options = [];
+
+    if ($region_code) {
+        $response = wp_remote_get("https://philippine-datasets-api.nowcraft.ing/api/regions/{$region_code}");
+
+        if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
+            $body = json_decode(wp_remote_retrieve_body($response), true);
+
+            // ✅ Provinces are inside this key
+            if (!empty($body['provinces']) && is_array($body['provinces'])) {
+
+                foreach ($body['provinces'] as $province) {
+                    $props = $province['properties'] ?? [];
+
+                    if (!empty($props['psgc_code']) && !empty($props['name'])) {
+                        $options[$props['psgc_code']] = $props['name'];
+                    }
+                }
+            }
+        }
+    }
+
+    wp_send_json($options);
+}
+
+
+
+add_action('wp_ajax_get_municipalities', 'get_municipalities_callback');
+add_action('wp_ajax_nopriv_get_municipalities', 'get_municipalities_callback');
+
+function get_municipalities_callback() {
+
+    $province_code = sanitize_text_field($_POST['province'] ?? '');
+
+    // Force 10-digit PSGC
+    while (strlen($province_code) < 10) {
+        $province_code .= '0';
+    }
+
+    $options = [];
+
+    if ($province_code) {
+        $response = wp_remote_get("https://philippine-datasets-api.nowcraft.ing/api/provinces/{$province_code}");
+
+        if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
+            $body = json_decode(wp_remote_retrieve_body($response), true);
+
+            /** ✅ Municipalities */
+            if (!empty($body['municipalities'])) {
+                foreach ($body['municipalities'] as $m) {
+                    $props = $m['properties'] ?? [];
+                    if (!empty($props['psgc_code']) && !empty($props['name'])) {
+                        $options[$props['psgc_code']] = $props['name'];
+                    }
+                }
+            }
+
+            /** ✅ Cities (highly urbanized / component cities) */
+            if (!empty($body['cities'])) {
+                foreach ($body['cities'] as $c) {
+                    $props = $c['properties'] ?? [];
+                    if (!empty($props['psgc_code']) && !empty($props['name'])) {
+                        $options[$props['psgc_code']] = $props['name'];
+                    }
+                }
+            }
+        }
+    }
+
+    wp_send_json($options);
+}
+add_action('acf/input/admin_footer', function () { ?>
+<script>
+(function($){
+
+    const fields = {
+        region: 'acf[field_6989834fad150]',
+        province: 'acf[field_69898380ad151]',
+        municipality: 'acf[field_6989839ead152]'
+    };
+
+    function force10Digits(code){
+        code = String(code || '');
+        while(code.length < 10){
+            code += '0';
+        }
+        return code;
+    }
+
+    function populateSelect(fieldName, ajaxAction, paramKey, paramValue, placeholder, selectedValue = null){
+        const $field = $('select[name="'+fieldName+'"]');
+        if(!$field.length) return;
+
+        $field.html('<option value="">Loading...</option>');
+
+        const data = { action: ajaxAction };
+        if(paramKey && paramValue) data[paramKey] = paramValue;
+
+        $.post(ajaxurl, data, function(response){
+            $field.html('<option value="">'+placeholder+'</option>');
+
+            $.each(response, function(value, label){
+                $field.append('<option value="'+value+'">'+label+'</option>');
+            });
+
+            if(selectedValue){
+                $field.val(force10Digits(selectedValue));
+            }
+        });
+    }
+
+    /** REGION → PROVINCE */
+    $(document).on('change', 'select[name="'+fields.region+'"]', function(){
+        let regionCode = $(this).val();
+
+        if(!regionCode){
+            $('select[name="'+fields.province+'"]').html('<option value="">Select Region first</option>');
+            $('select[name="'+fields.municipality+'"]').html('<option value="">Select Province first</option>');
+            return;
+        }
+
+        regionCode = force10Digits(regionCode);
+        $(this).val(regionCode);
+
+        populateSelect(
+            fields.province,
+            'get_provinces',
+            'region',
+            regionCode,
+            'Select Province'
+        );
+
+        $('select[name="'+fields.municipality+'"]').html('<option value="">Select Province first</option>');
+    });
+
+    /** PROVINCE → MUNICIPALITY */
+    $(document).on('change', 'select[name="'+fields.province+'"]', function(){
+        let provinceCode = $(this).val();
+
+        if(!provinceCode){
+            $('select[name="'+fields.municipality+'"]').html('<option value="">Select Province first</option>');
+            return;
+        }
+
+        provinceCode = force10Digits(provinceCode);
+        $(this).val(provinceCode);
+
+        populateSelect(
+            fields.municipality,
+            'get_municipalities',
+            'province',
+            provinceCode,
+            'Select Municipality'
+        );
+    });
+
+    /** PREPOPULATE ON EDIT */
+    $(document).ready(function(){
+
+        const savedRegion       = $('select[name="'+fields.region+'"]').val();
+        const savedProvince     = $('select[name="'+fields.province+'"]').val();
+        const savedMunicipality = $('select[name="'+fields.municipality+'"]').val();
+
+        if(savedRegion){
+            const regionCode = force10Digits(savedRegion);
+
+            populateSelect(
+                fields.province,
+                'get_provinces',
+                'region',
+                regionCode,
+                'Select Province',
+                savedProvince
+            );
+        }
+
+        if(savedProvince){
+            const provinceCode = force10Digits(savedProvince);
+
+            populateSelect(
+                fields.municipality,
+                'get_municipalities',
+                'province',
+                provinceCode,
+                'Select Municipality',
+                savedMunicipality
+            );
+        }
+    });
+
+})(jQuery);
+</script>
+<?php });
