@@ -126,7 +126,9 @@
                         </select>
 
                         <select name="marker_category" class="form-select">
-                            <option value="">Marker Category</option>
+                             <option value="">-Select-</option>
+                            <option value="structures" <?php selected($_GET['marker_category'] ?? '', 'structures'); ?>>Structures</option>
+                            <option value="buildings" <?php selected($_GET['marker_category'] ?? '', 'buildings'); ?>>Buildings</option>
                         </select>
                     </div>
 
@@ -134,22 +136,19 @@
                     <div class="col-12 mb-3">
                         <h6 class="mb-3 fw-bold">Filter by Place</h6>
 
-                        <select name="region" class="form-select mb-2">
+                        <select id="region_selected" class="form-select mb-2">
                             <option value="">Region</option>
                         </select>
 
-                        <select name="province" class="form-select mb-2">
+                        <select id="province_selected" class="form-select mb-2">
                             <option value="">Province</option>
                         </select>
 
-                        <select name="city" class="form-select mb-2">
+                        <select id="municipality_selected" class="form-select mb-2">
                             <option value="">City / Municipality</option>
                         </select>
-
-                        <select name="international" class="form-select">
-                            <option value="">International</option>
-                        </select>
                     </div>
+
 
                     <!-- FILTER BY TIME -->
                     <div class="col-12">
@@ -174,7 +173,7 @@
                         <button type="submit"
                             class="btn w-100 mt-4 fw-bold"
                             style="background-color:#6b4a1f;color:white;">
-                            Search
+                             Apply Filters
                         </button>
                     </div>
 
@@ -190,6 +189,3 @@
 </div>
 
 <?php get_footer(); ?>
-
-<style>
-</style>

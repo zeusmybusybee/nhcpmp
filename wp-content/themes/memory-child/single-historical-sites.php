@@ -8,20 +8,106 @@
 
             <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 
-                    <!-- SINGLE CONTENT -->
                     <article id="post-<?php the_ID(); ?>" <?php post_class('mb-5'); ?>>
 
-                        <h1 class="mb-3"><?php the_title(); ?></h1>
 
-                        <?php if (has_post_thumbnail()) : ?>
-                            <div class="mb-4">
-                                <?php the_post_thumbnail('large', ['class' => 'img-fluid']); ?>
+
+                        <?php
+                        $gallery = get_field('nrhss_gallery');
+                        ?>
+
+                        <div class="nrhss-media-wrapper mb-4">
+
+                            <!-- MAIN IMAGE -->
+                            <div class="nrhss-featured">
+                                <?php if (has_post_thumbnail()) :
+                                    $featured_url = get_the_post_thumbnail_url(get_the_ID(), 'large');
+                                ?>
+                                    <img
+                                        src="<?php echo esc_url($featured_url); ?>"
+                                        class="nrhss-featured-img"
+                                        id="nrhss-main-image">
+                                <?php endif; ?>
                             </div>
-                        <?php endif; ?>
+
+                            <!-- THUMBNAILS -->
+                            <?php if ($gallery) : ?>
+                                <div class="nrhss-gallery">
+                                    <?php foreach ($gallery as $index => $image) : ?>
+                                        <img
+                                            src="<?php echo esc_url($image['sizes']['thumbnail']); ?>"
+                                            data-full="<?php echo esc_url($image['sizes']['large']); ?>"
+                                            class="nrhss-thumb <?php echo $index === 0 ? 'active' : ''; ?>">
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endif; ?>
+
+                        </div>
+
+                        <div class="content mb-5">
+                            <h1 class="mb-3"><?php the_title(); ?></h1>
+                            <div class="details">
+                                <?php if ($regions = get_field('region_text')) : ?>
+                                    <div><strong>Location:</strong> <?php echo esc_html($regions); ?>, <?php echo esc_html(get_field('province_text')); ?>, <?php echo esc_html(get_field('municipality_text')); ?></div>
+                                <?php endif; ?>
+                                <?php
+                                $status_field = get_field_object('status');
+                                $status_value = get_field('status');
+                                if ($status_value):
+                                    $status_label = $status_field['choices'][$status_value] ?? $status_value;
+                                ?>
+                                    <div><strong>Status:</strong> <?php echo esc_html($status_label); ?></div>
+                                <?php endif; ?>
+
+                                <?php
+                                $marker_category_field = get_field_object('marker_category');
+                                $marker_category_value = get_field('marker_category');
+                                if ($marker_category_value):
+                                    $marker_category_label = $marker_category_field['choices'][$marker_category_value] ?? $marker_category_value;
+                                ?>
+                                    <div><strong>Marker Category:</strong> <?php echo esc_html($marker_category_label); ?></div>
+                                <?php endif; ?>
+
+                                <?php
+                                $type_field = get_field_object('type');
+                                $type_value = get_field('type');
+                                if ($type_value):
+                                    $type_label = $type_field['choices'][$type_value] ?? $type_value;
+                                ?>
+                                    <div><strong>Type:</strong> <?php echo esc_html($type_label); ?></div>
+                                <?php endif; ?>
+
+                                <?php if (get_field('year_found')): ?>
+                                    <div><strong>Marker Date:</strong> <?php echo esc_html(get_field('year_found')); ?></div>
+                                <?php endif; ?>
+
+                                <?php if (get_field('installed_by')): ?>
+                                    <div><strong>Installed By:</strong> <?php echo esc_html(get_field('installed_by')); ?></div>
+                                <?php endif; ?>
+
+
+
+                            </div>
+                        </div>
 
                         <div class="content mb-5">
                             <?php the_content(); ?>
-                            1231232
+                        </div>
+
+                        <div class="content list_tags">
+                            <?php
+                            $tags = get_the_terms(get_the_ID(), 'post_tag');
+
+                            if ($tags && !is_wp_error($tags)) :
+                                echo '<div><strong>Tags:</strong> ';
+                                foreach ($tags as $tag) {
+                                    // Each tag is a badge linking to the tag archive
+                                    $tag_link = get_term_link($tag);
+                                    echo '<a href="' . esc_url($tag_link) . '" class="tag-badge">' . esc_html($tag->name) . '</a> ';
+                                }
+                                echo '</div>';
+                            endif;
+                            ?>
                         </div>
 
                     </article>
@@ -29,10 +115,12 @@
             <?php endwhile;
             endif; ?>
 
+
+
             <!-- OTHER POSTS (SAME CPT, EXCLUDE CURRENT) -->
             <?php
             $current_id = get_the_ID();
-            echo $current_id;
+            // echo $current_id;
 
             $args = [
                 'post_type'      => 'historical-sites',
@@ -49,7 +137,7 @@
             <?php if ($other_posts->have_posts()) : ?>
                 <section class="other-posts mt-5">
 
-                    <h3 class="mb-4">Other Entries</h3>
+                    <h3 class="mb-4">Explore the Registry</h3>
 
                     <div class="row g-4">
                         <?php while ($other_posts->have_posts()) : $other_posts->the_post(); ?>
