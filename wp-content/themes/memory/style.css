@@ -547,7 +547,6 @@ iframe {
 }
 
 .header-top {
-  border-bottom: 1px dashed var(--border-header-color);
   position: relative;
   background: var(--bg-header-color);
 }

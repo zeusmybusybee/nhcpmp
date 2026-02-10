@@ -16,6 +16,25 @@ add_shortcode('menu_search', 'my_menu_search_shortcode');
 // Enable shortcode sa menu items
 add_filter('wp_nav_menu_items', 'do_shortcode');
 
+function load_select2_assets() {
+  wp_enqueue_style(
+    'select2-css',
+    'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css'
+  );
+
+  wp_enqueue_script('jquery');
+
+  wp_enqueue_script(
+    'select2-js',
+    'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+    array('jquery'),
+    null,
+    true // 👈 footer
+  );
+}
+add_action('wp_enqueue_scripts', 'load_select2_assets');
+
+
 //link footer css
 // Enqueue footer CSS for child theme
 function memory_child_footer_styles()
@@ -60,6 +79,77 @@ function custom_footer_script()
     }
 }
 add_action('wp_enqueue_scripts', 'custom_footer_script');
+
+add_action('wp_enqueue_scripts', 'memory_child_front_page_styles');
+//link front-page css
+function memory_child_front_page_styles()
+{
+    // Make sure this runs only on the front-end
+    if (! is_admin()) {
+        wp_enqueue_style(
+            'memory-front-page', // Handle
+            get_stylesheet_directory_uri() . '/assets/css/front-page.css', // Path to your CSS file
+            array(), // Dependencies
+            '1.0' // Version
+        );
+    }
+}
+
+add_action('wp_enqueue_scripts', 'memory_child_contact_page_styles');
+//link front-page css
+function memory_child_contact_page_styles()
+{
+    // Make sure this runs only on the front-end
+    if (! is_admin()) {
+        wp_enqueue_style(
+            'memory-contact-page', // Handle
+            get_stylesheet_directory_uri() . '/assets/css/contact.css', // Path to your CSS file
+            array(), // Dependencies
+            '1.0' // Version
+        );
+    }
+}
+
+add_action('wp_enqueue_scripts', 'memory_child_pages_page_styles');
+//link front-page css
+function memory_child_pages_page_styles()
+{
+    // Make sure this runs only on the front-end
+    if (! is_admin()) {
+        wp_enqueue_style(
+            'memory_child_pages_page_styles', // Handle
+            get_stylesheet_directory_uri() . '/assets/css/pages.css', // Path to your CSS file
+            array(), // Dependencies
+            '1.0' // Version
+        );
+    }
+}
+
+
+// Add class to <li>
+add_filter('nav_menu_css_class', function ($classes, $item, $args) {
+  if ($args->theme_location === 'auxiliary_menu') {
+    $classes[] = 'nav-item';
+  }
+  return $classes;
+}, 10, 3);
+
+// Add class to <a>
+add_filter('nav_menu_link_attributes', function ($atts, $item, $args) {
+  if ($args->theme_location === 'auxiliary_menu') {
+    $atts['class'] = 'nav-link';
+  }
+  return $atts;
+}, 10, 3);
+
+
+add_action('pre_get_posts', function ($query) {
+  if (!is_admin() && $query->is_main_query() && is_post_type_archive('artifacts')) {
+
+    $per_page = isset($_GET['per_page']) ? (int) $_GET['per_page'] : 10;
+    $query->set('posts_per_page', $per_page);
+  }
+});
 
 // bootstrap 
 function enqueue_bootstrap()
@@ -229,6 +319,73 @@ add_action('pre_get_posts', function ($query) {
         }
     }
 });
+
+// for filtering access in artifacts
+add_action('pre_get_posts', function ($query) {
+
+    if (is_admin() || !$query->is_main_query()) {
+        return;
+    }
+
+    // Only Book archive
+    if (!is_post_type_archive('artifacts')) {
+        return;
+    }
+
+    $meta_query = [];
+
+    if (!empty($_GET['level_of_access'])) {
+        $meta_query[] = [
+            'key'   => 'level_of_access',
+            'value' => sanitize_text_field($_GET['level_of_access']),
+        ];
+    }
+
+    if (!empty($_GET['availability'])) {
+        $meta_query[] = [
+            'key'   => 'availability',
+            'value' => sanitize_text_field($_GET['availability']),
+        ];
+    }
+
+    if (!empty($meta_query)) {
+        $query->set('meta_query', $meta_query);
+    }
+    if (!empty($_GET['orderby'])) {
+
+        switch ($_GET['orderby']) {
+
+            case 'title-asc':
+                $query->set('orderby', 'title');
+                $query->set('order', 'ASC');
+                break;
+
+            case 'title-desc':
+                $query->set('orderby', 'title');
+                $query->set('order', 'DESC');
+                break;
+
+            case 'date-asc':
+                $query->set('orderby', 'date');
+                $query->set('order', 'ASC');
+                break;
+
+            case 'date-desc':
+                $query->set('orderby', 'date');
+                $query->set('order', 'DESC');
+                break;
+
+            case 'relevance':
+            default:
+                // WordPress default relevance (only applies when searching)
+                if ($query->is_search()) {
+                    $query->set('orderby', 'relevance');
+                }
+                break;
+        }
+    }
+});
+
 // search by meta fields 
 add_filter('posts_search', function ($search, $query) {
     global $wpdb;
@@ -366,10 +523,6 @@ function ph_heraldry_registry_filters($query)
 add_action('pre_get_posts', 'ph_heraldry_registry_filters');
 
 
-
-
-
-
 // Force 404 on empty search results for Articles & Books archives
 function articles_books_search_404()
 {
@@ -377,7 +530,7 @@ function articles_books_search_404()
         ! is_admin() &&
         is_search() &&
         is_main_query() &&
-        is_post_type_archive(['articles', 'book', 'ph-heraldry-registry'])
+        is_post_type_archive(['articles', 'book', 'ph-heraldry-registry', 'artifacts'])
     ) {
         global $wp_query;
 

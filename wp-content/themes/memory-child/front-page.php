@@ -2,129 +2,6 @@
 get_header(); 
 
 ?>
-<style>
-
-.hero {
-    padding: 7rem 2rem 13rem;
-}
-section.hero h1 {
-    color: #6b4a1e;
-    font-weight: 400 !important;
-    font-size: 48px;
-}
-.hero-search {
-  max-width: 900px;
-  border: 1px solid #c9b9a6;
-  border-radius: 6px;
-  overflow: hidden;
-}
-section.hero img {
-    width: 100%;
-    height: auto;
-    max-width: 159px;
-     filter: sepia(100%) saturate(300%) brightness(70%) hue-rotate(-15deg);
-}
-.hero-search .hero-input {
-  flex: 1;
-  border: none;
-  padding: 18px 24px;
-  font-size: 18px;
-  outline: none;
-  color: #555;
-  padding: 16px 10px 14px;
-}
-
-.hero-input::placeholder {
-  color: #bfbfbf;
-  font-style: italic;
-}
-
-form.hero-search .hero-btn {
-  background-color: #6b4a1e; /* brown */
-  color: #fff;
-  border: none;
-  padding: 0 32px;
-  font-size: 18px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.hero-btn:hover {
-  background-color: #5a3e18;
-}
-
-
-.scroll-wrapper {
-    background: #f8f9fa;
-    position: absolute;
-       bottom: -108px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.arrow-hover {
-  position: relative;
-  cursor: pointer;
-  color: #dc3545;
-}
-
-.scroll-text {
-  position: absolute;
-  bottom: 75%;          /* nasa taas ng arrow */
-  left: 50%;
-  transform: translateX(-50%) translateY(5px);
-  opacity: 0;
-  font-size: 14px;
-  white-space: nowrap;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  font-size: 18px;
-    font-weight: 400;
-}
-
-/* hover sa arrow */
-.arrow-hover:hover .scroll-text {
-  opacity: 1;
-  transform: translateX(-50%) translateY(-5px);
-}
-
-.scroll-wrapper i.fa-solid {
-    font-size: 60px;
-    color: #6b4a1e;
-}
-
-/* featured collection */
-.card {
-    background: #f2f2f2;
-    border-radius: 8px;
-    padding: 7rem 3rem 2rem;
-    position: relative;
-    overflow: hidden;
-}
-.card::before {
-    content: "";
-    height: 50px;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-.collections-grid img {
-    width: 100%;
-    margin: auto;
-    max-width: 62px;
-    position: absolute;
-    top: -10px;
-    filter: brightness(0) invert(1);
-}
-
-.featured-collections {
-    /* padding: 1.5rem 1rem; */
-    padding: 10rem 2rem;
-}
-section.featured-collections h2 {
-    margin-bottom: 50px;
-}
-</style>
 <div id="primary" >
 
 
@@ -149,7 +26,7 @@ $background_keys = [
 
   <?php if ( get_row_layout() === 'hero_banner' ) : ?>
 
-      <section class="hero">
+      <section class="hero hero-banner ">
         <div class="container-fluid">
           <div class="row justify-content-center text-center">
             <div class="col-lg-8">
