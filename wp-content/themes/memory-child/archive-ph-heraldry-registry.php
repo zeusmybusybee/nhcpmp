@@ -47,8 +47,8 @@
 
                                     <!-- META -->
                                     <div class="text-muted small mt-auto text-start">
-                                        <?php if ($regions = get_field('regions')) : ?>
-                                            <div>Location: <?php echo esc_html($regions); ?> <?php echo esc_html(get_field('province_municipality')); ?></div>
+                                        <?php if ($region = get_field('region')) :   $region_field = get_field_object('region'); ?>
+                                            <div>Location: <?php echo esc_html($region_field['choices'][$region] ?? $region); ?> <?php echo esc_html(get_field('province_text')); ?>, <?php echo esc_html(get_field('city_text')); ?></div>
                                         <?php endif; ?>
                                         <?php
                                         $seals_logos = get_field('seals_logos'); // returns array of slugs, e.g. ['suc','military']
@@ -215,15 +215,15 @@
                         <h6 class="mb-3 fw-bold">Filter by Place</h6>
 
                         <select id="region" name="region" class="form-select mb-2">
-                            <option value="">Region</option>
+                            <option value="">-Select Region-</option>
                         </select>
 
                         <select id="province" name="province" class="form-select mb-2">
-                            <option value="">Province</option>
+                            <option value="">-Select Province-</option>
                         </select>
 
                         <select id="city" name="city" class="form-select mb-2">
-                            <option value="">City / Municipality</option>
+                            <option value="">-Select City / Municipality-</option>
                         </select>
                     </div>
 

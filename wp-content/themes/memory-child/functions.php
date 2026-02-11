@@ -126,11 +126,12 @@ function memory_child_pages_page_styles()
     }
 }
 
-function enqueue_place_api_for_foundation() {
+function enqueue_place_api_for_foundation()
+{
 
-    $post_types = array('foundation-of-towns','historical-sites','ph-heraldry-registry');
+    $post_types = array('foundation-of-towns', 'historical-sites', 'ph-heraldry-registry');
 
-    if ( is_post_type_archive($post_types) || is_singular($post_types) ) {
+    if (is_post_type_archive($post_types) || is_singular($post_types)) {
 
         wp_enqueue_script(
             'place-api',
@@ -139,16 +140,14 @@ function enqueue_place_api_for_foundation() {
             '1.0',
             true
         );
-
     }
-
 }
 add_action('wp_enqueue_scripts', 'enqueue_place_api_for_foundation');
 
 
 
 
-add_action('acf/input/admin_enqueue_scripts', function() {
+add_action('acf/input/admin_enqueue_scripts', function () {
     wp_enqueue_script(
         'acf-location-script',
         get_stylesheet_directory_uri() . '/assets/js/acf-location.js',
@@ -163,34 +162,34 @@ add_action('acf/input/admin_enqueue_scripts', function() {
     ]);
 });
 
-// foundation-of-towns admin select option
-add_filter('acf/load_field/name=province', function($field){
+// Populate province choices dynamically
+add_filter('acf/load_field/name=province', function ($field) {
 
     $selected_region = null;
 
     // If form is being submitted
-    if(isset($_POST['acf'])){
-        $selected_region = $_POST['acf']['field_698be9c75887e'] ?? null;
+    if (isset($_POST['acf'])) {
+        $selected_region = $_POST['acf']['field_698c19c39f79b'] ?? null; // your region field key
     }
 
     // Fallback when editing existing post
-    if(!$selected_region && isset($_GET['post'])){
+    if (!$selected_region && isset($_GET['post'])) {
         $selected_region = get_field('region', $_GET['post']);
     }
 
-    if(!$selected_region) return $field;
+    if (!$selected_region) return $field;
 
     $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=provinces');
 
-    if(is_wp_error($response)) return $field;
+    if (is_wp_error($response)) return $field;
 
     $body = json_decode(wp_remote_retrieve_body($response), true);
 
     $field['choices'] = [];
 
-    if(!empty($body['data'])){
-        foreach($body['data'] as $province){
-            if($province['region_code'] == $selected_region){
+    if (!empty($body['data'])) {
+        foreach ($body['data'] as $province) {
+            if ($province['region_code'] == $selected_region) {
                 $field['choices'][$province['psgc_code']] = $province['name'];
             }
         }
@@ -199,18 +198,55 @@ add_filter('acf/load_field/name=province', function($field){
     return $field;
 });
 
-add_filter('acf/load_field/name=region', function($field){
+// Save selected province name into a hidden field
+add_action('acf/save_post', function ($post_id) {
+
+    // Avoid autosave
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+
+    $acf = $_POST['acf'] ?? [];
+
+    // Check if province field is submitted
+    if (isset($acf['field_698c19c39f79b'])) { // replace with your province field key
+        $selected_province_code = $acf['field_698c19c39f79b'];
+
+        // Get province list from ph-proxy
+        $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=provinces');
+        if (!is_wp_error($response)) {
+            $body = json_decode(wp_remote_retrieve_body($response), true);
+            $province_name = '';
+
+            if (!empty($body['data'])) {
+                foreach ($body['data'] as $province) {
+                    if ($province['psgc_code'] == $selected_province_code) {
+                        $province_name = $province['name'];
+                        break;
+                    }
+                }
+            }
+
+            // Update hidden field with province name
+            if ($province_name) {
+                update_field('province_text', $province_name, $post_id); // your hidden field
+            }
+        }
+    }
+}, 20);
+
+
+
+add_filter('acf/load_field/name=region', function ($field) {
 
     $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=regions');
 
-    if(is_wp_error($response)) return $field;
+    if (is_wp_error($response)) return $field;
 
     $body = json_decode(wp_remote_retrieve_body($response), true);
 
     $field['choices'] = [];
 
-    if(!empty($body['data'])){
-        foreach($body['data'] as $region){
+    if (!empty($body['data'])) {
+        foreach ($body['data'] as $region) {
             $field['choices'][$region['psgc_code']] = $region['name'];
         }
     }
@@ -219,34 +255,34 @@ add_filter('acf/load_field/name=region', function($field){
 });
 
 
-
-add_filter('acf/load_field/name=city', function($field){
+// Populate city choices dynamically (your existing code)
+add_filter('acf/load_field/name=city', function ($field) {
 
     $selected_province = null;
 
     // During save
-    if(isset($_POST['acf'])){
-        $selected_province = $_POST['acf']['field_698be9e358880'] ?? null;
+    if (isset($_POST['acf'])) {
+        $selected_province = $_POST['acf']['field_698c19ca9f79c'] ?? null;
     }
 
     // When editing existing post
-    if(!$selected_province && isset($_GET['post'])){
+    if (!$selected_province && isset($_GET['post'])) {
         $selected_province = get_field('province', $_GET['post']);
     }
 
-    if(!$selected_province) return $field;
+    if (!$selected_province) return $field;
 
-    $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=cities');
+    $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=localities');
 
-    if(is_wp_error($response)) return $field;
+    if (is_wp_error($response)) return $field;
 
     $body = json_decode(wp_remote_retrieve_body($response), true);
 
     $field['choices'] = [];
 
-    if(!empty($body['data'])){
-        foreach($body['data'] as $city){
-            if($city['province_code'] == $selected_province){
+    if (!empty($body['data'])) {
+        foreach ($body['data'] as $city) {
+            if ($city['province_code'] == $selected_province) {
                 $field['choices'][$city['psgc_code']] = $city['name'];
             }
         }
@@ -254,6 +290,42 @@ add_filter('acf/load_field/name=city', function($field){
 
     return $field;
 });
+
+// Save the city name to hidden field "province_text"
+add_action('acf/save_post', function ($post_id) {
+
+    // Make sure we are not in autosave
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+
+    // Get submitted ACF values
+    $acf = $_POST['acf'] ?? [];
+
+    // Check if city field is set
+    if (isset($acf['field_698c19ca9f79c'])) { // replace with your actual city field key
+        $selected_city_code = $acf['field_698c19ca9f79c'];
+
+        // Get the city name from your ph-proxy.php or from $_POST choices
+        $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=localities');
+        if (!is_wp_error($response)) {
+            $body = json_decode(wp_remote_retrieve_body($response), true);
+            $city_name = '';
+
+            if (!empty($body['data'])) {
+                foreach ($body['data'] as $city) {
+                    if ($city['psgc_code'] == $selected_city_code) {
+                        $city_name = $city['name'];
+                        break;
+                    }
+                }
+            }
+
+            // Update hidden field
+            if ($city_name) {
+                update_field('city_text', $city_name, $post_id);
+            }
+        }
+    }
+}, 20);
 
 
 // foundation-of-towns admin select option
@@ -549,6 +621,32 @@ function ph_heraldry_registry_filters($query)
             }
             $meta_query[] = $seals_query;
         }
+        // REGION
+        if (!empty($_GET['region'])) {
+            $meta_query[] = [
+                'key'     => 'region',
+                'value'   => sanitize_text_field($_GET['region']),
+                'compare' => '='
+            ];
+        }
+
+        // PROVINCE
+        if (!empty($_GET['province'])) {
+            $meta_query[] = [
+                'key'     => 'province',
+                'value'   => sanitize_text_field($_GET['province']),
+                'compare' => '='
+            ];
+        }
+
+        // CITY / MUNICIPALITY
+        if (!empty($_GET['city'])) {
+            $meta_query[] = [
+                'key'     => 'city',
+                'value'   => sanitize_text_field($_GET['city']),
+                'compare' => '='
+            ];
+        }
 
         if (!empty($meta_query)) {
             $query->set('meta_query', $meta_query);
@@ -622,32 +720,29 @@ function ph_historical_sites_filters($query)
         }
 
 
-        // FILTER: Region
-        if (!empty($_GET['region_text'])) {
-            $region = sanitize_text_field($_GET['region_text']);
+        // REGION
+        if (!empty($_GET['region'])) {
             $meta_query[] = [
-                'key'     => 'region_text',
-                'value'   => $region,
+                'key'     => 'region',
+                'value'   => sanitize_text_field($_GET['region']),
                 'compare' => '='
             ];
         }
 
-        // FILTER: Province
-        if (!empty($_GET['province_text'])) {
-            $province = sanitize_text_field($_GET['province_text']);
+        // PROVINCE
+        if (!empty($_GET['province'])) {
             $meta_query[] = [
-                'key'     => 'province_text',
-                'value'   => $province,
+                'key'     => 'province',
+                'value'   => sanitize_text_field($_GET['province']),
                 'compare' => '='
             ];
         }
 
-        // FILTER: City / Municipality
-        if (!empty($_GET['municipality_text'])) {
-            $city = sanitize_text_field($_GET['municipality_text']);
+        // CITY / MUNICIPALITY
+        if (!empty($_GET['city'])) {
             $meta_query[] = [
-                'key'     => 'municipality_text',
-                'value'   => $city,
+                'key'     => 'city',
+                'value'   => sanitize_text_field($_GET['city']),
                 'compare' => '='
             ];
         }
@@ -807,10 +902,6 @@ function artifacts_registry_filters($query)
                     break;
             }
         }
-
-               
-
-
     }
 }
 add_action('pre_get_posts', 'artifacts_registry_filters');
@@ -840,7 +931,7 @@ function town_foundation_registry_filters($query)
             $meta_query[] = $personages_query;
         }
 
-       // ERA (ACF checkbox field)
+        // ERA (ACF checkbox field)
         if (!empty($_GET['era'])) {
             $eras = array_map('sanitize_text_field', (array) $_GET['era']);
 
@@ -856,7 +947,7 @@ function town_foundation_registry_filters($query)
 
             $meta_query[] = $eras_query;
         }
-                // REGION FILTER
+        // REGION FILTER
         if (!empty($_GET['region'])) {
             $meta_query[] = [
                 'key'     => 'region',
@@ -917,10 +1008,6 @@ function town_foundation_registry_filters($query)
                     break;
             }
         }
-
-               
-
-
     }
 }
 add_action('pre_get_posts', 'town_foundation_registry_filters');
@@ -933,7 +1020,7 @@ function articles_books_search_404()
         ! is_admin() &&
         is_search() &&
         is_main_query() &&
-        is_post_type_archive(['articles', 'book', 'ph-heraldry-registry', 'artifacts','historical-sites','a-v-material'])
+        is_post_type_archive(['articles', 'book', 'ph-heraldry-registry', 'artifacts', 'historical-sites', 'a-v-material'])
     ) {
         global $wp_query;
 
@@ -949,7 +1036,8 @@ add_action('template_redirect', 'articles_books_search_404');
 /**
  * Search ONLY post titles
  */
-function search_by_title_only($search, $wp_query) {
+function search_by_title_only($search, $wp_query)
+{
     global $wpdb;
 
     if (
@@ -978,12 +1066,11 @@ add_filter('posts_search', 'search_by_title_only', 10, 2);
 
 
 
-function admin_login_error_message( $message ) {
-  if ( isset($_GET['login']) && $_GET['login'] === 'failed' ) {
-    $message = '<div class="error">Invalid username or password.</div>';
-  }
-  return $message;
+function admin_login_error_message($message)
+{
+    if (isset($_GET['login']) && $_GET['login'] === 'failed') {
+        $message = '<div class="error">Invalid username or password.</div>';
+    }
+    return $message;
 }
-add_filter( 'login_message', 'admin_login_error_message' );
-
-
+add_filter('login_message', 'admin_login_error_message');

@@ -107,6 +107,23 @@ $search_term             = $_GET['s'] ?? '';
             <?php endforeach; ?>
         </div>
 
+        <!-- FILTER BY PLACE -->
+        <div class="col-12 mb-3">
+            <h6 class="mb-3 fw-bold">Filter by Place</h6>
+
+            <select id="region" name="region" class="form-select mb-2">
+                <option value="">Region</option>
+            </select>
+
+            <select id="province" name="province" class="form-select mb-2">
+                <option value="">Province</option>
+            </select>
+
+            <select id="city" name="city" class="form-select mb-2">
+                <option value="">City / Municipality</option>
+            </select>
+        </div>
+
         <!-- APPLY BUTTON -->
         <div class="col-12 mt-4">
             <button type="submit" class="btn w-100 fw-bold" style="background-color:#6b4a1f;color:white;">
