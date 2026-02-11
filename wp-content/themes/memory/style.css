@@ -547,7 +547,6 @@ iframe {
 }
 
 .header-top {
-  border-bottom: 1px dashed var(--border-header-color);
   position: relative;
   background: var(--bg-header-color);
 }
@@ -5073,6 +5072,9 @@ article.sticky .article-container {
   width: 40px;
   height: 3px;
 }
-aside#secondary {
+aside#secondary, .breadcrumbs {
     display: none;
+}
+.page-header, .page-header:before {
+  border-bottom: none;
 }
