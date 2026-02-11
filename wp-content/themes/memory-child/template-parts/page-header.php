@@ -30,8 +30,8 @@ if ( is_front_page() ) {
     position: relative;
     padding-bottom: 6px;
     transition: color 0.2s ease;
-    font-size: 19px;
-    font-weight: 400;
+    font-size: 18px;
+    font-weight: 300;
 }
 
 .collections-nav a:hover {

@@ -321,72 +321,6 @@ add_action('pre_get_posts', function ($query) {
     }
 });
 
-// for filtering access in artifacts
-add_action('pre_get_posts', function ($query) {
-
-    if (is_admin() || !$query->is_main_query()) {
-        return;
-    }
-
-    // Only Book archive
-    if (!is_post_type_archive('artifacts')) {
-        return;
-    }
-
-    $meta_query = [];
-
-    if (!empty($_GET['level_of_access'])) {
-        $meta_query[] = [
-            'key'   => 'level_of_access',
-            'value' => sanitize_text_field($_GET['level_of_access']),
-        ];
-    }
-
-    if (!empty($_GET['availability'])) {
-        $meta_query[] = [
-            'key'   => 'availability',
-            'value' => sanitize_text_field($_GET['availability']),
-        ];
-    }
-
-    if (!empty($meta_query)) {
-        $query->set('meta_query', $meta_query);
-    }
-    if (!empty($_GET['orderby'])) {
-
-        switch ($_GET['orderby']) {
-
-            case 'title-asc':
-                $query->set('orderby', 'title');
-                $query->set('order', 'ASC');
-                break;
-
-            case 'title-desc':
-                $query->set('orderby', 'title');
-                $query->set('order', 'DESC');
-                break;
-
-            case 'date-asc':
-                $query->set('orderby', 'date');
-                $query->set('order', 'ASC');
-                break;
-
-            case 'date-desc':
-                $query->set('orderby', 'date');
-                $query->set('order', 'DESC');
-                break;
-
-            case 'relevance':
-            default:
-                // WordPress default relevance (only applies when searching)
-                if ($query->is_search()) {
-                    $query->set('orderby', 'relevance');
-                }
-                break;
-        }
-    }
-});
-
 // search by meta fields 
 add_filter('posts_search', function ($search, $query) {
     global $wpdb;
@@ -638,6 +572,117 @@ function ph_historical_sites_filters($query)
 }
 add_action('pre_get_posts', 'ph_historical_sites_filters');
 
+
+
+// Filtering artifacts CPT
+function artifacts_registry_filters($query)
+{
+    if (is_admin() || !$query->is_main_query()) {
+        return;
+    }
+
+    if (is_post_type_archive('artifacts')) {
+
+        $meta_query = [];
+
+        // HERALDRIC ITEMS (ACF checkbox field)
+        if (!empty($_GET['location'])) {
+            $location_items = array_map('sanitize_text_field', (array) $_GET['location']);
+            $location_query = ['relation' => 'OR'];
+            foreach ($location_items as $item) {
+                $location_query[] = [
+                    'key'     => 'location', // ACF field name
+                    'value'   => '"' . $item . '"', // Quote for serialized array match
+                    'compare' => 'LIKE',
+                ];
+            }
+            $meta_query[] = $location_query;
+        }
+
+        // SEALS / LOGOS (ACF checkbox field)
+        if (!empty($_GET['type_of_artifacts'])) {
+            $type_of_artifacts = array_map('sanitize_text_field', (array) $_GET['type_of_artifacts']);
+            $types_artifacts_query = ['relation' => 'OR'];
+            foreach ($type_of_artifacts as $seal) {
+                $types_artifacts_query[] = [
+                    'key'     => 'type_of_artifacts', // ACF field name
+                    'value'   => '"' . $seal . '"',
+                    'compare' => 'LIKE',
+                ];
+            }
+            $meta_query[] = $types_artifacts_query;
+        }
+
+        // PERSONAGE (ACF checkbox field)
+        if (!empty($_GET['personage'])) {
+            $personages = array_map('sanitize_text_field', (array) $_GET['personage']);
+            $personages_query = ['relation' => 'OR'];
+            foreach ($personages as $p) {
+                $personages_query[] = [
+                    'key'     => 'personages', // exact ACF field name
+                    'value'   => '"' . $p . '"',
+                    'compare' => 'LIKE',
+                ];
+            }
+            $meta_query[] = $personages_query;
+        }
+
+        // COLLECTION (ACF checkbox field)
+        if (!empty($_GET['collection'])) {
+            $collections = array_map('sanitize_text_field', (array) $_GET['collection']);
+            $collections_query = ['relation' => 'OR'];
+            foreach ($collections as $c) {
+                $collections_query[] = [
+                    'key'     => 'collection', // exact ACF field name
+                    'value'   => '"' . $c . '"',
+                    'compare' => 'LIKE',
+                ];
+            }
+            $meta_query[] = $collections_query;
+        }
+
+
+        if (!empty($meta_query)) {
+            $query->set('meta_query', $meta_query);
+        }
+
+        // SEARCH
+        if (!empty($_GET['s'])) {
+            $query->set('s', sanitize_text_field($_GET['s']));
+        }
+
+        // SORTING
+        if (!empty($_GET['sort_by'])) {
+            switch ($_GET['sort_by']) {
+                case 'az':
+                    $query->set('orderby', 'title');
+                    $query->set('order', 'ASC');
+                    break;
+                case 'za':
+                    $query->set('orderby', 'title');
+                    $query->set('order', 'DESC');
+                    break;
+                case 'newest':
+                    $query->set('orderby', 'date');
+                    $query->set('order', 'DESC');
+                    break;
+                case 'oldest':
+                    $query->set('orderby', 'date');
+                    $query->set('order', 'ASC');
+                    break;
+                case 'relevant':
+                default:
+                    $query->set('orderby', 'relevance'); // optional, default WP search
+                    break;
+            }
+        }
+
+               
+
+
+    }
+}
+add_action('pre_get_posts', 'artifacts_registry_filters');
 
 
 // Force 404 on empty search results for Articles & Books archives
@@ -972,4 +1017,15 @@ function search_by_title_only($search, $wp_query) {
     return $search;
 }
 add_filter('posts_search', 'search_by_title_only', 10, 2);
+
+
+
+function admin_login_error_message( $message ) {
+  if ( isset($_GET['login']) && $_GET['login'] === 'failed' ) {
+    $message = '<div class="error">Invalid username or password.</div>';
+  }
+  return $message;
+}
+add_filter( 'login_message', 'admin_login_error_message' );
+
 
