@@ -1,4 +1,14 @@
 <?php get_header(); ?>
+<style>
+    img#nrhss-main-image {
+        min-width: 300px;
+    }
+
+    .details > div {
+        margin-bottom: 20px;
+        font-size: 18px;
+    }
+</style>
 
 <div class="container my-5">
     <div class="row">
@@ -7,110 +17,110 @@
 
                     <article id="post-<?php the_ID(); ?>" <?php post_class('mb-5'); ?>>
 
+                        <?php $gallery = get_field('nrhss_gallery'); ?>
 
+                        <!-- TOP SECTION -->
+                        <div class="row mb-5 align-items-start">
 
-                        <?php
-                        $gallery = get_field('nrhss_gallery');
-                        ?>
+                            <!-- LEFT : IMAGE + GALLERY -->
+                            <div class="col-lg-6">
 
-                        <div class="nrhss-media-wrapper mb-4">
+                                <div class="nrhss-media-wrapper">
 
-                            <!-- MAIN IMAGE -->
-                            <div class="nrhss-featured">
-                                <?php if (has_post_thumbnail()) :
-                                    $featured_url = get_the_post_thumbnail_url(get_the_ID(), 'large');
-                                ?>
-                                    <img
-                                        src="<?php echo esc_url($featured_url); ?>"
-                                        class="nrhss-featured-img"
-                                        id="nrhss-main-image">
-                                <?php endif; ?>
-                            </div>
-
-                            <!-- THUMBNAILS -->
-                            <?php if ($gallery) : ?>
-                                <div class="nrhss-gallery">
-                                    <?php foreach ($gallery as $index => $image) : ?>
-                                        <img
-                                            src="<?php echo esc_url($image['sizes']['thumbnail']); ?>"
-                                            data-full="<?php echo esc_url($image['sizes']['large']); ?>"
-                                            class="nrhss-thumb <?php echo $index === 0 ? 'active' : ''; ?>">
-                                    <?php endforeach; ?>
+                                    <!-- MAIN IMAGE -->
+                                    <?php if (has_post_thumbnail()) : ?>
+                                        <div class="nrhss-featured mb-3">
+                                            <img src="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'large')); ?>"
+                                                class="img-fluid rounded shadow-sm"
+                                                id="nrhss-main-image">
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
-                            <?php endif; ?>
-
-                        </div>
-
-                        <div class="content mb-5">
-                            <h1 class="mb-3"><?php the_title(); ?></h1>
-                            <div class="details">
-                                <?php if ($regions = get_field('region_text')) : ?>
-                                    <div><strong>Location:</strong> <?php echo esc_html($regions); ?>, <?php echo esc_html(get_field('province_text')); ?>, <?php echo esc_html(get_field('municipality_text')); ?></div>
-                                <?php endif; ?>
-                                <?php
-                                $status_field = get_field_object('status');
-                                $status_value = get_field('status');
-                                if ($status_value):
-                                    $status_label = $status_field['choices'][$status_value] ?? $status_value;
-                                ?>
-                                    <div><strong>Status:</strong> <?php echo esc_html($status_label); ?></div>
-                                <?php endif; ?>
-
-                                <?php
-                                $marker_category_field = get_field_object('marker_category');
-                                $marker_category_value = get_field('marker_category');
-                                if ($marker_category_value):
-                                    $marker_category_label = $marker_category_field['choices'][$marker_category_value] ?? $marker_category_value;
-                                ?>
-                                    <div><strong>Marker Category:</strong> <?php echo esc_html($marker_category_label); ?></div>
-                                <?php endif; ?>
-
-                                <?php
-                                $type_field = get_field_object('type');
-                                $type_value = get_field('type');
-                                if ($type_value):
-                                    $type_label = $type_field['choices'][$type_value] ?? $type_value;
-                                ?>
-                                    <div><strong>Type:</strong> <?php echo esc_html($type_label); ?></div>
-                                <?php endif; ?>
-
-                                <?php if (get_field('year_found')): ?>
-                                    <div><strong>Marker Date:</strong> <?php echo esc_html(get_field('year_found')); ?></div>
-                                <?php endif; ?>
-
-                                <?php if (get_field('installed_by')): ?>
-                                    <div><strong>Installed By:</strong> <?php echo esc_html(get_field('installed_by')); ?></div>
-                                <?php endif; ?>
-
-
-
                             </div>
+
+
+                            <!-- RIGHT : DETAILS CARD -->
+                            <div class="col-lg-6">
+                                <div class="card shadow-sm border-0 p-4">
+
+                                    <div class="details">
+
+                                        <?php
+                                        $region = get_field('region');
+                                        $province = get_field('province_text');
+                                        $city = get_field('city_text');
+
+                                        if ($region):
+
+                                            $region_field = get_field_object('region');
+                                        ?>
+                                            <div><strong>Region:</strong> <?php echo esc_html($region_field['choices'][$region] ?? $region); ?></div>
+                                            <div><strong>Province:</strong> <?php echo esc_html($province); ?></div>
+                                            <div><strong>City/Municipality:</strong> <?php echo esc_html($city); ?></div>
+                                        <?php endif; ?>
+
+                                        <?php
+                                        $marker = get_field('seals_logos');
+                                        if ($marker):
+                                            $field = get_field_object('seals_logos');
+                                            $labels = [];
+                                            foreach ($marker as $value) {
+                                                $labels[] = $field['choices'][$value];
+                                            }
+                                        ?>
+                                            <div><strong>Category:</strong> <?php echo esc_html(implode(', ', $labels)); ?></div>
+                                        <?php endif; ?>
+
+
+                                        <?php if (get_field('year_approved')): ?>
+                                            <div><strong>Year Approved:</strong> <?php echo esc_html(get_field('year_approved')); ?></div>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <!-- BUTTON -->
+                                    <?php if ($pdf = get_field('pdf')) : ?>
+                                        <a href="<?php echo esc_url($pdf['url']); ?>"
+                                            class="btn btn-success w-100 mt-4"
+                                            target="_blank">
+                                            View PDF
+                                        </a>
+                                    <?php endif; ?>
+
+                                </div>
+                            </div>
+
                         </div>
 
+
+                        <!-- TITLE -->
+                        <h1 class="mb-3"><?php the_title(); ?></h1>
+
+                        <!-- CONTENT -->
                         <div class="content mb-5">
                             <?php the_content(); ?>
                         </div>
 
-                        <div class="content list_tags">
-                            <?php
-                            $tags = get_the_terms(get_the_ID(), 'post_tag');
 
-                            if ($tags && !is_wp_error($tags)) :
-                                echo '<div><strong>Tags:</strong> ';
-                                foreach ($tags as $tag) {
-                                    // Each tag is a badge linking to the tag archive
-                                    $tag_link = get_term_link($tag);
-                                    echo '<a href="' . esc_url($tag_link) . '" class="tag-badge">' . esc_html($tag->name) . '</a> ';
-                                }
-                                echo '</div>';
-                            endif;
-                            ?>
-                        </div>
+                        <!-- TAGS -->
+                        <?php
+                        $tags = get_the_terms(get_the_ID(), 'post_tag');
+                        if ($tags && !is_wp_error($tags)) :
+                        ?>
+                            <div class="content list_tags mb-5">
+                                <strong>Tags:</strong>
+                                <?php foreach ($tags as $tag) : ?>
+                                    <a href="<?php echo esc_url(get_term_link($tag)); ?>" class="badge bg-secondary me-1">
+                                        <?php echo esc_html($tag->name); ?>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
 
                     </article>
 
             <?php endwhile;
             endif; ?>
+
 
 
 
@@ -138,59 +148,66 @@
 
                     <div class="row g-4">
                         <?php while ($other_posts->have_posts()) : $other_posts->the_post(); ?>
-                            <div class="col-lg-4 col-md-6">
-                                <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
-                                    <div class="card h-100 border-0 shadow-sm text-center p-4">
-
-                                        <div class="d-flex gap-2 mb-2 flex-wrap">
-                                            <?php
-                                            $status = get_field('status');
-
-                                            $status_map = [
-                                                'level_1'      => ['label' => 'Level I',    'class' => 'badge-open'],
-                                                'level_2'   => ['label' => 'Level II',        'class' => 'badge-viewing'],
-                                                'delisted'   => ['label' => 'Delisted',        'class' => 'badge-limited'],
-                                                'removed' => ['label' => 'Removed',     'class' => 'badge-exclusive'],
-                                            ];
-
-                                            ?>
-
-                                            <?php if ($status && isset($status_map[$status])) : ?>
-                                                <span class="access-badge <?php echo esc_attr($status_map[$status]['class']); ?>">
-                                                    <?php echo esc_html($status_map[$status]['label']); ?>
-                                                </span>
-                                            <?php endif; ?>
-                                        </div>
-
-                                        <!-- Thumbnail -->
-                                        <?php if (has_post_thumbnail()) : ?>
-                                            <div class="mb-3">
-                                                <?php the_post_thumbnail(
-                                                    'small',
-                                                    ['class' => 'img-fluid mx-auto d-block']
-                                                ); ?>
-                                            </div>
-                                        <?php endif; ?>
-
-                                        <!-- TITLE -->
-                                        <h6 class="fw-semibold mb-2">
-                                            <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
-                                                <?php the_title(); ?>
-                                            </a>
-                                        </h6>
-
-                                        <!-- META -->
-                                        <div class="text-muted small mt-auto text-start">
-                                            <?php if ($regions = get_field('regions')) : ?>
-                                                <div>Location: <?php echo esc_html($regions); ?> <?php echo esc_html(get_field('province_municipality')); ?></div>
-                                            <?php endif; ?>
-                                            <div><?php if (get_field('year_found')): echo 'Year Found:' . get_field('year_found');
-                                                    endif; ?></div>
-                                        </div>
-
+                            <div class="d-flex gap-3 mb-4 p-5 bg-body-secondary rounded">
+                                .
+                                <!-- Thumbnail -->
+                                <?php if (has_post_thumbnail()) : ?>
+                                    <div class="flex-shrink-0" style="width:200px; height:140px; overflow:hidden;">
+                                        <?php the_post_thumbnail('thumbnail', ['class' => 'img-fluid h-100 w-200 object-fit-cover']); ?>
                                     </div>
-                                </a>
+                                <?php endif; ?>
+
+                                <!-- Content -->
+                                <div class="flex-grow-1">
+                                    <h6 class="size_title">
+                                        <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
+                                            <?php the_title(); ?>
+                                        </a>
+                                    </h6>
+                                    <p class="mb-0 text-muted article-excerpt">
+                                        <?php echo wp_trim_words(get_the_excerpt(), 100); ?>
+                                    </p>
+                                    <div class="d-flex justify-content-between mt-5">
+                                        <div class="location">
+
+                                            <?php
+                                            $region = get_field('region');
+                                            $province = get_field('province_text');
+                                            $city = get_field('city_text');
+
+                                            if ($region):
+                                                echo '<strong>Location:</strong> ';
+                                                $region_field = get_field_object('region');
+                                                echo esc_html($region_field['choices'][$region] ?? $region);
+                                            endif;
+
+                                            if ($province):
+                                                echo ', ' . esc_html($province) . ',';
+                                            endif;
+
+                                            if ($city):
+                                                echo esc_html($city);
+                                            endif;
+                                            ?>
+                                        </div>
+                                        <div class="category">
+                                            <?php
+                                            $marker = get_field('seals_logos');
+                                            if ($marker):
+                                                $field = get_field_object('seals_logos');
+                                                $labels = [];
+                                                foreach ($marker as $value) {
+                                                    $labels[] = $field['choices'][$value];
+                                                }
+                                                echo '<strong>Category:</strong> ' . esc_html(implode(', ', $labels));
+                                            endif;
+                                            ?>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
+
                         <?php endwhile; ?>
                     </div>
                 </section>
