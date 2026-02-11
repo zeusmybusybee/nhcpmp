@@ -54,7 +54,7 @@ $memory_hide_featured_image = get_theme_mod( 'hide_featured_image', 'show-ft' );
 					<?php
 					do_action( 'memory_like' );
 					if ( function_exists( 'sharing_display' ) ) {
-						sharing_display( '', true );
+						
 					}
 					?>
 				</div>
