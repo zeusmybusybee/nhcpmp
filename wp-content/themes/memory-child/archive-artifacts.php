@@ -1,5 +1,17 @@
 <?php get_header(); ?>
 <style>
+    
+    input::placeholder {
+        color: #fff !important;
+    }
+
+    input.form-control.border-0 {
+        color: #fff;
+    }
+
+    .button {
+        color: #fff !important;
+    }
     .post-type-archive-artifacts div#content{
         background:#000;
     }
@@ -252,7 +264,7 @@ global $wp_query;
                     </div>
 
 
-                    <div class="col-12 mt-4">
+            <div class="col-12 mt-4">
                 <h6 class="fw-bold text-white">Filter by:</h6>
 
                 <div class="container p-3  text-light">

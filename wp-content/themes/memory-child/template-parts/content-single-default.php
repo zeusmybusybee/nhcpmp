@@ -10,6 +10,17 @@
 $memory_hide_featured_image = get_theme_mod( 'hide_featured_image', 'show-ft' );
 ?>
 <style>
+     input::placeholder {
+        color: #fff !important;
+    }
+
+    input.form-control.border-0 {
+        color: #fff;
+    }
+
+    .button {
+        color: #fff !important;
+    }
     .single-artifacts div#content{
         background:#000;
     }
@@ -34,7 +45,7 @@ $memory_hide_featured_image = get_theme_mod( 'hide_featured_image', 'show-ft' );
 .single-artifacts span.select2.select2-container.select2-container--default {
     margin-top: 10px;
 }
-<style>
+
     .post-type-archive-artifacts div#content{
         background:#000;
     }

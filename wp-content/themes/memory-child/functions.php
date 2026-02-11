@@ -13,6 +13,14 @@ function my_menu_search_shortcode()
 }
 add_shortcode('menu_search', 'my_menu_search_shortcode');
 
+function custom_admin_css() {
+    echo '<style>
+        .d-none { display: none !important; }
+    </style>';
+}
+add_action('admin_head', 'custom_admin_css');
+
+
 // Enable shortcode sa menu items
 add_filter('wp_nav_menu_items', 'do_shortcode');
 
@@ -163,12 +171,12 @@ add_action('acf/input/admin_enqueue_scripts', function () {
 });
 
 // Populate province choices dynamically
-add_filter('acf/load_field/name=province', function ($field) {
+add_filter('acf/load_field/name=province', function($field){
 
     $selected_region = null;
 
     // If form is being submitted
-    if (isset($_POST['acf'])) {
+    if(isset($_POST['acf'])){
         $selected_region = $_POST['acf']['field_698c19c39f79b'] ?? null; // your region field key
     }
 
@@ -199,26 +207,26 @@ add_filter('acf/load_field/name=province', function ($field) {
 });
 
 // Save selected province name into a hidden field
-add_action('acf/save_post', function ($post_id) {
+add_action('acf/save_post', function($post_id) {
 
     // Avoid autosave
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
 
     $acf = $_POST['acf'] ?? [];
 
     // Check if province field is submitted
-    if (isset($acf['field_698c19c39f79b'])) { // replace with your province field key
+    if(isset($acf['field_698c19c39f79b'])){ // replace with your province field key
         $selected_province_code = $acf['field_698c19c39f79b'];
 
         // Get province list from ph-proxy
         $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=provinces');
-        if (!is_wp_error($response)) {
+        if(!is_wp_error($response)){
             $body = json_decode(wp_remote_retrieve_body($response), true);
             $province_name = '';
 
-            if (!empty($body['data'])) {
-                foreach ($body['data'] as $province) {
-                    if ($province['psgc_code'] == $selected_province_code) {
+            if(!empty($body['data'])){
+                foreach($body['data'] as $province){
+                    if($province['psgc_code'] == $selected_province_code){
                         $province_name = $province['name'];
                         break;
                     }
@@ -226,16 +234,16 @@ add_action('acf/save_post', function ($post_id) {
             }
 
             // Update hidden field with province name
-            if ($province_name) {
+            if($province_name){
                 update_field('province_text', $province_name, $post_id); // your hidden field
             }
         }
     }
+
 }, 20);
 
 
-
-add_filter('acf/load_field/name=region', function ($field) {
+add_filter('acf/load_field/name=region', function($field){
 
     $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=regions');
 
@@ -255,13 +263,15 @@ add_filter('acf/load_field/name=region', function ($field) {
 });
 
 
+
+
 // Populate city choices dynamically (your existing code)
-add_filter('acf/load_field/name=city', function ($field) {
+add_filter('acf/load_field/name=city', function($field){
 
     $selected_province = null;
 
     // During save
-    if (isset($_POST['acf'])) {
+    if(isset($_POST['acf'])){
         $selected_province = $_POST['acf']['field_698c19ca9f79c'] ?? null;
     }
 
@@ -291,28 +301,28 @@ add_filter('acf/load_field/name=city', function ($field) {
     return $field;
 });
 
-// Save the city name to hidden field "province_text"
-add_action('acf/save_post', function ($post_id) {
+// Save the city name to hidden field "city_text"
+add_action('acf/save_post', function($post_id) {
 
     // Make sure we are not in autosave
-    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
 
     // Get submitted ACF values
     $acf = $_POST['acf'] ?? [];
 
     // Check if city field is set
-    if (isset($acf['field_698c19ca9f79c'])) { // replace with your actual city field key
+    if(isset($acf['field_698c19ca9f79c'])){ // replace with your actual city field key
         $selected_city_code = $acf['field_698c19ca9f79c'];
 
         // Get the city name from your ph-proxy.php or from $_POST choices
         $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=localities');
-        if (!is_wp_error($response)) {
+        if(!is_wp_error($response)){
             $body = json_decode(wp_remote_retrieve_body($response), true);
             $city_name = '';
 
-            if (!empty($body['data'])) {
-                foreach ($body['data'] as $city) {
-                    if ($city['psgc_code'] == $selected_city_code) {
+            if(!empty($body['data'])){
+                foreach($body['data'] as $city){
+                    if($city['psgc_code'] == $selected_city_code){
                         $city_name = $city['name'];
                         break;
                     }
@@ -320,12 +330,14 @@ add_action('acf/save_post', function ($post_id) {
             }
 
             // Update hidden field
-            if ($city_name) {
+            if($city_name){
                 update_field('city_text', $city_name, $post_id);
             }
         }
     }
+
 }, 20);
+
 
 
 // foundation-of-towns admin select option
@@ -1020,7 +1032,7 @@ function articles_books_search_404()
         ! is_admin() &&
         is_search() &&
         is_main_query() &&
-        is_post_type_archive(['articles', 'book', 'ph-heraldry-registry', 'artifacts', 'historical-sites', 'a-v-material'])
+        is_post_type_archive(['articles', 'book', 'ph-heraldry-registry', 'artifacts','historical-sites','a-v-material','foundation-of-towns'])
     ) {
         global $wp_query;
 
