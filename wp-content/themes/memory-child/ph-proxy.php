@@ -1,7 +1,7 @@
 <?php
 header("Content-Type: application/json");
 
-$allowed = ['regions','provinces','cities','barangays'];
+$allowed = ['regions','provinces','municipalities','cities','barangays'];
 $endpoint = $_GET['endpoint'] ?? '';
 
 if (!in_array($endpoint, $allowed)) {

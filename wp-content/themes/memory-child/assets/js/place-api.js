@@ -2,9 +2,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const proxy = '/nhcpmp/wp-content/themes/memory-child/ph-proxy.php';
 
-  const regionSel = document.getElementById('region');
-  const provinceSel = document.getElementById('province');
-  const citySel = document.getElementById('city');
+  const regionSel = document.querySelector('select[name="region"]');
+  const provinceSel = document.querySelector('select[name="province"]');
+  const citySel = document.querySelector('select[name="city"]');
 
   if (!regionSel) return;
 
@@ -61,14 +61,21 @@ document.addEventListener('DOMContentLoaded', function () {
     citySel.innerHTML = '<option value="">Select City/Municipality</option>';
     citySel.disabled = true;
 
-    fetch(`${proxy}?endpoint=cities`)
-      .then(r => r.json())
-      .then(res => {
+    Promise.all([
+      fetch(`${proxy}?endpoint=cities`).then(r => r.json()),
+      fetch(`${proxy}?endpoint=municipalities`).then(r => r.json())
+    ])
+      .then(([citiesRes, munRes]) => {
 
-        res.data
-          .filter(c => c.province_code === provinceCode)
-          .forEach(c => {
-            citySel.innerHTML += `<option value="${c.psgc_code}">${c.name}</option>`;
+        const combined = [
+          ...citiesRes.data,
+          ...munRes.data
+        ];
+
+        combined
+          .filter(loc => loc.province_code === provinceCode)
+          .forEach(loc => {
+            citySel.innerHTML += `<option value="${loc.psgc_code}">${loc.name}</option>`;
           });
 
         citySel.disabled = false;
@@ -78,6 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
   }
+
 
   // ================= USER INTERACTION (NO AUTO RELOAD) =================
   regionSel.addEventListener('change', function () {
