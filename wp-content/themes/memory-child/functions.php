@@ -126,6 +126,137 @@ function memory_child_pages_page_styles()
     }
 }
 
+function enqueue_place_api_for_foundation() {
+
+    $post_types = array('foundation-of-towns');
+
+    if ( is_post_type_archive($post_types) || is_singular($post_types) ) {
+
+        wp_enqueue_script(
+            'place-api',
+            get_stylesheet_directory_uri() . '/assets/js/place-api.js',
+            array(),
+            '1.0',
+            true
+        );
+
+    }
+
+}
+add_action('wp_enqueue_scripts', 'enqueue_place_api_for_foundation');
+
+
+
+
+add_action('acf/input/admin_enqueue_scripts', function() {
+    wp_enqueue_script(
+        'acf-location-script',
+        get_stylesheet_directory_uri() . '/assets/js/acf-location.js',
+        ['jquery'],
+        '1.0',
+        true
+    );
+
+    wp_localize_script('acf-location-script', 'acfLocation', [
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'proxy'    => get_stylesheet_directory_uri() . '/ph-proxy.php'
+    ]);
+});
+
+// foundation-of-towns admin select option
+add_filter('acf/load_field/name=province', function($field){
+
+    $selected_region = null;
+
+    // If form is being submitted
+    if(isset($_POST['acf'])){
+        $selected_region = $_POST['acf']['field_698be9c75887e'] ?? null;
+    }
+
+    // Fallback when editing existing post
+    if(!$selected_region && isset($_GET['post'])){
+        $selected_region = get_field('region', $_GET['post']);
+    }
+
+    if(!$selected_region) return $field;
+
+    $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=provinces');
+
+    if(is_wp_error($response)) return $field;
+
+    $body = json_decode(wp_remote_retrieve_body($response), true);
+
+    $field['choices'] = [];
+
+    if(!empty($body['data'])){
+        foreach($body['data'] as $province){
+            if($province['region_code'] == $selected_region){
+                $field['choices'][$province['psgc_code']] = $province['name'];
+            }
+        }
+    }
+
+    return $field;
+});
+
+add_filter('acf/load_field/name=region', function($field){
+
+    $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=regions');
+
+    if(is_wp_error($response)) return $field;
+
+    $body = json_decode(wp_remote_retrieve_body($response), true);
+
+    $field['choices'] = [];
+
+    if(!empty($body['data'])){
+        foreach($body['data'] as $region){
+            $field['choices'][$region['psgc_code']] = $region['name'];
+        }
+    }
+
+    return $field;
+});
+
+
+
+add_filter('acf/load_field/name=city', function($field){
+
+    $selected_province = null;
+
+    // During save
+    if(isset($_POST['acf'])){
+        $selected_province = $_POST['acf']['field_698be9e358880'] ?? null;
+    }
+
+    // When editing existing post
+    if(!$selected_province && isset($_GET['post'])){
+        $selected_province = get_field('province', $_GET['post']);
+    }
+
+    if(!$selected_province) return $field;
+
+    $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=cities');
+
+    if(is_wp_error($response)) return $field;
+
+    $body = json_decode(wp_remote_retrieve_body($response), true);
+
+    $field['choices'] = [];
+
+    if(!empty($body['data'])){
+        foreach($body['data'] as $city){
+            if($city['province_code'] == $selected_province){
+                $field['choices'][$city['psgc_code']] = $city['name'];
+            }
+        }
+    }
+
+    return $field;
+});
+
+
+// foundation-of-towns admin select option
 
 // Add class to <li>
 add_filter('nav_menu_css_class', function ($classes, $item, $args) {
@@ -683,6 +814,116 @@ function artifacts_registry_filters($query)
     }
 }
 add_action('pre_get_posts', 'artifacts_registry_filters');
+
+// Filtering foundation of town CPT
+function town_foundation_registry_filters($query)
+{
+    if (is_admin() || !$query->is_main_query()) {
+        return;
+    }
+
+    if (is_post_type_archive('foundation-of-towns')) {
+
+        $meta_query = [];
+
+        // PERSONAGE (ACF checkbox field)
+        if (!empty($_GET['personage'])) {
+            $personages = array_map('sanitize_text_field', (array) $_GET['personage']);
+            $personages_query = ['relation' => 'OR'];
+            foreach ($personages as $p) {
+                $personages_query[] = [
+                    'key'     => 'personages', // exact ACF field name
+                    'value'   => '"' . $p . '"',
+                    'compare' => 'LIKE',
+                ];
+            }
+            $meta_query[] = $personages_query;
+        }
+
+       // ERA (ACF checkbox field)
+        if (!empty($_GET['era'])) {
+            $eras = array_map('sanitize_text_field', (array) $_GET['era']);
+
+            $eras_query = ['relation' => 'OR'];
+
+            foreach ($eras as $e) {
+                $eras_query[] = [
+                    'key'     => 'era', // exact ACF field name
+                    'value'   => '"' . $e . '"',
+                    'compare' => 'LIKE',
+                ];
+            }
+
+            $meta_query[] = $eras_query;
+        }
+                // REGION FILTER
+        if (!empty($_GET['region'])) {
+            $meta_query[] = [
+                'key'     => 'region',
+                'value'   => sanitize_text_field($_GET['region']),
+                'compare' => '='
+            ];
+        }
+
+        if (!empty($_GET['province'])) {
+            $meta_query[] = [
+                'key'     => 'province',
+                'value'   => sanitize_text_field($_GET['province']),
+                'compare' => '='
+            ];
+        }
+
+        if (!empty($_GET['city'])) {
+            $meta_query[] = [
+                'key'     => 'city',
+                'value'   => sanitize_text_field($_GET['city']),
+                'compare' => '='
+            ];
+        }
+
+
+
+        if (!empty($meta_query)) {
+            $query->set('meta_query', $meta_query);
+        }
+
+        // SEARCH
+        if (!empty($_GET['s'])) {
+            $query->set('s', sanitize_text_field($_GET['s']));
+        }
+
+        // SORTING
+        if (!empty($_GET['sort_by'])) {
+            switch ($_GET['sort_by']) {
+                case 'az':
+                    $query->set('orderby', 'title');
+                    $query->set('order', 'ASC');
+                    break;
+                case 'za':
+                    $query->set('orderby', 'title');
+                    $query->set('order', 'DESC');
+                    break;
+                case 'newest':
+                    $query->set('orderby', 'date');
+                    $query->set('order', 'DESC');
+                    break;
+                case 'oldest':
+                    $query->set('orderby', 'date');
+                    $query->set('order', 'ASC');
+                    break;
+                case 'relevant':
+                default:
+                    $query->set('orderby', 'relevance'); // optional, default WP search
+                    break;
+            }
+        }
+
+               
+
+
+    }
+}
+add_action('pre_get_posts', 'town_foundation_registry_filters');
 
 
 // Force 404 on empty search results for Articles & Books archives
