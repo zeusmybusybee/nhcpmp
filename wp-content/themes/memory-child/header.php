@@ -77,7 +77,7 @@ ul#primary-menu  li:hover a {
 		></span>
 		<a class="skip-link screen-reader-text" href="#content"><?php esc_html_e( 'Skip to content', 'memory' ); ?></a>
 		<header id="masthead" class="site-header">
-			<div id="header-top" class="header-top is-sticky">
+			<div id="header-top" class="">
 				<div class="container">
 				<div class="d-flex align-items-center justify-content-between">
 

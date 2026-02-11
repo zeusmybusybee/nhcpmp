@@ -13,6 +13,14 @@ function my_menu_search_shortcode()
 }
 add_shortcode('menu_search', 'my_menu_search_shortcode');
 
+function custom_admin_css() {
+    echo '<style>
+        .d-none { display: none !important; }
+    </style>';
+}
+add_action('admin_head', 'custom_admin_css');
+
+
 // Enable shortcode sa menu items
 add_filter('wp_nav_menu_items', 'do_shortcode');
 
@@ -126,6 +134,213 @@ function memory_child_pages_page_styles()
     }
 }
 
+function enqueue_place_api_for_foundation()
+{
+
+    $post_types = array('foundation-of-towns', 'historical-sites', 'ph-heraldry-registry');
+
+    if (is_post_type_archive($post_types) || is_singular($post_types)) {
+
+        wp_enqueue_script(
+            'place-api',
+            get_stylesheet_directory_uri() . '/assets/js/place-api.js',
+            array(),
+            '1.0',
+            true
+        );
+    }
+}
+add_action('wp_enqueue_scripts', 'enqueue_place_api_for_foundation');
+
+
+
+
+add_action('acf/input/admin_enqueue_scripts', function () {
+    wp_enqueue_script(
+        'acf-location-script',
+        get_stylesheet_directory_uri() . '/assets/js/acf-location.js',
+        ['jquery'],
+        '1.0',
+        true
+    );
+
+    wp_localize_script('acf-location-script', 'acfLocation', [
+        'ajax_url' => admin_url('admin-ajax.php'),
+        'proxy'    => get_stylesheet_directory_uri() . '/ph-proxy.php'
+    ]);
+});
+
+// Populate province choices dynamically
+add_filter('acf/load_field/name=province', function($field){
+
+    $selected_region = null;
+
+    // If form is being submitted
+    if(isset($_POST['acf'])){
+        $selected_region = $_POST['acf']['field_698c19c39f79b'] ?? null; // your region field key
+    }
+
+    // Fallback when editing existing post
+    if (!$selected_region && isset($_GET['post'])) {
+        $selected_region = get_field('region', $_GET['post']);
+    }
+
+    if (!$selected_region) return $field;
+
+    $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=provinces');
+
+    if (is_wp_error($response)) return $field;
+
+    $body = json_decode(wp_remote_retrieve_body($response), true);
+
+    $field['choices'] = [];
+
+    if (!empty($body['data'])) {
+        foreach ($body['data'] as $province) {
+            if ($province['region_code'] == $selected_region) {
+                $field['choices'][$province['psgc_code']] = $province['name'];
+            }
+        }
+    }
+
+    return $field;
+});
+
+// Save selected province name into a hidden field
+add_action('acf/save_post', function($post_id) {
+
+    // Avoid autosave
+    if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+
+    $acf = $_POST['acf'] ?? [];
+
+    // Check if province field is submitted
+    if(isset($acf['field_698c19c39f79b'])){ // replace with your province field key
+        $selected_province_code = $acf['field_698c19c39f79b'];
+
+        // Get province list from ph-proxy
+        $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=provinces');
+        if(!is_wp_error($response)){
+            $body = json_decode(wp_remote_retrieve_body($response), true);
+            $province_name = '';
+
+            if(!empty($body['data'])){
+                foreach($body['data'] as $province){
+                    if($province['psgc_code'] == $selected_province_code){
+                        $province_name = $province['name'];
+                        break;
+                    }
+                }
+            }
+
+            // Update hidden field with province name
+            if($province_name){
+                update_field('province_text', $province_name, $post_id); // your hidden field
+            }
+        }
+    }
+
+}, 20);
+
+
+add_filter('acf/load_field/name=region', function($field){
+
+    $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=regions');
+
+    if (is_wp_error($response)) return $field;
+
+    $body = json_decode(wp_remote_retrieve_body($response), true);
+
+    $field['choices'] = [];
+
+    if (!empty($body['data'])) {
+        foreach ($body['data'] as $region) {
+            $field['choices'][$region['psgc_code']] = $region['name'];
+        }
+    }
+
+    return $field;
+});
+
+
+
+
+// Populate city choices dynamically (your existing code)
+add_filter('acf/load_field/name=city', function($field){
+
+    $selected_province = null;
+
+    // During save
+    if(isset($_POST['acf'])){
+        $selected_province = $_POST['acf']['field_698c19ca9f79c'] ?? null;
+    }
+
+    // When editing existing post
+    if (!$selected_province && isset($_GET['post'])) {
+        $selected_province = get_field('province', $_GET['post']);
+    }
+
+    if (!$selected_province) return $field;
+
+    $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=localities');
+
+    if (is_wp_error($response)) return $field;
+
+    $body = json_decode(wp_remote_retrieve_body($response), true);
+
+    $field['choices'] = [];
+
+    if (!empty($body['data'])) {
+        foreach ($body['data'] as $city) {
+            if ($city['province_code'] == $selected_province) {
+                $field['choices'][$city['psgc_code']] = $city['name'];
+            }
+        }
+    }
+
+    return $field;
+});
+
+// Save the city name to hidden field "city_text"
+add_action('acf/save_post', function($post_id) {
+
+    // Make sure we are not in autosave
+    if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+
+    // Get submitted ACF values
+    $acf = $_POST['acf'] ?? [];
+
+    // Check if city field is set
+    if(isset($acf['field_698c19ca9f79c'])){ // replace with your actual city field key
+        $selected_city_code = $acf['field_698c19ca9f79c'];
+
+        // Get the city name from your ph-proxy.php or from $_POST choices
+        $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=localities');
+        if(!is_wp_error($response)){
+            $body = json_decode(wp_remote_retrieve_body($response), true);
+            $city_name = '';
+
+            if(!empty($body['data'])){
+                foreach($body['data'] as $city){
+                    if($city['psgc_code'] == $selected_city_code){
+                        $city_name = $city['name'];
+                        break;
+                    }
+                }
+            }
+
+            // Update hidden field
+            if($city_name){
+                update_field('city_text', $city_name, $post_id);
+            }
+        }
+    }
+
+}, 20);
+
+
+
+// foundation-of-towns admin select option
 
 // Add class to <li>
 add_filter('nav_menu_css_class', function ($classes, $item, $args) {
@@ -321,72 +536,6 @@ add_action('pre_get_posts', function ($query) {
     }
 });
 
-// for filtering access in artifacts
-add_action('pre_get_posts', function ($query) {
-
-    if (is_admin() || !$query->is_main_query()) {
-        return;
-    }
-
-    // Only Book archive
-    if (!is_post_type_archive('artifacts')) {
-        return;
-    }
-
-    $meta_query = [];
-
-    if (!empty($_GET['level_of_access'])) {
-        $meta_query[] = [
-            'key'   => 'level_of_access',
-            'value' => sanitize_text_field($_GET['level_of_access']),
-        ];
-    }
-
-    if (!empty($_GET['availability'])) {
-        $meta_query[] = [
-            'key'   => 'availability',
-            'value' => sanitize_text_field($_GET['availability']),
-        ];
-    }
-
-    if (!empty($meta_query)) {
-        $query->set('meta_query', $meta_query);
-    }
-    if (!empty($_GET['orderby'])) {
-
-        switch ($_GET['orderby']) {
-
-            case 'title-asc':
-                $query->set('orderby', 'title');
-                $query->set('order', 'ASC');
-                break;
-
-            case 'title-desc':
-                $query->set('orderby', 'title');
-                $query->set('order', 'DESC');
-                break;
-
-            case 'date-asc':
-                $query->set('orderby', 'date');
-                $query->set('order', 'ASC');
-                break;
-
-            case 'date-desc':
-                $query->set('orderby', 'date');
-                $query->set('order', 'DESC');
-                break;
-
-            case 'relevance':
-            default:
-                // WordPress default relevance (only applies when searching)
-                if ($query->is_search()) {
-                    $query->set('orderby', 'relevance');
-                }
-                break;
-        }
-    }
-});
-
 // search by meta fields 
 add_filter('posts_search', function ($search, $query) {
     global $wpdb;
@@ -484,6 +633,32 @@ function ph_heraldry_registry_filters($query)
             }
             $meta_query[] = $seals_query;
         }
+        // REGION
+        if (!empty($_GET['region'])) {
+            $meta_query[] = [
+                'key'     => 'region',
+                'value'   => sanitize_text_field($_GET['region']),
+                'compare' => '='
+            ];
+        }
+
+        // PROVINCE
+        if (!empty($_GET['province'])) {
+            $meta_query[] = [
+                'key'     => 'province',
+                'value'   => sanitize_text_field($_GET['province']),
+                'compare' => '='
+            ];
+        }
+
+        // CITY / MUNICIPALITY
+        if (!empty($_GET['city'])) {
+            $meta_query[] = [
+                'key'     => 'city',
+                'value'   => sanitize_text_field($_GET['city']),
+                'compare' => '='
+            ];
+        }
 
         if (!empty($meta_query)) {
             $query->set('meta_query', $meta_query);
@@ -557,32 +732,29 @@ function ph_historical_sites_filters($query)
         }
 
 
-        // FILTER: Region
-        if (!empty($_GET['region_text'])) {
-            $region = sanitize_text_field($_GET['region_text']);
+        // REGION
+        if (!empty($_GET['region'])) {
             $meta_query[] = [
-                'key'     => 'region_text',
-                'value'   => $region,
+                'key'     => 'region',
+                'value'   => sanitize_text_field($_GET['region']),
                 'compare' => '='
             ];
         }
 
-        // FILTER: Province
-        if (!empty($_GET['province_text'])) {
-            $province = sanitize_text_field($_GET['province_text']);
+        // PROVINCE
+        if (!empty($_GET['province'])) {
             $meta_query[] = [
-                'key'     => 'province_text',
-                'value'   => $province,
+                'key'     => 'province',
+                'value'   => sanitize_text_field($_GET['province']),
                 'compare' => '='
             ];
         }
 
-        // FILTER: City / Municipality
-        if (!empty($_GET['municipality_text'])) {
-            $city = sanitize_text_field($_GET['municipality_text']);
+        // CITY / MUNICIPALITY
+        if (!empty($_GET['city'])) {
             $meta_query[] = [
-                'key'     => 'municipality_text',
-                'value'   => $city,
+                'key'     => 'city',
+                'value'   => sanitize_text_field($_GET['city']),
                 'compare' => '='
             ];
         }
@@ -640,6 +812,219 @@ add_action('pre_get_posts', 'ph_historical_sites_filters');
 
 
 
+// Filtering artifacts CPT
+function artifacts_registry_filters($query)
+{
+    if (is_admin() || !$query->is_main_query()) {
+        return;
+    }
+
+    if (is_post_type_archive('artifacts')) {
+
+        $meta_query = [];
+
+        // HERALDRIC ITEMS (ACF checkbox field)
+        if (!empty($_GET['location'])) {
+            $location_items = array_map('sanitize_text_field', (array) $_GET['location']);
+            $location_query = ['relation' => 'OR'];
+            foreach ($location_items as $item) {
+                $location_query[] = [
+                    'key'     => 'location', // ACF field name
+                    'value'   => '"' . $item . '"', // Quote for serialized array match
+                    'compare' => 'LIKE',
+                ];
+            }
+            $meta_query[] = $location_query;
+        }
+
+        // SEALS / LOGOS (ACF checkbox field)
+        if (!empty($_GET['type_of_artifacts'])) {
+            $type_of_artifacts = array_map('sanitize_text_field', (array) $_GET['type_of_artifacts']);
+            $types_artifacts_query = ['relation' => 'OR'];
+            foreach ($type_of_artifacts as $seal) {
+                $types_artifacts_query[] = [
+                    'key'     => 'type_of_artifacts', // ACF field name
+                    'value'   => '"' . $seal . '"',
+                    'compare' => 'LIKE',
+                ];
+            }
+            $meta_query[] = $types_artifacts_query;
+        }
+
+        // PERSONAGE (ACF checkbox field)
+        if (!empty($_GET['personage'])) {
+            $personages = array_map('sanitize_text_field', (array) $_GET['personage']);
+            $personages_query = ['relation' => 'OR'];
+            foreach ($personages as $p) {
+                $personages_query[] = [
+                    'key'     => 'personages', // exact ACF field name
+                    'value'   => '"' . $p . '"',
+                    'compare' => 'LIKE',
+                ];
+            }
+            $meta_query[] = $personages_query;
+        }
+
+        // COLLECTION (ACF checkbox field)
+        if (!empty($_GET['collection'])) {
+            $collections = array_map('sanitize_text_field', (array) $_GET['collection']);
+            $collections_query = ['relation' => 'OR'];
+            foreach ($collections as $c) {
+                $collections_query[] = [
+                    'key'     => 'collection', // exact ACF field name
+                    'value'   => '"' . $c . '"',
+                    'compare' => 'LIKE',
+                ];
+            }
+            $meta_query[] = $collections_query;
+        }
+
+
+        if (!empty($meta_query)) {
+            $query->set('meta_query', $meta_query);
+        }
+
+        // SEARCH
+        if (!empty($_GET['s'])) {
+            $query->set('s', sanitize_text_field($_GET['s']));
+        }
+
+        // SORTING
+        if (!empty($_GET['sort_by'])) {
+            switch ($_GET['sort_by']) {
+                case 'az':
+                    $query->set('orderby', 'title');
+                    $query->set('order', 'ASC');
+                    break;
+                case 'za':
+                    $query->set('orderby', 'title');
+                    $query->set('order', 'DESC');
+                    break;
+                case 'newest':
+                    $query->set('orderby', 'date');
+                    $query->set('order', 'DESC');
+                    break;
+                case 'oldest':
+                    $query->set('orderby', 'date');
+                    $query->set('order', 'ASC');
+                    break;
+                case 'relevant':
+                default:
+                    $query->set('orderby', 'relevance'); // optional, default WP search
+                    break;
+            }
+        }
+    }
+}
+add_action('pre_get_posts', 'artifacts_registry_filters');
+
+// Filtering foundation of town CPT
+function town_foundation_registry_filters($query)
+{
+    if (is_admin() || !$query->is_main_query()) {
+        return;
+    }
+
+    if (is_post_type_archive('foundation-of-towns')) {
+
+        $meta_query = [];
+
+        // PERSONAGE (ACF checkbox field)
+        if (!empty($_GET['personage'])) {
+            $personages = array_map('sanitize_text_field', (array) $_GET['personage']);
+            $personages_query = ['relation' => 'OR'];
+            foreach ($personages as $p) {
+                $personages_query[] = [
+                    'key'     => 'personages', // exact ACF field name
+                    'value'   => '"' . $p . '"',
+                    'compare' => 'LIKE',
+                ];
+            }
+            $meta_query[] = $personages_query;
+        }
+
+        // ERA (ACF checkbox field)
+        if (!empty($_GET['era'])) {
+            $eras = array_map('sanitize_text_field', (array) $_GET['era']);
+
+            $eras_query = ['relation' => 'OR'];
+
+            foreach ($eras as $e) {
+                $eras_query[] = [
+                    'key'     => 'era', // exact ACF field name
+                    'value'   => '"' . $e . '"',
+                    'compare' => 'LIKE',
+                ];
+            }
+
+            $meta_query[] = $eras_query;
+        }
+        // REGION FILTER
+        if (!empty($_GET['region'])) {
+            $meta_query[] = [
+                'key'     => 'region',
+                'value'   => sanitize_text_field($_GET['region']),
+                'compare' => '='
+            ];
+        }
+
+        if (!empty($_GET['province'])) {
+            $meta_query[] = [
+                'key'     => 'province',
+                'value'   => sanitize_text_field($_GET['province']),
+                'compare' => '='
+            ];
+        }
+
+        if (!empty($_GET['city'])) {
+            $meta_query[] = [
+                'key'     => 'city',
+                'value'   => sanitize_text_field($_GET['city']),
+                'compare' => '='
+            ];
+        }
+
+
+
+        if (!empty($meta_query)) {
+            $query->set('meta_query', $meta_query);
+        }
+
+        // SEARCH
+        if (!empty($_GET['s'])) {
+            $query->set('s', sanitize_text_field($_GET['s']));
+        }
+
+        // SORTING
+        if (!empty($_GET['sort_by'])) {
+            switch ($_GET['sort_by']) {
+                case 'az':
+                    $query->set('orderby', 'title');
+                    $query->set('order', 'ASC');
+                    break;
+                case 'za':
+                    $query->set('orderby', 'title');
+                    $query->set('order', 'DESC');
+                    break;
+                case 'newest':
+                    $query->set('orderby', 'date');
+                    $query->set('order', 'DESC');
+                    break;
+                case 'oldest':
+                    $query->set('orderby', 'date');
+                    $query->set('order', 'ASC');
+                    break;
+                case 'relevant':
+                default:
+                    $query->set('orderby', 'relevance'); // optional, default WP search
+                    break;
+            }
+        }
+    }
+}
+add_action('pre_get_posts', 'town_foundation_registry_filters');
+
+
 // Force 404 on empty search results for Articles & Books archives
 function articles_books_search_404()
 {
@@ -647,7 +1032,7 @@ function articles_books_search_404()
         ! is_admin() &&
         is_search() &&
         is_main_query() &&
-        is_post_type_archive(['articles', 'book', 'ph-heraldry-registry', 'artifacts','historical-sites','a-v-material'])
+        is_post_type_archive(['articles', 'book', 'ph-heraldry-registry', 'artifacts','historical-sites','a-v-material','foundation-of-towns'])
     ) {
         global $wp_query;
 
@@ -659,294 +1044,12 @@ function articles_books_search_404()
     }
 }
 add_action('template_redirect', 'articles_books_search_404');
-
-// Fetch Regions
-add_action('wp_ajax_get_regions', 'get_regions_callback');
-add_action('wp_ajax_nopriv_get_regions', 'get_regions_callback');
-function get_regions_callback()
-{
-    $options = [];
-    $response = wp_remote_get("https://philippine-datasets-api.nowcraft.ing/api/regions");
-
-    if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
-        $regions = json_decode(wp_remote_retrieve_body($response), true);
-        if (isset($regions['data']) && is_array($regions['data'])) {
-            foreach ($regions['data'] as $r) {
-                if (!empty($r['psgc_code']) && !empty($r['name'])) {
-                    // Keep 10 digits as string
-                    $code = str_pad((string)$r['psgc_code'], 10, '0', STR_PAD_LEFT);
-                    $options[$code] = $r['name'];
-                }
-            }
-        }
-    }
-
-    wp_send_json($options);
-}
-
-// Fetch Provinces by Region
-add_action('wp_ajax_get_provinces', 'get_provinces_callback');
-add_action('wp_ajax_nopriv_get_provinces', 'get_provinces_callback');
-function get_provinces_callback()
-{
-    $region_code = sanitize_text_field($_POST['region'] ?? '');
-
-    // Force region code to 10 digits (PSGC format)
-    while (strlen($region_code) < 10) {
-        $region_code .= '0';
-    }
-
-    $options = [];
-
-    if ($region_code) {
-        $response = wp_remote_get("https://philippine-datasets-api.nowcraft.ing/api/regions/{$region_code}");
-
-        if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
-            $body = json_decode(wp_remote_retrieve_body($response), true);
-
-            // ✅ Provinces are inside this key
-            if (!empty($body['provinces']) && is_array($body['provinces'])) {
-
-                foreach ($body['provinces'] as $province) {
-                    $props = $province['properties'] ?? [];
-
-                    if (!empty($props['psgc_code']) && !empty($props['name'])) {
-                        $options[$props['psgc_code']] = $props['name'];
-                    }
-                }
-            }
-        }
-    }
-
-    wp_send_json($options);
-}
-
-
-
-add_action('wp_ajax_get_municipalities', 'get_municipalities_callback');
-add_action('wp_ajax_nopriv_get_municipalities', 'get_municipalities_callback');
-
-function get_municipalities_callback()
-{
-
-    $province_code = sanitize_text_field($_POST['province'] ?? '');
-
-    // Force 10-digit PSGC
-    while (strlen($province_code) < 10) {
-        $province_code .= '0';
-    }
-
-    $options = [];
-
-    if ($province_code) {
-        $response = wp_remote_get("https://philippine-datasets-api.nowcraft.ing/api/provinces/{$province_code}");
-
-        if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
-            $body = json_decode(wp_remote_retrieve_body($response), true);
-
-           
-            if (!empty($body['municipalities'])) {
-                foreach ($body['municipalities'] as $m) {
-                    $props = $m['properties'] ?? [];
-                    if (!empty($props['psgc_code']) && !empty($props['name'])) {
-                        $options[$props['psgc_code']] = $props['name'];
-                    }
-                }
-            }
-
-           
-            if (!empty($body['cities'])) {
-                foreach ($body['cities'] as $c) {
-                    $props = $c['properties'] ?? [];
-                    if (!empty($props['psgc_code']) && !empty($props['name'])) {
-                        $options[$props['psgc_code']] = $props['name'];
-                    }
-                }
-            }
-        }
-    }
-
-    wp_send_json($options);
-}
-add_action('acf/input/admin_footer', function () { ?>
-    <script>
-        (function($) {
-
-            const fields = {
-                region: 'acf[field_6989834fad150]',
-                province: 'acf[field_69898380ad151]',
-                municipality: 'acf[field_6989839ead152]'
-            };
-
-            const textFields = {
-                region: 'acf[field_698a8943430a1]',
-                province: 'acf[field_698a893a430a0]',
-                municipality: 'acf[field_698a895a430a2]'
-            };
-
-            // Helper to force 10 digits
-            function force10Digits(code) {
-                code = String(code || '');
-                while (code.length < 10) {
-                    code += '0';
-                }
-                return code;
-            }
-
-            // Update text fields
-            function updateTextField(selectField, textField) {
-                const name = $('select[name="' + selectField + '"] option:selected').text();
-                $('input[name="' + textField + '"]').val(name);
-            }
-
-            // Generic function to populate a select
-            function populateSelect(fieldName, ajaxAction, paramKey = null, paramValue = null, placeholder, selectedValue = null) {
-                const $field = $('select[name="' + fieldName + '"]');
-                if (!$field.length) return;
-
-                $field.html('<option>Loading...</option>');
-
-                const data = {
-                    action: ajaxAction
-                };
-                if (paramKey && paramValue) data[paramKey] = paramValue;
-
-                $.post(ajaxurl, data, function(response) {
-                    $field.html('<option value="">' + placeholder + '</option>');
-                    $.each(response, function(k, v) {
-                        $field.append('<option value="' + k + '">' + v + '</option>');
-                    });
-
-                    if (selectedValue) {
-                        $field.val(force10Digits(selectedValue));
-                    }
-
-                    // Update text field after populate
-                    if (fieldName === fields.region) updateTextField(fields.region, textFields.region);
-                    if (fieldName === fields.province) updateTextField(fields.province, textFields.province);
-                    if (fieldName === fields.municipality) updateTextField(fields.municipality, textFields.municipality);
-                });
-            }
-
-            // On Region change → populate Provinces
-            $(document).on('change', 'select[name="' + fields.region + '"]', function() {
-                const regionCode = force10Digits($(this).val() || '');
-
-                // Reset children
-                $('select[name="' + fields.province + '"]').html('<option>Select Region first</option>');
-                $('select[name="' + fields.municipality + '"]').html('<option>Select Province first</option>');
-
-                if (regionCode) {
-                    populateSelect(fields.province, 'get_provinces', 'region', regionCode, 'Select Province');
-                }
-
-
-                // Update region text
-                updateTextField(fields.region, textFields.region);
-            });
-
-            // On Province change → populate Municipalities
-            $(document).on('change', 'select[name="' + fields.province + '"]', function() {
-                const provinceCode = force10Digits($(this).val() || '');
-
-                $('select[name="' + fields.municipality + '"]').html('<option>Select Province first</option>');
-
-                if (provinceCode) {
-                    populateSelect(fields.municipality, 'get_municipalities', 'province', provinceCode, 'Select Municipality');
-                }
-
-                // Update province text
-                updateTextField(fields.province, textFields.province);
-            });
-
-            // On Municipality change → just update text
-            $(document).on('change', 'select[name="' + fields.municipality + '"]', function() {
-                updateTextField(fields.municipality, textFields.municipality);
-            });
-
-            // Prepopulate selects on page load (SAVE SAFE)
-            $(document).ready(function() {
-
-                const savedRegion = $('select[name="' + fields.region + '"]').val();
-                const savedProvince = $('select[name="' + fields.province + '"]').val();
-                const savedMunicipality = $('select[name="' + fields.municipality + '"]').val();
-
-                // Populate provinces
-                if (savedRegion) {
-                    // populateSelect(fields.province, 'get_provinces', 'region', force10Digits(savedRegion), 'Select Province', savedProvince);
-                    updateTextField(fields.region, textFields.region);
-                }
-
-                // Populate municipalities
-                if (savedProvince) {
-                    // populateSelect(fields.municipality, 'get_municipalities', 'province', force10Digits(savedProvince), 'Select Municipality', savedMunicipality);
-                    updateTextField(fields.province, textFields.province);
-                }
-
-                // Update municipality text field
-                if (savedMunicipality) {
-                    updateTextField(fields.municipality, textFields.municipality);
-                }
-
-            });
-
-        })(jQuery);
-    </script>
-<?php });
-
-// use js for api regions
-function ph_enqueue_place_filters_scripts()
-{
-    wp_enqueue_script(
-        'ph-place-filters',
-        get_stylesheet_directory_uri() . '/assets/js/place-filters.js', // adjust path
-        ['jquery'],
-        null,
-        true
-    );
-
-    wp_localize_script('ph-place-filters', 'ph_ajax', [
-        'ajax_url' => admin_url('admin-ajax.php')
-    ]);
-}
-add_action('wp_enqueue_scripts', 'ph_enqueue_place_filters_scripts');
-
-
-// Lightweight proxy for Philippine datasets API
-add_action('wp_ajax_nopriv_ph_place_api', 'ph_place_api_proxy');
-add_action('wp_ajax_ph_place_api', 'ph_place_api_proxy');
-function ph_place_api_proxy()
-{
-    $type = sanitize_text_field($_GET['type'] ?? '');
-    $code = sanitize_text_field($_GET['code'] ?? '');
-    $url = '';
-
-    switch ($type) {
-        case 'regions':
-            $url = 'https://philippine-datasets-api.nowcraft.ing/api/regions';
-            break;
-        case 'provinces':
-            if (!$code) wp_send_json([]);
-            $url = "https://philippine-datasets-api.nowcraft.ing/api/regions/{$code}";
-            break;
-        case 'cities':
-            if (!$code) wp_send_json([]);
-            $url = "https://philippine-datasets-api.nowcraft.ing/api/provinces/{$code}";
-            break;
-        default:
-            wp_send_json([]);
-    }
-
-    $response = wp_remote_get($url);
-    if (is_wp_error($response)) wp_send_json([]);
-    $data = json_decode(wp_remote_retrieve_body($response), true);
-    wp_send_json($data ?: []);
-}
 // av-materials
 /**
  * Search ONLY post titles
  */
-function search_by_title_only($search, $wp_query) {
+function search_by_title_only($search, $wp_query)
+{
     global $wpdb;
 
     if (
@@ -973,3 +1076,13 @@ function search_by_title_only($search, $wp_query) {
 }
 add_filter('posts_search', 'search_by_title_only', 10, 2);
 
+
+
+function admin_login_error_message($message)
+{
+    if (isset($_GET['login']) && $_GET['login'] === 'failed') {
+        $message = '<div class="error">Invalid username or password.</div>';
+    }
+    return $message;
+}
+add_filter('login_message', 'admin_login_error_message');

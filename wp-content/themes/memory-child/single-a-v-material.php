@@ -75,5 +75,47 @@
             endif; ?>
         </div>
     </div>
+    <style>
+        /* av materials */
+        .object-fit-cover {
+            object-fit: cover;
+        }
 
+        .card {
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.03);
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover::after {
+            opacity: 1;
+        }
+
+        .bg-darken {
+            background: #000;
+        }
+
+        .texting_title {
+            font-size: 18px;
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        .card:hover {
+            border: none !important;
+        }
+    </style>
     <?php get_footer(); ?>

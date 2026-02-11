@@ -30,8 +30,8 @@ if ( is_front_page() ) {
     position: relative;
     padding-bottom: 6px;
     transition: color 0.2s ease;
-    font-size: 19px;
-    font-weight: 400;
+    font-size: 18px;
+    font-weight: 300;
 }
 
 .collections-nav a:hover {
@@ -68,7 +68,7 @@ if ( is_front_page() ) {
 
 
 <?php 
-$post_types = ['book', 'artifacts', 'ph-heraldry-registry', 'articles', 'historical-sites','a-v-material'];
+$post_types = ['book', 'artifacts', 'ph-heraldry-registry', 'articles', 'historical-sites','a-v-material','foundation-of-towns'];
 if ( is_post_type_archive( $post_types ) || is_singular( $post_types ) ) : ?>
 
 <nav class="collections-nav">

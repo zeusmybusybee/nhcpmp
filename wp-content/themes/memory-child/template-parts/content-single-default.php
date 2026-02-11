@@ -10,6 +10,17 @@
 $memory_hide_featured_image = get_theme_mod( 'hide_featured_image', 'show-ft' );
 ?>
 <style>
+     input::placeholder {
+        color: #fff !important;
+    }
+
+    input.form-control.border-0 {
+        color: #fff;
+    }
+
+    .button {
+        color: #fff !important;
+    }
     .single-artifacts div#content{
         background:#000;
     }
@@ -34,21 +45,48 @@ $memory_hide_featured_image = get_theme_mod( 'hide_featured_image', 'show-ft' );
 .single-artifacts span.select2.select2-container.select2-container--default {
     margin-top: 10px;
 }
-/* .single-overflow:before {
-    content: '';
-    width: 100%;
-    background: #ffffff2b;
-    position: absolute;
-    height: 25%;
-    left: 0;
-    max-width: 1154px;
-    top: 201px;
-} */
+
+    .post-type-archive-artifacts div#content{
+        background:#000;
+    }
+    .artifacts-pages input.form-control.border-0 {
+    background: transparent;
+    color: #fff;
+}
+ .artifacts-pages  .bg-body-tertiary {
+    --bs-bg-opacity: 1;
+    background-color: rgb(248 249 250 / 26%) !important;
+}
+ .single-overflow  input.form-control.border-0 {
+    font-size: 19px;
+    color: #fff !important;
+    opacity: 1;
+}
+.total-result{
+        background: #ffffff42;
+    padding: 21px 10px;
+    border-radius: 10px;
+}
+.single-overflows span.select2.select2-container.select2-container--default {
+    margin-top: 10px;
+}
+.single-overflow h2,
+.single-overflow p,
+.single-overflow a{
+    color:#fff;
+}
+.single-overflow label.circle-option {
+    color: #fff;
+}
+.single-overflow .circle-option span {
+    border: 2px solid #fff;
+    background:#fff;
+}
 </style>
 <div class="container single-overflow">
   <div class="row justify-content-between">
     <!-- left column -->
-    <div class="col-md-7 left-column">
+    <div class="col-md-8 left-column">
         <div class="d-flex gap-4">
             <div class="col-5">
                <?php
@@ -111,234 +149,176 @@ $memory_hide_featured_image = get_theme_mod( 'hide_featured_image', 'show-ft' );
     </div>
 
     <!-- right column -->
-    <div class="col-md-4">
-      <div class="p-3 ">
-            <form method="get"
-                action="<?php echo esc_url(get_post_type_archive_link('artifacts')); ?>"
-                class="p-4">
+         <!-- RIGHT: SIDEBAR -->
+        <div class="col-lg-3">
 
+            <?php
+            // Get current filter values
+            $location_items_selected = $_GET['location'] ?? [];
+            $type_of_artifacts_selected     = $_GET['type_of_artifacts'] ?? [];
+            $sort_by                 = $_GET['sort_by'] ?? '';
+            $search_term             = $_GET['s'] ?? '';
+            ?>
+
+            <form method="get" action="<?php echo esc_url(get_post_type_archive_link('artifacts')); ?>" class="p-4">
+
+                <!-- SEARCH -->
                 <div class="row g-4 border rounded mb-5">
-                    <!-- Always target book -->
-                    <input type="hidden" name="post_type" value="book">
+                    <div class="input-group">
+                        <input type="search" name="s" class="form-control border-0" placeholder="Search items..."
+                            value="<?php echo esc_attr($search_term); ?>">
+                        <button class="button" type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
 
-                    <!-- SEARCH (only one) -->
-                    <div class="input-group" style="margin-top:0;">
-                        <input
-                            type="search"
-                            class="form-control border-0"
-                            name="s"
-                            placeholder="Search books..."
-                            value="<?php echo esc_attr($_GET['s'] ?? ''); ?>">
-                        <button class="button" type="submit">
-                            <i class="fas fa-search"></i>
+                <!-- APPLIED FILTERS SUMMARY -->
+                <?php if (!empty($location_items_selected) || !empty($type_of_artifacts_selected) || !empty($sort_by) || !empty($search_term)): ?>
+                    <div class="row g-4 border rounded mb-5">
+                        <strong>Applied Filters:</strong>
+                        <ul class="mb-0 list-unstyled">
+                            <?php
+                            foreach ($location_items_selected as $item) {
+                                echo '<li>Heraldic Item: ' . esc_html($item) . '</li>';
+                            }
+                            foreach ($type_of_artifacts_selected as $seal) {
+                                echo '<li>Seal/Logo: ' . esc_html($seal) . '</li>';
+                            }
+                            if ($sort_by) {
+                                echo '<li>Sort: ' . esc_html($sort_by) . '</li>';
+                            }
+                            if ($search_term) {
+                                echo '<li>Search: ' . esc_html($search_term) . '</li>';
+                            }
+                            ?>
+                        </ul>
+                        <button class="box">
+                            <a href="<?php echo esc_url(get_post_type_archive_link('artifacts')); ?>" class="btn btn-sm btn-secondary mt-2">Clear All</a>
                         </button>
+                    </div>
+                <?php endif; ?>
+
+                <div class="row g-4 border rounded p-4 bg-body-tertiary">
+
+                    <!-- HERALDIC ITEMS -->
+                    <div class="col-6 text-white ">
+                        <h6 class="section-title text-white ">Location:</h6>
+                        <?php
+                        $items_options = [
+                            'central'     => 'NHCP Central',
+                            'manila'      => 'Metro Manila',
+                            'central_luzon'  => 'Central Luzon',
+                            'southern_luzon' => 'Southern Luzon',
+                            'inter_regional'    => 'Inter-regional',
+                        ];
+                        foreach ($items_options as $slug => $label): ?>
+                            <label class="circle-option">
+                                <input type="checkbox" name="location[]" value="<?php echo esc_attr($slug); ?>"
+                                    <?php checked(in_array($slug, (array) $location_items_selected)); ?>>
+                                <span></span> <?php echo esc_html($label); ?>
+                            </label>
+                        <?php endforeach; ?>
+                    </div>
+
+                    <!-- SORTING -->
+                    <div class="col-6">
+                        <h6 class="section-title text-white">Sort by:</h6>
+                        <?php
+                        $sort_options = [
+                            'relevant' => 'Most relevant',
+                            'az'       => 'A–Z',
+                            'za'       => 'Z–A',
+                            'newest'   => 'Newest',
+                            'oldest'   => 'Oldest',
+                        ];
+                        foreach ($sort_options as $value => $label): ?>
+                            <label class="circle-option">
+                                <input type="radio" name="sort_by" value="<?php echo esc_attr($value); ?>"
+                                    <?php checked($sort_by, $value); ?>>
+                                <span></span> <?php echo esc_html($label); ?>
+                            </label>
+                        <?php endforeach; ?>
+                    </div>
+
+                    <!-- SEALS / LOGOS -->
+                   <div class="col-12 mt-4">
+                    <h6 class="section-title text-white">Type of Artifact</h6>
+
+                    <div class="row">
+                        <?php
+                        // Options array
+                        $seals_options = [
+                            'document' => 'Document',
+                            'personal_items' => 'Personal Items',
+                            'clothing_jewerly' => 'Clothing / Jewelry',
+                            'vehicle_transportation' => 'Vehicle / Transportation',
+                            'military' => 'Military',
+                            'photos_videos' => 'Photos / Videos',
+                            'sculpture' => 'Sculpture',
+                            'paintings' => 'Paintings',
+                            'tools' => 'Tools',
+                            'furnitures' => 'Furnitures',
+                            'others' => 'Others',
+                        ];
+
+                        // $type_of_artifacts_selected should be an array of selected values
+                        foreach ($seals_options as $slug => $label): ?>
+                            <div class="col-12 col-md-6">
+                                <label class="circle-option d-flex align-items-center mb-2">
+                                    <input type="checkbox"
+                                        name="type_of_artifacts[]"
+                                        value="<?php echo esc_attr($slug); ?>"
+                                        <?php checked(in_array($slug, (array) $type_of_artifacts_selected)); ?>>
+                                    <span class="ms-2"></span>
+                                    <?php echo esc_html($label); ?>
+                                </label>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
 
 
-                <div class="row g-4 border rounded p-4 bg-body-tertiary text-white">
-
-                    <!-- FILTER BY -->
-                    <div class="col-6">
-                        <h6 class="mb-3 fw-bold text-white ">Location</h6>
-
-                        <?php $filter = $_GET['filter'] ?? ''; ?>
-
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="filter" value="title"
-                                <?php checked($filter, 'nhcp_central'); ?>>
-                            <label class="form-check-label">NHCP Central</label>
-                        </div>
-
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="filter" value="author"
-                                <?php checked($filter, 'metro-manila'); ?>>
-                            <label class="form-check-label">Metro Manila</label>
-                        </div>
-
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="filter" value="publisher"
-                                <?php checked($filter, 'central_luzon'); ?>>
-                            <label class="form-check-label">Central Luzon</label>
-                        </div>
-
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="filter" value="keyword"
-                                <?php checked($filter, 'southern_luzon'); ?>>
-                            <label class="form-check-label">Southern Luzon</label>
-                        </div>
-
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="filter" value="year"
-                                <?php checked($filter, 'inter_regional'); ?>>
-                            <label class="form-check-label">Inter-regional</label>
-                        </div>
-                    </div>
-
-                    <!-- SORT BY -->
-                    <div class="col-6">
-                        <h6 class="mb-3 fw-bold text-white">Sort by:</h6>
-
-                        <?php $orderby = $_GET['orderby'] ?? ''; ?>
-
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="orderby" value="relevance"
-                                <?php checked($orderby, 'relevance'); ?>>
-                            <label class="form-check-label">Most relevant</label>
-                        </div>
-
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="orderby" value="title-asc"
-                                <?php checked($orderby, 'title-asc'); ?>>
-                            <label class="form-check-label">A–Z</label>
-                        </div>
-
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="orderby" value="title-desc"
-                                <?php checked($orderby, 'title-desc'); ?>>
-                            <label class="form-check-label">Z–A</label>
-                        </div>
-
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="orderby" value="date-desc"
-                                <?php checked($orderby, 'date-desc'); ?>>
-                            <label class="form-check-label">Newest</label>
-                        </div>
-
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="orderby" value="date-asc"
-                                <?php checked($orderby, 'date-asc'); ?>>
-                            <label class="form-check-label">Oldest</label>
-                        </div>
-                    </div>
-
-                    <!-- LEVEL OF ACCESS -->
                     <div class="col-12 mt-4">
-                        <h6 class="mb-3 fw-bold text-white">Type of Artifact</h6>
+                <h6 class="mb-3 fw-bold text-white">Filter by:</h6>
 
-                        <?php $access = $_GET['level_of_access'] ?? ''; ?>
+                <div class="container p-3 bg-dark text-light">
+                    <label class="form-label">Filter by:</label>
 
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="level_of_access" value="document"
-                                        <?php checked($access, 'document'); ?>>
-                                    <label class="form-check-label">Document</label>
-                                </div>
+                    <select name="personage" class="form-select">
+                        <option value="">Personages</option>
+                        <option value="1">Personage 1</option>
+                        <option value="2">Personage 2</option>
+                        <option value="3">Personage 3</option>
+                    </select>
 
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="level_of_access" value="personal_items"
-                                        <?php checked($access, 'personal_items'); ?>>
-                                    <label class="form-check-label">Personal Items</label>
-                                </div>
-
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="level_of_access" value="clothing_jewelry"
-                                        <?php checked($access, 'clothing_jewelry'); ?>>
-                                    <label class="form-check-label">Clothing / Jewelry</label>
-                                </div>
-
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="level_of_access" value="vehicle_transportation"
-                                        <?php checked($access, 'vehicle_transportation'); ?>>
-                                    <label class="form-check-label">Vehicle / Transportation</label>
-                                </div>
-
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="level_of_access" value="photos_videos"
-                                        <?php checked($access, 'photos_videos'); ?>>
-                                    <label class="form-check-label">Photos / Videos</label>
-                                </div>
-                            </div>
-
-                            <div class="col-6">
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="level_of_access" value="sculpture"
-                                        <?php checked($access, 'sculpture'); ?>>
-                                    <label class="form-check-label">Sculpture</label>
-                                </div>
-
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="level_of_access" value="painting"
-                                        <?php checked($access, 'painting'); ?>>
-                                    <label class="form-check-label">Paintings</label>
-                                </div>
-
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="level_of_access" value="tools"
-                                        <?php checked($access, 'tools'); ?>>
-                                    <label class="form-check-label">Tools</label>
-                                </div>
-
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="level_of_access" value="furnitures"
-                                        <?php checked($access, 'furnitures'); ?>>
-                                    <label class="form-check-label">Furnitures</label>
-                                </div>
-
-                                <div class="form-check mb-2">
-                                    <input class="form-check-input" type="radio" name="level_of_access" value="others"
-                                        <?php checked($access, 'others'); ?>>
-                                    <label class="form-check-label">Others</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <select name="collection" class="form-select mt-2">
+                        <option value="">Collection</option>
+                        <option value="a">Collection A</option>
+                        <option value="b">Collection B</option>
+                        <option value="c">Collection C</option>
+                    </select>
+                </div> <!-- ✅ ito yung kulang -->
+            </div>
 
 
-                    <div class="col-12 mt-4">
-                        <h6 class="mb-3 fw-bold text-white">Filter by:</h6>
-                        <div class="container p-3 bg-dark text-light">
-                        <label class="form-label">Filter by:</label>
-
-                        <select class="form-select mb-4" aria-label="Personages select">
-                            <option selected>Personages</option>
-                            <option value="1">Personage 1</option>
-                            <option value="2">Personage 2</option>
-                            <option value="3">Personage 3</option>
-                        </select>
-
-                        <select class="form-select mt-2" aria-label="Collection select">
-                            <option selected>Collection</option>
-                            <option value="a">Collection A</option>
-                            <option value="b">Collection B</option>
-                            <option value="c">Collection C</option>
-                        </select>
-                        </div>
-
-              
-
-
-
-                    </div>
 
                     <!-- APPLY BUTTON -->
                     <div class="col-12 mt-4">
-                        <button type="submit"
-                            class="btn w-100 fw-bold"
-                            style="background-color:#6b4a1f;color:white;">
+                        <button type="submit" class="btn w-100 fw-bold" style="background-color:#6b4a1f;color:white;">
                             Apply Filters
                         </button>
                     </div>
 
                 </div>
 
-
-
-
-
             </form>
-
-            <div class="sidebar_article text-white">
+              
+            <div class="sidebar_article text-white artifacts-sidebar">
                 <?php get_template_part('partials/sidebar-welcome'); ?>
                 <?php get_template_part('partials/sidebar-location-info'); ?>
 
             </div>
-
-
-
-      </div>
-    </div>
+        </div>
+      
   </div>
 </div>
 

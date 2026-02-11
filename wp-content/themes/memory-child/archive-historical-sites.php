@@ -136,15 +136,15 @@
                     <div class="col-12 mb-3">
                         <h6 class="mb-3 fw-bold">Filter by Place</h6>
 
-                        <select id="region_selected" class="form-select mb-2">
+                        <select id="region" name="region" class="form-select mb-2">
                             <option value="">Region</option>
                         </select>
 
-                        <select id="province_selected" class="form-select mb-2">
+                        <select id="province" name="province" class="form-select mb-2">
                             <option value="">Province</option>
                         </select>
 
-                        <select id="municipality_selected" class="form-select mb-2">
+                        <select id="city" name="city" class="form-select mb-2">
                             <option value="">City / Municipality</option>
                         </select>
                     </div>
