@@ -15,8 +15,15 @@
 		while ( have_posts() ) :
 			the_post();
 			?>
+			<?php
+			if ( 'foundation-of-towns' === get_post_type() ) {
+				get_template_part( 'template-parts/content', 'single-foundation-default' );
+			} else {
+				get_template_part( 'template-parts/content', 'single-default' );
+			}
+			?>
 
-			<?php 	get_template_part( 'template-parts/content', 'single-default' ); ?>
+			
 
 		<?php endwhile; ?>
 

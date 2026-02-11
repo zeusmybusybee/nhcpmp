@@ -43,7 +43,7 @@
     <div class="row justify-content-between ">
 
         <!-- LEFT: RESULTS -->
-         <div class="col-lg-8">
+         <div class="col-lg-7">
             <div class="row ">
 
         <?php
@@ -125,7 +125,7 @@ global $wp_query;
     </div>
 
         <!-- RIGHT: SIDEBAR -->
-        <div class="col-lg-3">
+        <div class="col-lg-4">
 
             <?php
             // Get current filter values
@@ -253,11 +253,9 @@ global $wp_query;
 
 
                     <div class="col-12 mt-4">
-                <h6 class="mb-3 fw-bold text-white">Filter by:</h6>
+                <h6 class="fw-bold text-white">Filter by:</h6>
 
-                <div class="container p-3 bg-dark text-light">
-                    <label class="form-label">Filter by:</label>
-
+                <div class="container p-3  text-light">
                     <select name="personage" class="form-select">
                         <option value="">Personages</option>
                         <option value="1">Personage 1</option>
