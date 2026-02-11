@@ -10,7 +10,9 @@
 $memory_hide_featured_image = get_theme_mod( 'hide_featured_image', 'show-ft' );
 ?>
 <style>
- 
+ div#content {
+    background: #fff;
+}
 </style>
 <div class="container single-overflow">
   <div class="row justify-content-between ">
@@ -27,19 +29,22 @@ $memory_hide_featured_image = get_theme_mod( 'hide_featured_image', 'show-ft' );
                     ?>
             </div>
             <div class="col-8">
-               <h2 class="text-dark"><?php echo get_the_title(); ?></h2>
+                test
+            </div>
+           
+    </div>
+     <div>
+                <h2 class="text-dark"><?php echo get_the_title(); ?></h2>
                <div class="post-content text-dark">
                     <?php the_content(); ?>
                 </div>
-
             </div>
-    </div>
             <h2 class="mb-4 text-dark">Related Artifacts</h2>
             <div class="row g-4">
 
             <?php
             $args = [
-                'post_type'      => 'artifacts',
+                'post_type'      => 'foundation-of-towns',
                 'posts_per_page' => 6, // 6 posts
                 'post_status'    => 'publish',
                 'orderby'        => 'date',
@@ -50,20 +55,56 @@ $memory_hide_featured_image = get_theme_mod( 'hide_featured_image', 'show-ft' );
             if ($artifacts->have_posts()) :
                 while ($artifacts->have_posts()) : $artifacts->the_post(); ?>
                     <div class="col-md-10">
-                    <div class=" h-100">
-                        
+                    <div class=" h-100 d-flex">
+                    <div class="col-4">
                         <?php if (has_post_thumbnail()) : ?>
                         <a href="<?php the_permalink(); ?>">
                             <?php the_post_thumbnail('medium', ['class' => 'card-img-top']); ?>
                         </a>
                         <?php endif; ?>
+                    </div>
+                    <div class="col-9">
                         <div class="card-body">
-                        <h5 class="card-title">
+                        <div class="card-title">
                             <a href="<?php the_permalink(); ?>" class="text-decoration-none  text-dark">
-                            <?php the_title(); ?>
+                            <h3 class="mb-2 mt-0"><?php the_title(); ?></h3>
+                                <?php echo wp_trim_words( get_the_content(), 40, '...' ); ?>
+                                
                             </a>
-                        </h5>
+                            <div>
+                                <span>Category: Book</span></br>
+                          
+                            <span>Category: 
+                                    <?php 
+                                    $terms = get_the_terms(get_the_ID(), 'foundation-of-towns-category');
+                                    if ($terms && !is_wp_error($terms)) {
+                                        $term_names = wp_list_pluck($terms, 'name'); // gets all term names
+                                        echo esc_html(implode(', ', $term_names)); // join with comma
+                                    } else {
+                                        echo 'Uncategorized';
+                                    }
+
+                                    ?>
+                                    </span></br>
+                                        <span>
+                                    Year Founded: 
+                                    <?php
+                                    $year_founded = get_field('year_founded'); // ACF field
+                                    if ($year_founded) {
+                                        echo esc_html($year_founded);
+                                    } else {
+                                        echo 'N/A';
+                                    }
+                                    ?>
+                                </span>
+                            
+                            </div>
+                                 
                         </div>
+                        </div>     
+                    </div>
+                  
+                       
                     </div>
                     </div>
                 <?php endwhile;

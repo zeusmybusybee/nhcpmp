@@ -1,5 +1,10 @@
 <?php get_header(); ?>
 
+<style>
+    div#content {
+    background: #FFF;
+}
+</style>
 <div class="container py-5">
 
     <div class="row">
@@ -21,7 +26,7 @@
                 </div>
             </div>
             <?php while (have_posts()) : the_post(); ?>
-                <div class="d-flex gap-4 mb-4 p-4 bg-body-tertiary rounded">
+                <div class="d-flex gap-5 mb-4 p-5 bg-body-tertiary rounded">
 
                     <!-- Thumbnail -->
                     <?php if (has_post_thumbnail()) : ?>
@@ -36,40 +41,8 @@
                     <!-- DETAILS COLUMN -->
                     <div class="flex-grow-1 d-flex flex-column">
 
-                        <!-- BADGES -->
-                        <div class="d-flex gap-2 mb-2 flex-wrap">
-                            <?php
-                            $access = get_field('level_of_access');
-                            $availability = get_field('availability');
-
-                            $access_map = [
-                                'open'      => ['label' => 'Open Access',    'class' => 'badge-open'],
-                                'viewing'   => ['label' => 'Viewing',        'class' => 'badge-viewing'],
-                                'limited'   => ['label' => 'Limited',        'class' => 'badge-limited'],
-                                'exclusive' => ['label' => 'Exclusive',     'class' => 'badge-exclusive'],
-                            ];
-
-                            $availability_map = [
-                                'digital' => ['label' => 'Available in Digital File', 'class' => 'badge-digital'],
-                                'library' => ['label' => 'Available in NHCP',        'class' => 'badge-library'],
-                            ];
-                            ?>
-
-                            <?php if ($access && isset($access_map[$access])) : ?>
-                                <span class="access-badge <?php echo esc_attr($access_map[$access]['class']); ?>">
-                                    <?php echo esc_html($access_map[$access]['label']); ?>
-                                </span>
-                            <?php endif; ?>
-
-                            <?php if ($availability && isset($availability_map[$availability])) : ?>
-                                <span class="availability-badge <?php echo esc_attr($availability_map[$availability]['class']); ?>">
-                                    <?php echo esc_html($availability_map[$availability]['label']); ?>
-                                </span>
-                            <?php endif; ?>
-                        </div>
-
                         <!-- TITLE -->
-                        <h5 class="mb-1">
+                        <h5 class="mt-0">
                             <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark fw-semibold">
                                 <?php the_title(); ?>
                             </a>
@@ -88,13 +61,37 @@
                         </p>
 
                         <!-- BOTTOM META -->
-                        <div class="d-flex justify-content-between mt-auto text-muted small">
-                            <?php if ($location = get_field('location')) : ?>
-                                <span>Location: <?php echo esc_html($location); ?></span>
-                            <?php endif; ?>
+                    <div class="">
+                        <span>location: <?php  echo get_field('city_text') . ', ' . get_field('province_text') ;  ?></span>
+                            <div>
+                            <span>Category: 
+                                    <?php 
+                                    $terms = get_the_terms(get_the_ID(), 'foundation-of-towns-category');
+                                    if ($terms && !is_wp_error($terms)) {
+                                        $term_names = wp_list_pluck($terms, 'name'); // gets all term names
+                                        echo esc_html(implode(', ', $term_names)); // join with comma
+                                    } else {
+                                        echo 'Uncategorized';
+                                    }
 
-                            <span>Category: Book</span>
+                                    ?>
+                                    </span></br>
+                                        <span>
+                                    Year Founded: 
+                                    <?php
+                                    $year_founded = get_field('year_founded'); // ACF field
+                                    if ($year_founded) {
+                                        echo esc_html($year_founded);
+                                    } else {
+                                        echo 'N/A';
+                                    }
+                                    ?>
+                                </span>
+                            
+                            </div>
                         </div>
+
+
 
                     </div>
                 </div>
@@ -110,8 +107,9 @@
                 action="<?php echo esc_url(get_post_type_archive_link('foundation-of-towns')); ?>"
                 class="p-4">
 
+         
                 <div class="row g-4 border rounded mb-5">
-                    <!-- Always target foundation of town -->
+                    <!-- Always target Articles -->
                     <input type="hidden" name="post_type" value="foundation-of-towns">
 
                     <!-- SEARCH (only one) -->
@@ -120,7 +118,7 @@
                             type="search"
                             class="form-control border-0"
                             name="s"
-                            placeholder="Search books..."
+                            placeholder="Search articles..."
                             value="<?php echo esc_attr($_GET['s'] ?? ''); ?>">
                         <button class="button" type="submit">
                             <i class="fas fa-search"></i>
