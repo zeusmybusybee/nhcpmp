@@ -1086,3 +1086,60 @@ function admin_login_error_message($message)
     return $message;
 }
 add_filter('login_message', 'admin_login_error_message');
+
+
+
+
+// add_action('acf/init', 'bulk_copy_first_content_to_post_content');
+
+// function bulk_copy_first_content_to_post_content()
+// {
+//     $args = [
+//         'post_type'      => 'historical-sites',
+//         'posts_per_page' => -1,
+//         'post_status'    => 'publish',
+//         'fields'         => 'ids',
+//     ];
+//     $posts = get_posts($args);
+
+//     foreach ($posts as $post_id) {
+//         // Get the outer repeater
+//         $date_rows = get_field('date_content', $post_id);
+
+//         if ($date_rows && is_array($date_rows)) {
+//             $first_date_row = $date_rows[0]; // Take first row of date_content
+
+//             if (!empty($first_date_row['content']) && is_array($first_date_row['content'])) {
+//                 $first_content_row = $first_date_row['content'][0]; // First row of content repeater
+
+//                 if (!empty($first_content_row['first_content'])) {
+//                     $first_content = $first_content_row['first_content'];
+
+//                     wp_update_post([
+//                         'ID'           => $post_id,
+//                         'post_content' => $first_content,
+//                     ]);
+//                 }
+//             }
+//         }
+//     }
+// }
+
+add_filter('acf/load_field/name=marker_by_date', function ($field) {
+
+    // Kunin lahat ng choices mula sa m_dates checkbox
+    $checkbox_field = get_field_object('m_dates'); // name or key
+    if ($checkbox_field && isset($checkbox_field['choices'])) {
+        $field['choices'] = $checkbox_field['choices'];
+    }
+
+    return $field;
+});
+
+add_filter('acf/load_value/name=marker_by_date', function ($value, $post_id, $field) {
+    $checked = get_field('m_dates', $post_id);
+    if ($checked) {
+        return $checked;
+    }
+    return $value;
+}, 10, 3);
