@@ -158,13 +158,6 @@ ul#primary-menu li a {
     }
 }
 
-/* 🌐 Tablet & up */
-@media (min-width: 768px) {
-  .hero {
-    padding: 14rem 2rem;
-  }
-}
-
 /* bootstrap overide */
 @media (min-width: 1400px) {
   .container {

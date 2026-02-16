@@ -287,6 +287,12 @@ section.featured-collections h2 {
 .featured-collections  .card p {
   line-height: 1.4;
 }
+/* 🌐 Tablet & up */
+@media (min-width: 768px) {
+  .hero {
+    padding: 0 2rem 11rem;
+  }
+}
 
 /* 📱 Tablet */
 @media (min-width: 640px) {

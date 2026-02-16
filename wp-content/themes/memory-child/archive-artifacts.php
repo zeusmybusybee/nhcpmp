@@ -1,53 +1,74 @@
 <?php get_header(); ?>
 <style>
-    
-    input::placeholder {
+    .artifacts-pages input::placeholder {
         color: #fff !important;
     }
 
-    input.form-control.border-0 {
+    .artifacts-pages input.form-control.border-0 {
         color: #fff;
     }
 
-    .button {
+    .artifacts-pages .button {
         color: #fff !important;
     }
-    .post-type-archive-artifacts div#content{
-        background:#000;
+
+    .post-type-archive-artifacts div#content {
+        background: #000;
     }
+
     .artifacts-pages input.form-control.border-0 {
-    background: transparent;
-    color: #fff;
-}
- .artifacts-pages  .bg-body-tertiary {
-    --bs-bg-opacity: 1;
-    background-color: rgb(248 249 250 / 26%) !important;
-}
- .artifacts-pages   input.form-control.border-0 {
-    font-size: 19px;
-    color: #fff !important;
-    opacity: 1;
-}
-.total-result{
+        background: transparent;
+        color: #fff;
+    }
+
+    .artifacts-pages .bg-body-tertiary {
+        --bs-bg-opacity: 1;
+        background-color: rgb(248 249 250 / 26%) !important;
+    }
+
+    .artifacts-pages input.form-control.border-0 {
+        font-size: 19px;
+        color: #fff !important;
+        opacity: 1;
+    }
+
+    .total-result {
         background: #ffffff42;
-    padding: 21px 10px;
-    border-radius: 10px;
-}
-.post-type-archive-artifacts span.select2.select2-container.select2-container--default {
-    margin-top: 10px;
-}
-.artifacts-sidebar h2,
-.artifacts-sidebar p,
-.artifacts-sidebar a{
-    color:#fff;
-}
-.artifacts-pages label.circle-option {
-    color: #fff;
-}
-.artifacts-pages .circle-option span {
-    border: 2px solid #fff;
-    background:#fff;
-}
+        padding: 21px 10px;
+        border-radius: 10px;
+    }
+
+    .post-type-archive-artifacts span.select2.select2-container.select2-container--default {
+        margin-top: 10px;
+    }
+
+    .artifacts-sidebar h2,
+    .artifacts-sidebar p,
+    .artifacts-sidebar a {
+        color: #fff;
+    }
+
+    .artifacts-pages label.circle-option {
+        color: #fff;
+    }
+
+    .artifacts-pages .circle-option span {
+        border: 2px solid #fff;
+        background: #fff;
+    }
+
+    .artifacts-pages img {
+        margin: 0;
+        border-radius: 15px;
+        width: 100%;
+        object-fit: cover;
+        height: clamp(185px, 25vw, 372px);
+    }
+
+    .artifacts-pages .content h3 {
+        font-weight: 300 !important;
+        margin: 0;
+    }
 </style>
 
 <div class="container my-5 artifacts-pages">
@@ -55,86 +76,86 @@
     <div class="row justify-content-between ">
 
         <!-- LEFT: RESULTS -->
-         <div class="col-lg-7">
+        <div class="col-lg-8 content">
             <div class="row ">
 
-        <?php
-global $wp_query;
+                <?php
+                global $wp_query;
 
 
-?>
+                ?>
 
-        <div class="d-flex justify-content-between align-items-center mb-3 total-result">
-        <h4 class="text-white mb-0 mt-0">
-            Top <?php echo $wp_query->post_count;  ?> results for All artifacts
-        </h4>
-        </div>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-
-
-        
-        </div>
-
-
-            <!-- Top Bar: Results Count & Pagination -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="d-flex align-items-center gap-2 text-white">
-                    <meduim>Top <?php echo $wp_query->post_count; ?> results for <?php single_cat_title(); ?></meduim>
-                    <select class="form-select form-select-sm" style="width: 50px;">
-                        <option selected>10</option>
-                        <option>25</option>
-                        <option>50</option>
-                    </select>
+                <div class="d-flex justify-content-between align-items-center mb-3 total-result">
+                    <h4 class="text-white mb-0 mt-0">
+                        Top <?php echo $wp_query->post_count;  ?> results for All artifacts
+                    </h4>
                 </div>
-                <div class="pagination-nav">
-                    <?php the_posts_pagination(['type' => 'list']); ?>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+
+
+
                 </div>
-            </div>
-            <div class="row g-4">
-                <?php if (have_posts()) : ?>
-                    <?php while (have_posts()) : the_post(); ?>
-                        <div class="col-lg-4 col-md-6">
-                            <div class=" h-100 border-0 shadow-sm text-center">
-
-                                <!-- Thumbnail -->
-                            <?php if (has_post_thumbnail()) : ?>
-                                <div class="mb-3">
-                                    <a href="<?php the_permalink(); ?>">
-                                        <?php the_post_thumbnail(
-                                            'small',
-                                            ['class' => 'img-fluid mx-auto d-block']
-                                        ); ?>
-                                    </a>
-                                </div>
-                            <?php endif; ?>
 
 
-                                <!-- TITLE -->
-                                <h6 class="fw-semibold mb-2 text-start">
-                                    <a href="<?php the_permalink(); ?>" class="text-decoration-none text-white text-start">
-                                        <?php the_title(); ?>
-                                    </a>
-                                </h6>
-
-
-                            </div>
-                        </div>
-                    <?php endwhile; ?>
-
-                <?php else : ?>
-                    <div class="col-12 text-center py-5">
-                        <h4>No items found matching your search or filters.</h4>
-                        <p>Please try a different search term or filter.</p>
+                <!-- Top Bar: Results Count & Pagination -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex align-items-center gap-2 text-white">
+                        <meduim>Top <?php echo $wp_query->post_count; ?> results for <?php single_cat_title(); ?></meduim>
+                        <select class="form-select form-select-md" style="width: 50px;">
+                            <option selected>10</option>
+                            <option>25</option>
+                            <option>50</option>
+                        </select>
                     </div>
-                <?php endif; ?>
+                    <div class="pagination-nav">
+                        <?php the_posts_pagination(['type' => 'list']); ?>
+                    </div>
+                </div>
+                <div class="row g-4">
+                    <?php if (have_posts()) : ?>
+                        <?php while (have_posts()) : the_post(); ?>
+                            <div class="col-lg-4 col-md-6">
+                                <div class=" h-100 border-0 shadow-sm text-center">
+
+                                    <!-- Thumbnail -->
+                                    <?php if (has_post_thumbnail()) : ?>
+                                        <div class="mb-3">
+                                            <a href="<?php the_permalink(); ?>">
+                                                <?php the_post_thumbnail(
+                                                    'small',
+                                                    ['class' => 'img-fluid mx-auto d-block']
+                                                ); ?>
+                                            </a>
+                                        </div>
+                                    <?php endif; ?>
+
+
+                                    <!-- TITLE -->
+                                    <h3 class="fw-semibold mb-2 text-start">
+                                        <a href="<?php the_permalink(); ?>" class="text-decoration-none text-white text-start">
+                                            <?php the_title(); ?>
+                                        </a>
+                                    </h3>
+
+
+                                </div>
+                            </div>
+                        <?php endwhile; ?>
+
+                    <?php else : ?>
+                        <div class="col-12 text-center py-5">
+                            <h4>No items found matching your search or filters.</h4>
+                            <p>Please try a different search term or filter.</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+
+
+
+
             </div>
-
-
-
-
-
         </div>
-    </div>
 
         <!-- RIGHT: SIDEBAR -->
         <div class="col-lg-4">
@@ -227,7 +248,7 @@ global $wp_query;
                     </div>
 
                     <!-- SEALS / LOGOS -->
-              <div class="col-12 mt-4">
+                    <div class="col-12 mt-4">
                         <h6 class="section-title text-white">Type of Artifact</h6>
 
                         <div class="row">
@@ -264,25 +285,25 @@ global $wp_query;
                     </div>
 
 
-            <div class="col-12 mt-4">
-                <h6 class="fw-bold text-white">Filter by:</h6>
+                    <div class="col-12 mt-4">
+                        <h6 class="fw-bold text-white">Filter by:</h6>
 
-                <div class="container p-3  text-light">
-                    <select name="personage" class="form-select">
-                        <option value="">Personages</option>
-                        <option value="1">Personage 1</option>
-                        <option value="2">Personage 2</option>
-                        <option value="3">Personage 3</option>
-                    </select>
+                        <div class="container p-3  text-light">
+                            <select name="personage" class="form-select">
+                                <option value="">Personages</option>
+                                <option value="1">Personage 1</option>
+                                <option value="2">Personage 2</option>
+                                <option value="3">Personage 3</option>
+                            </select>
 
-                    <select name="collection" class="form-select mt-2">
-                        <option value="">Collection</option>
-                        <option value="a">Collection A</option>
-                        <option value="b">Collection B</option>
-                        <option value="c">Collection C</option>
-                    </select>
-                </div> <!-- ✅ ito yung kulang -->
-            </div>
+                            <select name="collection" class="form-select mt-2">
+                                <option value="">Collection</option>
+                                <option value="a">Collection A</option>
+                                <option value="b">Collection B</option>
+                                <option value="c">Collection C</option>
+                            </select>
+                        </div> <!-- ✅ ito yung kulang -->
+                    </div>
 
 
 
@@ -296,23 +317,23 @@ global $wp_query;
                 </div>
 
             </form>
-              
+
             <div class="sidebar_article text-white artifacts-sidebar">
                 <?php get_template_part('partials/sidebar-welcome'); ?>
                 <?php get_template_part('partials/sidebar-location-info'); ?>
 
             </div>
         </div>
-      
+
 
 
     </div>
 
-            
+
 </div>
 <script>
-    jQuery(document).ready(function($){
-    $('.form-select').select2();
+    jQuery(document).ready(function($) {
+        $('.form-select').select2();
     });
 </script>
 <?php get_footer(); ?>

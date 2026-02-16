@@ -124,7 +124,7 @@ if ( is_front_page() ) :
 	$memory_header_subscribe_text   = get_theme_mod( 'subscribe_text', __( 'Subscribe to our newsletter and get latest news and updates!', 'memory' ) );
 	$memory_header_subscribe_button = get_theme_mod( 'subscribe_button', __( 'Subscribe', 'memory' ) );
 	$memory_header_subscribe        = '[jetpack_subscription_form subscribe_text="' . esc_html( $memory_header_subscribe_text ) . '" subscribe_button="' . esc_html( $memory_header_subscribe_button ) . '"]';
-	if ( class_exists( 'Jetpack' ) && Jetpack::is_module_active( 'subscriptions' ) ) :
+	if ( class_exists( 'Jetpack' )) :
 		?>
 		<div class="header-subscription" >
 			<div class="container">
