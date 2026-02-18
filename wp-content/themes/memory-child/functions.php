@@ -1086,3 +1086,33 @@ function admin_login_error_message($message)
     return $message;
 }
 add_filter('login_message', 'admin_login_error_message');
+
+
+
+
+
+function custom_pagination_shortcode()
+{
+    global $wp_query;
+
+    if ($wp_query->max_num_pages <= 1) {
+        return ''; // Walang pagination kung isang page lang
+    }
+
+    $big = 999999999; // unlikely integer para sa base URL
+
+    $pagination = paginate_links(array(
+        'base'      => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
+        'format'    => '?paged=%#%',
+        'current'   => max(1, get_query_var('paged')),
+        'total'     => $wp_query->max_num_pages,
+        'prev_text' => '‹ Prev',
+        'next_text' => 'Next ›',
+        'type'      => 'list',
+        'end_size'  => 1,
+        'mid_size'  => 2,
+    ));
+
+    return '<nav class="custom-pagination">' . $pagination . '</nav>';
+}
+add_shortcode('custom_pagination', 'custom_pagination_shortcode');

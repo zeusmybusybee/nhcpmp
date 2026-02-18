@@ -28,38 +28,6 @@
 
 	<?php wp_head(); ?>
 </head>
-<style>
-.main-navigation {
-    flex: unset;
-}
-div#content {
-    background: #F7F7F7;
-}
-ul#primary-menu li a {
-    font-size: 18px;
-    text-transform: none;
-    font-weight: 400;
-    margin: 0 1rem;
-    color: #8b5e3c;
-    padding: 5px 20px;
-}
-ul#primary-menu  li:hover a {
-    background: #8b5e3c;
-    color: #fff ;
-}
-.site-branding {
-    padding: 30px 0 40px;
-    width: 100%;
-    max-width: 360px;
-    filter: sepia(100%) saturate(300%) brightness(70%) hue-rotate(-15deg);
-}
-@media (min-width: 1400px) {
-  .container {
-     max-width: 1440px;
-  }
-}
-
-</style>
 <?php $body_class = array_values( get_body_class() ); ?>
 <body
 	class="<?php echo esc_attr( implode( ' ', $body_class ) ); ?>"
@@ -124,7 +92,7 @@ if ( is_front_page() ) :
 	$memory_header_subscribe_text   = get_theme_mod( 'subscribe_text', __( 'Subscribe to our newsletter and get latest news and updates!', 'memory' ) );
 	$memory_header_subscribe_button = get_theme_mod( 'subscribe_button', __( 'Subscribe', 'memory' ) );
 	$memory_header_subscribe        = '[jetpack_subscription_form subscribe_text="' . esc_html( $memory_header_subscribe_text ) . '" subscribe_button="' . esc_html( $memory_header_subscribe_button ) . '"]';
-	if ( class_exists( 'Jetpack' ) && Jetpack::is_module_active( 'subscriptions' ) ) :
+	if ( class_exists( 'Jetpack' )) :
 		?>
 		<div class="header-subscription" >
 			<div class="container">
