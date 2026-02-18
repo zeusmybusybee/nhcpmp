@@ -1,11 +1,35 @@
 <?php get_header(); ?>
+<style>
+    .historic-images img {
+        margin: 0;
 
+        width: 100%;
+        object-fit: cover;
+        height: clamp(185px, 25vw, 372px);
+    }
+
+    .historic-content h3 {
+        font-size: 20px;
+        font-weight: 400 !important;
+    }
+</style>
 <div class="container py-5">
 
     <div class="row">
 
         <!-- LEFT: RESULTS -->
         <div class="col-lg-8">
+            <?php
+            global $wp_query;
+
+
+            ?>
+
+            <div class="d-flex justify-content-between align-items-center mb-3 total-result bg-white p-4 mb-3">
+                <h4 class="mb-0 mt-0" style="color:#704b10">
+                    Top <?php echo $wp_query->post_count;  ?> results for All artifacts
+                </h4>
+            </div>
             <!-- Top Bar: Results Count & Pagination -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div class="d-flex align-items-center gap-2">
@@ -17,15 +41,15 @@
                     </select>
                 </div>
                 <div class="pagination-nav">
-                    <?php the_posts_pagination(['type' => 'list']); ?>
+                    <?php echo do_shortcode('[custom_pagination]'); ?>
                 </div>
             </div>
             <div class="row g-4">
                 <?php if (have_posts()) : ?>
                     <?php while (have_posts()) : the_post(); ?>
-                        <div class="col-lg-4 col-md-6">
+                        <div class="col-lg-6 col-md-6">
                             <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
-                                <div class="card h-100 border-0 shadow-sm text-center p-4">
+                                <div class="card h-100 border-0 shadow-sm text-start p-4 historic-content">
 
                                     <div class="d-flex gap-2 mb-2 flex-wrap">
                                         <?php
@@ -48,30 +72,72 @@
                                     </div>
 
                                     <!-- Thumbnail -->
-                                    <?php if (has_post_thumbnail()) : ?>
-                                        <div class="mb-3">
+                                    <div class="mb-3 historic-images">
+                                        <?php if (has_post_thumbnail()) : ?>
                                             <?php the_post_thumbnail(
                                                 'small',
                                                 ['class' => 'img-fluid mx-auto d-block']
                                             ); ?>
-                                        </div>
-                                    <?php endif; ?>
+                                        <?php else : ?>
+                                            <img
+                                                src="<?php echo home_url('/wp-content/uploads/2023/06/Simbahan-ng-Tayabas-1-1.jpg'); ?>"
+                                                class="img-fluid mx-auto d-block"
+                                                alt="Default Image">
+                                        <?php endif; ?>
+                                    </div>
+
 
                                     <!-- TITLE -->
-                                    <h6 class="fw-semibold mb-2">
+                                    <h3 class="fw-semibold mb-2">
                                         <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
                                             <?php the_title(); ?>
                                         </a>
-                                    </h6>
+                                    </h3>
 
                                     <!-- META -->
-                                    <div class="text-muted small mt-auto text-start">
+                                    <div class="text-muted small  text-start mt-5">
+
                                         <?php if ($regions = get_field('regions')) : ?>
-                                            <div>Location: <?php echo esc_html($regions); ?> <?php echo esc_html(get_field('province_municipality')); ?></div>
+                                            <div>
+                                                Location: <?php echo esc_html($regions); ?>
+                                                <?php echo esc_html(get_field('province_municipality')); ?>
+                                            </div>
                                         <?php endif; ?>
-                                        <div><?php if (get_field('year_found')): echo 'Year Found:' . get_field('year_found');
-                                                endif; ?></div>
+
+                                        <?php if ($year = get_field('year_found')) : ?>
+                                            <div>
+                                                Year Found: <?php echo esc_html($year); ?>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <?php
+                                        $terms = get_the_terms(get_the_ID(), 'registry_category');
+                                        if ($terms && !is_wp_error($terms)) :
+                                        ?>
+                                            <div>
+                                                Category:
+                                                <?php
+                                                $term_names = wp_list_pluck($terms, 'name');
+                                                echo esc_html(implode(', ', $term_names));
+                                                ?>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <?php
+                                        $terms = get_the_terms(get_the_ID(), 'level_status');
+                                        if ($terms && !is_wp_error($terms)) :
+                                        ?>
+                                            <div>
+                                                Category:
+                                                <?php
+                                                $term_names = wp_list_pluck($terms, 'name');
+                                                echo esc_html(implode(', ', $term_names));
+                                                ?>
+                                            </div>
+                                        <?php endif; ?>
+
                                     </div>
+
 
                                 </div>
                             </a>
@@ -126,7 +192,7 @@
                         </select>
 
                         <select name="marker_category" class="form-select">
-                             <option value="">-Select-</option>
+                            <option value="">-Select-</option>
                             <option value="structures" <?php selected($_GET['marker_category'] ?? '', 'structures'); ?>>Structures</option>
                             <option value="buildings" <?php selected($_GET['marker_category'] ?? '', 'buildings'); ?>>Buildings</option>
                         </select>
@@ -173,9 +239,13 @@
                         <button type="submit"
                             class="btn w-100 mt-4 fw-bold"
                             style="background-color:#6b4a1f;color:white;">
-                             Apply Filters
+                            Apply Filters
                         </button>
                     </div>
+                </div>
+                <div class="sidebar_article">
+                    <?php get_template_part('partials/sidebar-welcome'); ?>
+                    <?php get_template_part('partials/sidebar-location-info'); ?>
 
                 </div>
 

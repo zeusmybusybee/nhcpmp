@@ -13,6 +13,10 @@ section.hero-banner h1 {
   border-radius: 6px;
   overflow: hidden;
 }
+.hero-banner svg {
+    width: 55px;
+    height: 100px;
+}
 section.hero-banner img {
     width: 100%;
     height: auto;
@@ -290,7 +294,7 @@ section.featured-collections h2 {
 /* 🌐 Tablet & up */
 @media (min-width: 768px) {
   .hero {
-    padding: 0 2rem 11rem;
+    padding: 0 2rem 10rem;
   }
 }
 
