@@ -153,10 +153,13 @@ div#content {
 }
 
 .site-branding {
-    padding: 30px 0 40px;
+    padding: 0 0 10px;
     width: 100%;
-    max-width: 360px;
-    filter: sepia(100%) saturate(300%) brightness(70%) hue-rotate(-15deg);
+    max-width: 403px;
+    /* filter: sepia(100%) saturate(300%) brightness(70%) hue-rotate(-15deg); */
+}
+.site-header .custom-logo-link img, .site-header .retina-logo img{
+  margin: 0;
 }
 ul#primary-menu li a {
     font-size: 18px;

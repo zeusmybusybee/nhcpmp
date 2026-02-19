@@ -29,7 +29,7 @@ get_header();
           <section class="hero hero-banner ">
             <div class="container-fluid">
               <div class="row justify-content-center text-center">
-                <div class="col-lg-8">
+                <div class="col-lg-9">
 
                   <?php if (get_sub_field('hero_logo_image')) : ?>
                     <div class="mb-3">
