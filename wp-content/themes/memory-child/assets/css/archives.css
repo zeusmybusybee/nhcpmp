@@ -264,12 +264,17 @@ button.box a {
 .list_tags .tag-badge:hover {
     background-color: #005177;  /* darker on hover */
 }
-
-
 ul.page-numbers li {
     display: inline-block;
     list-style: none;
 }
 ul.page-numbers {
     border: unset;
+}
+.texting_title {
+    font-size: 18px;
+    font-style: italic;
+}
+.bg-darken {
+    background:#000;
 }
