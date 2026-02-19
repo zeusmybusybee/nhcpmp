@@ -8,9 +8,112 @@
         height: clamp(185px, 25vw, 372px);
     }
 
+    .post-type-archive-historical-sites div#content {
+        background: #ffff;
+    }
+
     .historic-content h3 {
         font-size: 20px;
         font-weight: 400 !important;
+    }
+
+    .historic-link-item {
+        position: relative;
+    }
+
+    .historic-link-item span.access-badge {
+        padding: initial;
+        padding: 6px 45px;
+        position: absolute;
+        top: -10px;
+        border-radius: 10px;
+    }
+
+    .total-result {
+        background: #FAFAFA;
+    }
+
+    .historic-content {
+        padding: 35px 15px !important;
+        background: #FAFAFA;
+    }
+
+    select.form-select.mb-2 {
+        background: #707070;
+        color: #fff;
+    }
+
+    .historic-right-col .form-select {
+        background: #707070;
+        color: #fff;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .historic-right-col h6 {
+        font-size: 16px;
+        color: #6b4a1f;
+    }
+
+    .historic-right-col button {
+        border-radius: 10px;
+        border: unset;
+    }
+
+    .historic-right-col input,
+    .historic-right-col input::placeholder {
+        font-weight: 700;
+        font-size: 16px;
+        color: #A01515 !important;
+    }
+
+    .historic-right-col .sidebar_article .nm-sidebar-card {
+        margin: 20px 0;
+    }
+
+    .registry-box {
+        border-radius: 15px;
+        padding: 40px 20px;
+        background-color: #f8f9fa;
+    }
+
+    .stat-card {
+        border-radius: 15px;
+        color: white;
+        text-align: center;
+        padding: 30px 10px;
+        font-weight: bold;
+    }
+
+    .stat-number {
+        font-size: 36px;
+        font-weight: 800;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        letter-spacing: 1px;
+    }
+
+    .bg-level1 {
+        background-color: #39b54a;
+    }
+
+    .bg-level2 {
+        background-color: #c9b225;
+    }
+
+    .bg-delisted {
+        background-color: #b87300;
+    }
+
+    .bg-removed {
+        background-color: #9e1b1b;
+    }
+
+    .historic-metadata div {
+        font-size: 15px;
+        margin-bottom: 10px;
     }
 </style>
 <div class="container py-5">
@@ -25,7 +128,7 @@
 
             ?>
 
-            <div class="d-flex justify-content-between align-items-center mb-3 total-result bg-white p-4 mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-3 total-result  p-4 mb-3">
                 <h4 class="mb-0 mt-0" style="color:#704b10">
                     Top <?php echo $wp_query->post_count;  ?> results for All artifacts
                 </h4>
@@ -44,11 +147,11 @@
                     <?php echo do_shortcode('[custom_pagination]'); ?>
                 </div>
             </div>
-            <div class="row g-4">
+            <div class="row g-5">
                 <?php if (have_posts()) : ?>
                     <?php while (have_posts()) : the_post(); ?>
                         <div class="col-lg-6 col-md-6">
-                            <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
+                            <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark historic-link-item">
                                 <div class="card h-100 border-0 shadow-sm text-start p-4 historic-content">
 
                                     <div class="d-flex gap-2 mb-2 flex-wrap">
@@ -95,7 +198,7 @@
                                     </h3>
 
                                     <!-- META -->
-                                    <div class="text-muted small  text-start mt-5">
+                                    <div class="text-muted small  text-start mt-5 historic-metadata">
 
                                         <?php if ($regions = get_field('regions')) : ?>
                                             <div>
@@ -154,7 +257,7 @@
         </div>
 
         <!-- RIGHT: SIDEBAR -->
-        <div class="col-lg-4">
+        <div class="col-lg-4 historic-right-col">
             <?php
             // Get current filter values
             $heraldric_items_selected = $_GET['heraldric_items'] ?? [];
@@ -170,14 +273,14 @@
                 <!-- SEARCH -->
                 <div class="row g-4 border rounded mb-5">
                     <div class="input-group">
-                        <input type="search" name="s" class="form-control border-0" placeholder="Search historical sites..."
+                        <input type="search" name="s" class="form-control border-0" placeholder="Search this Database..."
                             value="<?php echo esc_attr($search_term); ?>">
                         <button class="button" type="submit"><i class="fas fa-search"></i></button>
                     </div>
                 </div>
 
                 <!-- FILTERS -->
-                <div class="row g-4 border rounded p-4 bg-body-tertiary">
+                <div class=" g-4 border rounded p-4 bg-body-tertiary">
 
                     <!-- FILTER BY -->
                     <div class="col-12 mb-3">
@@ -243,6 +346,53 @@
                         </button>
                     </div>
                 </div>
+
+
+                <?php
+                $terms = get_terms([
+                    'taxonomy'   => 'level_status',
+                    'hide_empty' => false,
+                ]);
+                ?>
+
+                <div class=" my-5">
+                    <div class="registry-box text-center border">
+                        <h3 class="fw-bold mb-4">REGISTRY IN NUMBERS</h3>
+
+                        <div class="row g-4 justify-content-center">
+
+                            <?php foreach ($terms as $term) : ?>
+
+                                <?php
+                                // Custom colors per term slug
+                                $colors = [
+                                    'level-i'  => 'bg-success',
+                                    'level-ii' => 'bg-warning',
+                                    'delisted' => 'bg-brown',
+                                    'removed'  => 'bg-danger',
+                                ];
+
+                                $bg_class = isset($colors[$term->slug]) ? $colors[$term->slug] : 'bg-primary';
+                                ?>
+
+                                <div class="col-md-5 col-6">
+                                    <div class="stat-card <?php echo $bg_class; ?>">
+                                        <div class="stat-number">
+                                            <?php echo $term->count; ?>
+                                        </div>
+                                        <div class="stat-label">
+                                            <?php echo strtoupper($term->name); ?>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            <?php endforeach; ?>
+
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="sidebar_article">
                     <?php get_template_part('partials/sidebar-welcome'); ?>
                     <?php get_template_part('partials/sidebar-location-info'); ?>

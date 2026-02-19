@@ -5,7 +5,7 @@
 section.hero-banner h1 {
     color: #6b4a1e;
     font-weight: 400 !important;
-    font-size: 48px;
+    font-size: 50px;
 }
 .hero-search {
   max-width: 900px;
@@ -21,7 +21,8 @@ section.hero-banner img {
     width: 100%;
     height: auto;
     max-width: 159px;
-     filter: sepia(100%) saturate(300%) brightness(70%) hue-rotate(-15deg);
+    margin: 8rem 0 4rem;
+    filter: sepia(100%) saturate(300%) brightness(70%) hue-rotate(-15deg);
 }
 .hero-search .hero-input {
   flex: 1;
@@ -102,7 +103,8 @@ form.hero-search .hero-btn {
 /* CARD */
 .collection-card {
   position: relative;
-  min-height: 300px;
+  width: 100%;
+  aspect-ratio: 960 / 350;
   padding: 40px;
   color: #fff;
   display: flex;
@@ -113,20 +115,24 @@ form.hero-search .hero-btn {
   background-position: center;
   background-repeat: no-repeat;
 
-  transition: background-size 0.8s ease;
   overflow: hidden;
+
+  transition: background-size 0.8s ease, transform 0.8s ease;
 }
 .collection-card div {
     width: 63%;
     margin: auto;
 }
-
+.collection-content p{
+  font-size: 16px;
+}
 /* DARK OVERLAY */
 .collection-card::before {
   content: "";
   position: absolute;
+    transition: transform 0.9s cubic-bezier(0.25, 0.1, 0.25, 1);
   inset: 0;
-background: linear-gradient(to bottom, rgba(50, 30, 10, 0.8), rgba(50, 30, 10, 0.3));
+/* background: linear-gradient(to bottom, rgba(50, 30, 10, 0.8), rgba(50, 30, 10, 0.3)); */
   transition: opacity 0.4s ease;
 }
 .collection-card:hover::after {
@@ -146,7 +152,8 @@ background: linear-gradient(to bottom, rgba(50, 30, 10, 0.8), rgba(50, 30, 10, 0
 
 /* HOVER EFFECTS */
 .collection-card:hover {
-  background-size: 115%;
+  background-size: 118%;
+
 }
 
 .collection-card:hover::before {
@@ -160,7 +167,7 @@ background: linear-gradient(to bottom, rgba(50, 30, 10, 0.8), rgba(50, 30, 10, 0
   margin-bottom: 10px;
   color: #fff;
   font-weight: 300;
-  font-size: 44px;
+  font-size: 40px;
 }
 
 .collection-card p {
@@ -170,20 +177,19 @@ background: linear-gradient(to bottom, rgba(50, 30, 10, 0.8), rgba(50, 30, 10, 0
 
 /* BUTTON */
 .collection-card .btn {
-  margin-top: 15px;
-    padding: 0 40px 10px;
+    margin-top: 0;
+    padding: 0 40px 8px;
     color: #fff;
     text-decoration: none;
     background: #ffffff33;
     width: fit-content;
-    font-size: 32px;
+    font-size: 30px;
     border-radius: 0;
     font-weight: 400;
     text-transform: none;
-     /* NEW */
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 .collection-card:hover .btn {
   opacity: 1;
