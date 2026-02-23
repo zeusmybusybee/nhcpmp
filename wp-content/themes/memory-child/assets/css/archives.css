@@ -273,3 +273,46 @@ ul.page-numbers li {
 ul.page-numbers {
     border: unset;
 }
+.custom-pagination {
+    text-align: center;
+    margin: 40px 0;
+}
+
+.pagination-inner {
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+    font-family: serif;
+}
+
+.pagination-info {
+    padding: 8px 14px;
+    border: 1px solid #704b10;
+}
+.pagination-prev ,
+.pagination-next,
+.pagination-info  {
+    font-size: 17px;
+    font-weight: 700 !important;
+    color: #704b10;
+}
+.pagination-prev a,
+.pagination-next a {
+    text-decoration: none;
+    color: #704b10;
+    font-weight: 500;
+}
+
+.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.top-result select.form-select.form-select-sm {
+    padding: .5rem 3rem;
+    font-size: 14px;
+}
+
+.top-result meduim {
+    color: #704b10;
+    font-size: 16px;
+}

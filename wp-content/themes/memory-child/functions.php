@@ -13,7 +13,8 @@ function my_menu_search_shortcode()
 }
 add_shortcode('menu_search', 'my_menu_search_shortcode');
 
-function custom_admin_css() {
+function custom_admin_css()
+{
     echo '<style>
         .d-none { display: none !important; }
     </style>';
@@ -171,12 +172,12 @@ add_action('acf/input/admin_enqueue_scripts', function () {
 });
 
 // Populate province choices dynamically
-add_filter('acf/load_field/name=province', function($field){
+add_filter('acf/load_field/name=province', function ($field) {
 
     $selected_region = null;
 
     // If form is being submitted
-    if(isset($_POST['acf'])){
+    if (isset($_POST['acf'])) {
         $selected_region = $_POST['acf']['field_698c19c39f79b'] ?? null; // your region field key
     }
 
@@ -207,26 +208,26 @@ add_filter('acf/load_field/name=province', function($field){
 });
 
 // Save selected province name into a hidden field
-add_action('acf/save_post', function($post_id) {
+add_action('acf/save_post', function ($post_id) {
 
     // Avoid autosave
-    if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
 
     $acf = $_POST['acf'] ?? [];
 
     // Check if province field is submitted
-    if(isset($acf['field_698c19c39f79b'])){ // replace with your province field key
+    if (isset($acf['field_698c19c39f79b'])) { // replace with your province field key
         $selected_province_code = $acf['field_698c19c39f79b'];
 
         // Get province list from ph-proxy
         $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=provinces');
-        if(!is_wp_error($response)){
+        if (!is_wp_error($response)) {
             $body = json_decode(wp_remote_retrieve_body($response), true);
             $province_name = '';
 
-            if(!empty($body['data'])){
-                foreach($body['data'] as $province){
-                    if($province['psgc_code'] == $selected_province_code){
+            if (!empty($body['data'])) {
+                foreach ($body['data'] as $province) {
+                    if ($province['psgc_code'] == $selected_province_code) {
                         $province_name = $province['name'];
                         break;
                     }
@@ -234,16 +235,15 @@ add_action('acf/save_post', function($post_id) {
             }
 
             // Update hidden field with province name
-            if($province_name){
+            if ($province_name) {
                 update_field('province_text', $province_name, $post_id); // your hidden field
             }
         }
     }
-
 }, 20);
 
 
-add_filter('acf/load_field/name=region', function($field){
+add_filter('acf/load_field/name=region', function ($field) {
 
     $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=regions');
 
@@ -266,12 +266,12 @@ add_filter('acf/load_field/name=region', function($field){
 
 
 // Populate city choices dynamically (your existing code)
-add_filter('acf/load_field/name=city', function($field){
+add_filter('acf/load_field/name=city', function ($field) {
 
     $selected_province = null;
 
     // During save
-    if(isset($_POST['acf'])){
+    if (isset($_POST['acf'])) {
         $selected_province = $_POST['acf']['field_698c19ca9f79c'] ?? null;
     }
 
@@ -302,27 +302,27 @@ add_filter('acf/load_field/name=city', function($field){
 });
 
 // Save the city name to hidden field "city_text"
-add_action('acf/save_post', function($post_id) {
+add_action('acf/save_post', function ($post_id) {
 
     // Make sure we are not in autosave
-    if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
 
     // Get submitted ACF values
     $acf = $_POST['acf'] ?? [];
 
     // Check if city field is set
-    if(isset($acf['field_698c19ca9f79c'])){ // replace with your actual city field key
+    if (isset($acf['field_698c19ca9f79c'])) { // replace with your actual city field key
         $selected_city_code = $acf['field_698c19ca9f79c'];
 
         // Get the city name from your ph-proxy.php or from $_POST choices
         $response = wp_remote_get(get_stylesheet_directory_uri() . '/ph-proxy.php?endpoint=localities');
-        if(!is_wp_error($response)){
+        if (!is_wp_error($response)) {
             $body = json_decode(wp_remote_retrieve_body($response), true);
             $city_name = '';
 
-            if(!empty($body['data'])){
-                foreach($body['data'] as $city){
-                    if($city['psgc_code'] == $selected_city_code){
+            if (!empty($body['data'])) {
+                foreach ($body['data'] as $city) {
+                    if ($city['psgc_code'] == $selected_city_code) {
                         $city_name = $city['name'];
                         break;
                     }
@@ -330,12 +330,11 @@ add_action('acf/save_post', function($post_id) {
             }
 
             // Update hidden field
-            if($city_name){
+            if ($city_name) {
                 update_field('city_text', $city_name, $post_id);
             }
         }
     }
-
 }, 20);
 
 
@@ -708,31 +707,29 @@ function ph_historical_sites_filters($query)
     if (is_post_type_archive('historical-sites')) {
 
         $meta_query = [];
+        $tax_query  = [];
 
-        // FILTER: Status (assuming it's a meta field)
-        if (!empty($_GET['status'])) {
-            $status = sanitize_text_field($_GET['status']);
-            $meta_query[] = [
-                'key'     => 'status', // meta key in ACF
-                'value'   => $status,
-                'compare' => '='
+        // FILTER: Status (taxonomy)
+        if (!empty($_GET['level_status'])) {
+            $status = sanitize_text_field($_GET['level_status']);
+            $tax_query[] = [
+                'taxonomy' => 'level_status',
+                'field'    => 'slug',
+                'terms'    => $status,
             ];
         }
 
-        // FILTER: Marker Category (ACF meta field)
-        if (!empty($_GET['marker_category'])) {
-            $marker_category = sanitize_text_field($_GET['marker_category']);
-
-            // Add to meta_query
-            $meta_query[] = [
-                'key'     => 'marker_category', // The exact ACF field name
-                'value'   => $marker_category,
-                'compare' => '=' // Exact match
+        // FILTER: Marker Category (taxonomy)
+        if (!empty($_GET['registry_category'])) {
+            $marker_category = sanitize_text_field($_GET['registry_category']);
+            $tax_query[] = [
+                'taxonomy' => 'registry_category',
+                'field'    => 'slug',
+                'terms'    => $marker_category,
             ];
         }
 
-
-        // REGION
+        // REGION (meta)
         if (!empty($_GET['region'])) {
             $meta_query[] = [
                 'key'     => 'region',
@@ -741,7 +738,7 @@ function ph_historical_sites_filters($query)
             ];
         }
 
-        // PROVINCE
+        // PROVINCE (meta)
         if (!empty($_GET['province'])) {
             $meta_query[] = [
                 'key'     => 'province',
@@ -750,7 +747,7 @@ function ph_historical_sites_filters($query)
             ];
         }
 
-        // CITY / MUNICIPALITY
+        // CITY / MUNICIPALITY (meta)
         if (!empty($_GET['city'])) {
             $meta_query[] = [
                 'key'     => 'city',
@@ -759,26 +756,25 @@ function ph_historical_sites_filters($query)
             ];
         }
 
-        // FILTER: International
+        // INTERNATIONAL (meta)
         if (!empty($_GET['international'])) {
-            $international = sanitize_text_field($_GET['international']);
             $meta_query[] = [
                 'key'     => 'international',
-                'value'   => $international,
+                'value'   => sanitize_text_field($_GET['international']),
                 'compare' => '='
             ];
         }
 
-        // FILTER: Year
         if (!empty($_GET['year_filter'])) {
-            $year = intval($_GET['year_filter']);
+            $year = sanitize_text_field($_GET['year_filter']);
+
+            // Search within the serialized array for the exact year
             $meta_query[] = [
-                'key'     => 'year', // meta field storing the year
-                'value'   => $year,
-                'compare' => '='
+                'key'     => 'm_dates',
+                'value'   => '"' . $year . '"',
+                'compare' => 'LIKE'
             ];
         }
-
         // SEARCH
         if (!empty($_GET['s'])) {
             $query->set('s', sanitize_text_field($_GET['s']));
@@ -802,7 +798,12 @@ function ph_historical_sites_filters($query)
             }
         }
 
-        // Apply all meta queries if any
+        // Apply taxonomy queries if any
+        if (!empty($tax_query)) {
+            $query->set('tax_query', $tax_query);
+        }
+
+        // Apply meta queries if any
         if (!empty($meta_query)) {
             $query->set('meta_query', $meta_query);
         }
@@ -1032,7 +1033,7 @@ function articles_books_search_404()
         ! is_admin() &&
         is_search() &&
         is_main_query() &&
-        is_post_type_archive(['articles', 'book', 'ph-heraldry-registry', 'artifacts','historical-sites','a-v-material','foundation-of-towns'])
+        is_post_type_archive(['articles', 'book', 'ph-heraldry-registry', 'artifacts', 'historical-sites', 'a-v-material', 'foundation-of-towns'])
     ) {
         global $wp_query;
 
@@ -1088,31 +1089,61 @@ function admin_login_error_message($message)
 add_filter('login_message', 'admin_login_error_message');
 
 
-
-
-
 function custom_pagination_shortcode()
 {
     global $wp_query;
 
-    if ($wp_query->max_num_pages <= 1) {
-        return ''; // Walang pagination kung isang page lang
-    }
+    if ($wp_query->max_num_pages <= 1) return '';
 
-    $big = 999999999; // unlikely integer para sa base URL
+    $current = max(1, get_query_var('paged'));
+    $total   = $wp_query->max_num_pages;
 
-    $pagination = paginate_links(array(
-        'base'      => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
-        'format'    => '?paged=%#%',
-        'current'   => max(1, get_query_var('paged')),
-        'total'     => $wp_query->max_num_pages,
-        'prev_text' => '‹ Prev',
-        'next_text' => 'Next ›',
-        'type'      => 'list',
-        'end_size'  => 1,
-        'mid_size'  => 2,
-    ));
+    ob_start();
+?>
+    <nav class="custom-pagination">
+        <div class="pagination-inner">
+            <div class="pagination-prev" id="pagination-prev" style="display:inline-block; margin-right:10px; cursor:pointer; opacity: <?php echo $current <= 1 ? '0.5' : '1'; ?>;">
+                ‹ prev
+            </div>
 
-    return '<nav class="custom-pagination">' . $pagination . '</nav>';
+            <div class="pagination-info" style="display:inline-block;">
+                Page <input type="number" id="custom-page-input" min="1" max="<?php echo $total; ?>" value="<?php echo $current; ?>" style="width:50px;"> of <?php echo $total; ?>
+            </div>
+
+            <div class="pagination-next" id="pagination-next" style="display:inline-block; margin-left:10px; cursor:pointer; opacity: <?php echo $current >= $total ? '0.5' : '1'; ?>;">
+                next ›
+            </div>
+        </div>
+    </nav>
+
+    <script type="text/javascript">
+        (function($) {
+            var maxPages = <?php echo $total; ?>;
+
+            function goToPage(page) {
+                if (page < 1) page = 1;
+                if (page > maxPages) page = maxPages;
+
+                // Construct URL using query var paged for maximum compatibility
+                var url = new URL(window.location.href);
+                url.searchParams.set('paged', page);
+                window.location.href = url.toString();
+            }
+
+            $('#pagination-prev').on('click', function() {
+                var inputVal = parseInt($('#custom-page-input').val());
+                var currentPage = !isNaN(inputVal) ? inputVal : <?php echo $current; ?>;
+                if (currentPage > 1) goToPage(currentPage - 1);
+            });
+
+            $('#pagination-next').on('click', function() {
+                var inputVal = parseInt($('#custom-page-input').val());
+                var currentPage = !isNaN(inputVal) ? inputVal : <?php echo $current; ?>;
+                if (currentPage < maxPages) goToPage(currentPage + 1);
+            });
+        })(jQuery);
+    </script>
+<?php
+    return ob_get_clean();
 }
 add_shortcode('custom_pagination', 'custom_pagination_shortcode');
