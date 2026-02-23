@@ -50,6 +50,11 @@
         font-size: 14px;
     }
 
+    a.back-to-top-text {
+        color: #704b10;
+        font-size: 18px;
+    }
+
     .historic-right-col h6 {
         font-size: 16px;
         color: #6b4a1f;
@@ -113,7 +118,41 @@
 
     .historic-metadata div {
         font-size: 15px;
-        margin-bottom: 10px;
+        margin-bottom: 14px;
+    }
+
+    .custom-pagination {
+        text-align: center;
+        margin: 40px 0;
+    }
+
+    .pagination-inner {
+        display: inline-flex;
+        align-items: center;
+        gap: 20px;
+        font-family: serif;
+    }
+
+    .pagination-info {
+        padding: 8px 14px;
+        border: unset;
+    }
+
+    .pagination-info input#custom-page-input {
+        width: 39% !important;
+        border-color: #8b6b3f;
+    }
+
+    .pagination-prev a,
+    .pagination-next a {
+        text-decoration: none;
+        color: #8b6b3f;
+        font-weight: 500;
+    }
+
+    .disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
     }
 </style>
 <div class="container py-5">
@@ -134,9 +173,9 @@
                 </h4>
             </div>
             <!-- Top Bar: Results Count & Pagination -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="d-flex align-items-center gap-2">
-                    <small>Top <?php echo $wp_query->post_count; ?> results for <?php single_cat_title(); ?></small>
+            <div class="d-flex justify-content-between align-items-center mb-4 top-result">
+                <div class="d-flex align-items-center gap-3">
+                    <meduim>Results per page:</meduim>
                     <select class="form-select form-select-sm" style="width: auto;">
                         <option selected>10</option>
                         <option>25</option>
@@ -156,24 +195,39 @@
 
                                     <div class="d-flex gap-2 mb-2 flex-wrap">
                                         <?php
-                                        $status = get_field('status');
+                                        // Retrieve the terms assigned to the current post in the 'level_status' taxonomy
+                                        $terms = get_the_terms(get_the_ID(), 'level_status');
+                                        // Debugging: Output the $terms array
+                                        // echo '<pre>';
+                                        // print_r($terms); 
+                                        // echo '</pre>';
 
-                                        $status_map = [
-                                            'level_1'      => ['label' => 'Level I',    'class' => 'badge-open'],
-                                            'level_2'   => ['label' => 'Level II',        'class' => 'badge-viewing'],
-                                            'delisted'   => ['label' => 'Delisted',        'class' => 'badge-limited'],
-                                            'removed' => ['label' => 'Removed',     'class' => 'badge-exclusive'],
-                                        ];
+                                        // Check if terms exist and not an error
+                                        if ($terms && !is_wp_error($terms)) :
+                                            // Updated mapping of term slugs to CSS classes and labels (matching actual slugs)
+                                            $status_map = [
+                                                'level-i'  => ['label' => 'Level I',    'class' => 'badge-open'],   // Update to 'level-i'
+                                                'level-ii' => ['label' => 'Level II',   'class' => 'badge-viewing'], // Update to 'level-ii'
+                                                'delisted' => ['label' => 'Delisted',   'class' => 'badge-limited'],
+                                                'removed'  => ['label' => 'Removed',    'class' => 'badge-exclusive'],
+                                            ];
 
+                                            // Loop through the terms and display the appropriate badges only for those assigned
+                                            foreach ($terms as $term) :
+                                                // Check if the term's slug exists in the status_map
+                                                if ($term && isset($status_map[$term->slug])) :
                                         ?>
-
-                                        <?php if ($status && isset($status_map[$status])) : ?>
-                                            <span class="access-badge <?php echo esc_attr($status_map[$status]['class']); ?>">
-                                                <?php echo esc_html($status_map[$status]['label']); ?>
-                                            </span>
-                                        <?php endif; ?>
+                                                    <span class="access-badge <?php echo esc_attr($status_map[$term->slug]['class']); ?>">
+                                                        <?php echo esc_html($status_map[$term->slug]['label']); ?>
+                                                    </span>
+                                        <?php
+                                                endif;
+                                            endforeach;
+                                        else :
+                                            echo 'No terms found for this post or terms are not active.';
+                                        endif;
+                                        ?>
                                     </div>
-
                                     <!-- Thumbnail -->
                                     <div class="mb-3 historic-images">
                                         <?php if (has_post_thumbnail()) : ?>
@@ -183,8 +237,8 @@
                                             ); ?>
                                         <?php else : ?>
                                             <img
-                                                src="<?php echo home_url('/wp-content/uploads/2023/06/Simbahan-ng-Tayabas-1-1.jpg'); ?>"
-                                                class="img-fluid mx-auto d-block"
+                                                src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/phil-logo.png"
+                                                class="img-fluid mx-auto d-block default-image"
                                                 alt="Default Image">
                                         <?php endif; ?>
                                     </div>
@@ -200,45 +254,58 @@
                                     <!-- META -->
                                     <div class="text-muted small  text-start mt-5 historic-metadata">
 
-                                        <?php if ($regions = get_field('regions')) : ?>
-                                            <div>
-                                                Location: <?php echo esc_html($regions); ?>
-                                                <?php echo esc_html(get_field('province_municipality')); ?>
-                                            </div>
-                                        <?php endif; ?>
+                                        <?php
+                                        $location = get_field('location');
 
-                                        <?php if ($year = get_field('year_found')) : ?>
+                                        if ($location) :
+
+                                            if (is_array($location)) {
+                                                $location = array_map(function ($item) {
+                                                    return is_object($item) ? $item->name : $item;
+                                                }, $location);
+
+                                                $location = implode(', ', $location);
+                                            }
+                                        ?>
+
                                             <div>
-                                                Year Found: <?php echo esc_html($year); ?>
+                                                <strong class="meta-label">Location:</strong>
+                                                <span><?php echo esc_html($location); ?></span>
                                             </div>
+
                                         <?php endif; ?>
 
                                         <?php
+                                        // Kunin ang terms ng taxonomy 'registry_category' para sa current post
                                         $terms = get_the_terms(get_the_ID(), 'registry_category');
-                                        if ($terms && !is_wp_error($terms)) :
-                                        ?>
+
+                                        if ($terms && ! is_wp_error($terms)) : ?>
                                             <div>
-                                                Category:
-                                                <?php
-                                                $term_names = wp_list_pluck($terms, 'name');
-                                                echo esc_html(implode(', ', $term_names));
-                                                ?>
+                                                <strong class="meta-label">Category:</strong>
+                                                <span>
+                                                    <?php
+                                                    $term_names = wp_list_pluck($terms, 'name'); // kunin lang ang pangalan ng terms
+                                                    echo esc_html(implode(', ', $term_names));
+                                                    ?>
+                                                </span>
                                             </div>
                                         <?php endif; ?>
 
                                         <?php
+                                        // Kunin ang terms ng taxonomy 'level_status' para sa current post
                                         $terms = get_the_terms(get_the_ID(), 'level_status');
-                                        if ($terms && !is_wp_error($terms)) :
-                                        ?>
+
+                                        if ($terms && ! is_wp_error($terms)) : ?>
                                             <div>
-                                                Category:
-                                                <?php
-                                                $term_names = wp_list_pluck($terms, 'name');
-                                                echo esc_html(implode(', ', $term_names));
-                                                ?>
+                                                <strong class="meta-label">Level & Status:</strong>
+                                                <span>
+                                                    <?php
+                                                    $term_names = wp_list_pluck($terms, 'name'); // extract lang ang pangalan ng term
+                                                    echo esc_html(implode(', ', $term_names));
+                                                    ?>
+                                                </span>
                                             </div>
                                         <?php endif; ?>
-
                                     </div>
 
 
@@ -253,6 +320,30 @@
                         <p>Please try a different search term or filter.</p>
                     </div>
                 <?php endif; ?>
+            </div>
+            <!-- bottom Bar: Results Count & Pagination -->
+            <div class="d-flex justify-content-between align-items-center mb-4 top-result">
+
+                <!-- LEFT -->
+                <div class="d-flex align-items-center gap-3">
+                    <span>Results per page:</span>
+                    <select class="form-select form-select-sm" style="width: auto;">
+                        <option selected>10</option>
+                        <option>25</option>
+                        <option>50</option>
+                    </select>
+                </div>
+
+                <!-- CENTER -->
+                <div class="text-center">
+                    <a href="#top" class="back-to-top-text">Back to Top</a>
+                </div>
+
+                <!-- RIGHT -->
+                <div class="pagination-nav">
+                    <?php echo do_shortcode('[custom_pagination]'); ?>
+                </div>
+
             </div>
         </div>
 
@@ -278,6 +369,63 @@
                         <button class="button" type="submit"><i class="fas fa-search"></i></button>
                     </div>
                 </div>
+                <!-- APPLIED FILTERS SUMMARY -->
+                <?php
+                // Get current filter values
+                $level_status      = $_GET['level_status'] ?? '';
+                $registry_category = $_GET['registry_category'] ?? '';
+                $region            = $_GET['region'] ?? '';
+                $province          = $_GET['province'] ?? '';
+                $city              = $_GET['city'] ?? '';
+                $year_filter       = $_GET['year_filter'] ?? '';
+                $orderby           = $_GET['orderby'] ?? '';
+                $search_term       = $_GET['s'] ?? '';
+                ?>
+
+                <?php if ($level_status || $registry_category || $region || $province || $city || $year_filter || $orderby || $search_term): ?>
+                    <div class="row g-4 border rounded mb-5">
+                        <strong>Applied Filters:</strong>
+                        <ul class="mb-0 list-unstyled">
+
+                            <?php if ($level_status) : ?>
+                                <li>Status: <?php echo esc_html(ucfirst(str_replace('-', ' ', $level_status))); ?></li>
+                            <?php endif; ?>
+
+                            <?php if ($registry_category) : ?>
+                                <li>Category: <?php echo esc_html(ucfirst(str_replace('-', ' ', $registry_category))); ?></li>
+                            <?php endif; ?>
+
+                            <?php if ($region) : ?>
+                                <li>Region: <?php echo esc_html($region); ?></li>
+                            <?php endif; ?>
+
+                            <?php if ($province) : ?>
+                                <li>Province: <?php echo esc_html($province); ?></li>
+                            <?php endif; ?>
+
+                            <?php if ($city) : ?>
+                                <li>City/Municipality: <?php echo esc_html($city); ?></li>
+                            <?php endif; ?>
+
+                            <?php if ($year_filter) : ?>
+                                <li>Year: <?php echo esc_html($year_filter); ?></li>
+                            <?php endif; ?>
+
+                            <?php if ($orderby) : ?>
+                                <li>Sort: <?php echo esc_html(str_replace('-', ' ', $orderby)); ?></li>
+                            <?php endif; ?>
+
+                            <?php if ($search_term) : ?>
+                                <li>Search: <?php echo esc_html($search_term); ?></li>
+                            <?php endif; ?>
+
+                        </ul>
+
+                        <button class="box">
+                            <a href="<?php echo esc_url(get_post_type_archive_link('historical-sites')); ?>" class="btn btn-sm btn-secondary mt-2">Clear All</a>
+                        </button>
+                    </div>
+                <?php endif; ?>
 
                 <!-- FILTERS -->
                 <div class=" g-4 border rounded p-4 bg-body-tertiary">
@@ -286,18 +434,46 @@
                     <div class="col-12 mb-3">
                         <h6 class="mb-3 fw-bold">Filter by Status</h6>
 
-                        <select name="status" class="form-select mb-2">
+
+                        <?php
+                        $current = $_GET['level_status'] ?? '';
+                        $terms = get_terms([
+                            'taxonomy'   => 'level_status',
+                            'hide_empty' => false, // show even terms without posts
+                        ]);
+                        ?>
+
+                        <select name="level_status" class="form-select mb-2">
                             <option value="">-Select-</option>
-                            <option value="level_1" <?php selected($_GET['status'] ?? '', 'level_1'); ?>>Level I</option>
-                            <option value="level_2" <?php selected($_GET['status'] ?? '', 'level_2'); ?>>Level II</option>
-                            <option value="delisted" <?php selected($_GET['status'] ?? '', 'delisted'); ?>>Delisted</option>
-                            <option value="removed" <?php selected($_GET['status'] ?? '', 'removed'); ?>>Removed</option>
+
+                            <?php if (!is_wp_error($terms) && !empty($terms)): ?>
+                                <?php foreach ($terms as $term): ?>
+                                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected($current, $term->slug); ?>>
+                                        <?php echo esc_html($term->name); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </select>
 
-                        <select name="marker_category" class="form-select">
+                        <?php
+                        // Get terms from the 'registry_category' taxonomy
+                        $terms = get_terms([
+                            'taxonomy' => 'registry_category',
+                            'hide_empty' => false, // set true if you only want terms with posts
+                        ]);
+                        $current = $_GET['registry_category'] ?? '';
+                        ?>
+
+                        <select name="registry_category" class="form-select">
                             <option value="">-Select-</option>
-                            <option value="structures" <?php selected($_GET['marker_category'] ?? '', 'structures'); ?>>Structures</option>
-                            <option value="buildings" <?php selected($_GET['marker_category'] ?? '', 'buildings'); ?>>Buildings</option>
+
+                            <?php if (!is_wp_error($terms) && !empty($terms)): ?>
+                                <?php foreach ($terms as $term): ?>
+                                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected($current, $term->slug); ?>>
+                                        <?php echo esc_html($term->name); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </select>
                     </div>
 
@@ -323,9 +499,26 @@
                     <div class="col-12">
                         <h6 class="mb-3 fw-bold">Filter by Time</h6>
 
-                        <select name="year_filter" class="form-select mb-2">
-                            <option value="">Year</option>
-                        </select>
+                        <?php
+                        $field = get_field_object('m_dates');
+
+                        if ($field && isset($field['choices'])) :
+                            // Get all choices
+                            $choices = $field['choices'];
+
+                            // Sort keys (year values) descending
+                            krsort($choices);
+
+                        ?>
+                            <select name="year_filter" class="form-select mb-2">
+                                <option value="">Year</option>
+                                <?php foreach ($choices as $value => $label): ?>
+                                    <option value="<?php echo esc_attr($value); ?>">
+                                        <?php echo esc_html($label); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        <?php endif; ?>
 
                         <select name="orderby" class="form-select">
                             <option value="date-desc" <?php selected($_GET['orderby'] ?? '', 'date-desc'); ?>>
@@ -342,7 +535,7 @@
                         <button type="submit"
                             class="btn w-100 mt-4 fw-bold"
                             style="background-color:#6b4a1f;color:white;">
-                            Apply Filters
+                            Search
                         </button>
                     </div>
                 </div>
