@@ -9,7 +9,34 @@
 if (is_front_page()) {
   return;
 }
+        $title       = '';
+        $description = '';
+
+        if (is_singular()) {
+
+          $post_type = get_post_type_object(get_post_type());
+
+          if ($post_type) {
+            $title = $post_type->labels->name; // <-- Post Type Name
+            $description = $post_type->description ?? '';
+          }
+        } elseif (is_post_type_archive()) {
+
+          $title       = post_type_archive_title('', false);
+          $description = get_the_archive_description();
+        } elseif (is_archive()) {
+
+          $title       = get_the_archive_title();
+          $description = get_the_archive_description();
+        } elseif (is_page()) {
+
+          $title = get_the_title();
+        } else {
+
+          $title = get_bloginfo('name');
+        }
 ?>
+
 <style>
   /* Secondary collections menu */
   .collections-nav {
@@ -32,7 +59,7 @@ if (is_front_page()) {
     position: relative;
     padding-bottom: 6px;
     transition: color 0.2s ease;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 300;
   }
 
@@ -57,6 +84,11 @@ if (is_front_page()) {
 
   .historical-archive-header {
     background: url('<?php echo get_stylesheet_directory_uri(); ?>/assets/images/historic-site.png') center/cover no-repeat !important;
+    padding: 10px 0;
+  }
+
+  .books-archive-header {
+    background: url('<?php echo get_stylesheet_directory_uri(); ?>/assets/images/books-banner.png') center/cover no-repeat !important;
     padding: 10px 0;
   }
 
@@ -99,15 +131,51 @@ if (is_post_type_archive($post_types) || is_singular($post_types)) : ?>
 <?php
 $archive_class = '';
 
-if (is_post_type_archive('historical-sites')) {
+if (is_post_type_archive('historical-sites') || is_singular('historical-sites')) {
+
   $archive_class = 'historical-archive-header';
+} elseif (is_post_type_archive('book') || is_singular('book')) {
+
+  $archive_class = 'books-archive-header';
+} else {
+
+  $archive_class = 'default-archive-header';
 }
 ?>
 
-<div class="page-header <?php echo $archive_class; ?>">
+<div class="page-header <?php echo $archive_class ?? ''; ?>">
   <div class="container">
     <div class="header-inner">
-      <?php memory_breadcrumbs(); ?>
+
+      <ul class="breadcrumbs">
+        <li class="breadcrumbs-item">
+          <a class="home" href="<?php echo home_url(); ?>">Home</a>
+        </li>
+
+        <?php if ($parent_link) : ?>
+          <li class="breadcrumbs-item">
+            <i class="icofont icofont-caret-right"></i>
+            <a href="<?php echo $parent_link; ?>">
+              <?php echo $parent_name; ?>
+            </a>
+          </li>
+        <?php endif; ?>
+
+        <li class="breadcrumbs-item">
+          <i class="icofont icofont-caret-right"></i>
+          <span class="last-item"><?php echo $title; ?></span>
+        </li>
+      </ul>
+
+      <div class="page-header-title">
+        <h1><?php echo $title; ?></h1>
+
+        <?php if ($description) : ?>
+          <h2 class="entry-description"><?php echo $description; ?></h2>
+        <?php endif; ?>
+      </div>
+
     </div>
   </div>
+</div>
 </div>
