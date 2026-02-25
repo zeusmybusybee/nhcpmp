@@ -20,7 +20,9 @@
 				get_template_part('template-parts/content', 'single-foundation-default');
 			} elseif ('book' === get_post_type()) {
 				get_template_part('template-parts/content', 'single-book-default');
-			} else {
+			}elseif ('articles' === get_post_type()) {
+				get_template_part('template-parts/content', 'single-articles-default');
+			}else {
 				get_template_part('template-parts/content', 'single-default');
 			}
 			?>
