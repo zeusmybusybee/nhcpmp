@@ -9,32 +9,31 @@
 if (is_front_page()) {
   return;
 }
-        $title       = '';
-        $description = '';
+$title       = '';
+$description = '';
 
-        if (is_singular()) {
+if (is_singular()) {
 
-          $post_type = get_post_type_object(get_post_type());
+  $post_type = get_post_type_object(get_post_type());
 
-          if ($post_type) {
-            $title = $post_type->labels->name; // <-- Post Type Name
-            $description = $post_type->description ?? '';
-          }
-        } elseif (is_post_type_archive()) {
+  if ($post_type) {
+    $title = $post_type->labels->name; // <-- Post Type Name
+    $description = $post_type->description ?? '';
+  }
+} elseif (is_post_type_archive()) {
 
-          $title       = post_type_archive_title('', false);
-          $description = get_the_archive_description();
-        } elseif (is_archive()) {
+  $title       = post_type_archive_title('', false);
+  $description = get_the_archive_description();
+} elseif (is_archive()) {
 
-          $title       = get_the_archive_title();
-          $description = get_the_archive_description();
-        } elseif (is_page()) {
+  $title       = get_the_archive_title();
+  $description = get_the_archive_description();
+} elseif (is_page()) {
+  $title = get_the_title();
+} else {
 
-          $title = get_the_title();
-        } else {
-
-          $title = get_bloginfo('name');
-        }
+  $title = get_bloginfo('name');
+}
 ?>
 
 <style>
@@ -92,6 +91,35 @@ if (is_front_page()) {
     padding: 10px 0;
   }
 
+  .artifacts-archive-header {
+    background: url('<?php echo get_stylesheet_directory_uri(); ?>/assets/images/artifacts.png') center/cover no-repeat !important;
+    padding: 10px 0;
+  }
+
+  .default-bg-header {
+    background: url('<?php echo get_stylesheet_directory_uri(); ?>/assets/images/deafault.png') center/cover no-repeat !important;
+    padding: 10px 0;
+  }
+
+  .default-bg-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgb(112 75 16 / 79%);
+    /* same color with opacity */
+    z-index: 0;
+  }
+
+  .default-bg-header .header-inner {
+    position: relative;
+    z-index: 1;
+    /* para laging nasa ibabaw yung content */
+    padding: 15px 0 0 !important;
+  }
+
+  .header-inner h1 {
+    font-weight: 800 !important;
+  }
 
   /* Mobile */
   @media (max-width: 768px) {
@@ -107,7 +135,7 @@ if (is_front_page()) {
 
 
 <?php
-$post_types = ['book', 'artifacts', 'ph-heraldry-registry', 'articles', 'historical-sites', 'a-v-material', 'foundation-of-towns'];
+$post_types = ['book', 'artifacts', 'ph-heraldry-registry', 'historical-sites', 'a-v-material', 'foundation-of-towns'];
 if (is_post_type_archive($post_types) || is_singular($post_types)) : ?>
 
   <nav class="collections-nav">
@@ -132,14 +160,13 @@ if (is_post_type_archive($post_types) || is_singular($post_types)) : ?>
 $archive_class = '';
 
 if (is_post_type_archive('historical-sites') || is_singular('historical-sites')) {
-
   $archive_class = 'historical-archive-header';
 } elseif (is_post_type_archive('book') || is_singular('book')) {
-
   $archive_class = 'books-archive-header';
+} elseif (is_post_type_archive('artifacts') || is_singular('artifacts')) {
+  $archive_class = 'artifacts-archive-header';
 } else {
-
-  $archive_class = 'default-archive-header';
+  $archive_class = 'default-bg-header';
 }
 ?>
 

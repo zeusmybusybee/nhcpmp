@@ -80,71 +80,79 @@
                                 src=" <?php echo get_stylesheet_directory_uri(); ?>/assets/images/books-default.png"
                                 class="img-fluid d-block books-default-image"
                                 alt="Default Image">
-                            <?php endif; ?>
+                        <?php endif; ?>
 
-                            <!-- DETAILS COLUMN -->
-                            <div class="flex-grow-1 d-flex flex-column col-8">
+                        <!-- DETAILS COLUMN -->
+                        <div class="flex-grow-1 d-flex flex-column col-8">
 
-                                <!-- BADGES -->
-                                <div class="d-flex gap-2 mb-2 flex-wrap">
-                                    <?php
-                                    $access = get_field('level_of_access');
-                                    $availability = get_field('availability');
+                            <!-- BADGES -->
+                            <div class="d-flex gap-2 mb-2 flex-wrap">
+                                <?php
+                                $access = get_field('level_of_access');
+                                $availability = get_field('availability');
 
-                                    $access_map = [
-                                        'open'      => ['label' => 'Open Access',    'class' => 'badge-open'],
-                                        'viewing'   => ['label' => 'Viewing',        'class' => 'badge-viewing'],
-                                        'limited'   => ['label' => 'Limited',        'class' => 'badge-limited'],
-                                        'exclusive' => ['label' => 'Exclusive',      'class' => 'badge-exclusive'],
-                                    ];
+                                $access_map = [
+                                    'open'      => ['label' => 'Open Access',    'class' => 'badge-open'],
+                                    'viewing'   => ['label' => 'Viewing',        'class' => 'badge-viewing'],
+                                    'limited'   => ['label' => 'Limited',        'class' => 'badge-limited'],
+                                    'exclusive' => ['label' => 'Exclusive',      'class' => 'badge-exclusive'],
+                                ];
 
-                                    $availability_map = [
-                                        'digital' => ['label' => 'Available in Digital File', 'class' => 'badge-digital'],
-                                        'library' => ['label' => 'Available in NHCP',         'class' => 'badge-library'],
-                                    ];
-                                    ?>
+                                $availability_map = [
+                                    'digital' => ['label' => 'Available in Digital File', 'class' => 'badge-digital'],
+                                    'library' => ['label' => 'Available in NHCP',         'class' => 'badge-library'],
+                                ];
+                                ?>
 
-                                    <?php if ($access && isset($access_map[$access])) : ?>
-                                        <span class="access-badge <?php echo esc_attr($access_map[$access]['class']); ?>">
-                                            <?php echo esc_html($access_map[$access]['label']); ?>
-                                        </span>
-                                    <?php endif; ?>
-
-                                    <?php if ($availability && isset($availability_map[$availability])) : ?>
-                                        <span class="availability-badge <?php echo esc_attr($availability_map[$availability]['class']); ?>">
-                                            <?php echo esc_html($availability_map[$availability]['label']); ?>
-                                        </span>
-                                    <?php endif; ?>
-                                </div>
-
-                                <!-- TITLE -->
-                                <h2 class="books-title fw-semibold ">
-                                    <?php the_title(); ?>
-                                </h2>
-
-                                <!-- CALL NUMBER -->
-                                <?php if ($call_number = get_field('call_number')) : ?>
-                                    <small class="text-muted fst-italic mb-2 d-block">
-                                        Call Number: <?php echo esc_html($call_number); ?>
-                                    </small>
+                                <?php if ($access && isset($access_map[$access])) : ?>
+                                    <span class="access-badge <?php echo esc_attr($access_map[$access]['class']); ?>">
+                                        <?php echo esc_html($access_map[$access]['label']); ?>
+                                    </span>
                                 <?php endif; ?>
 
-                                <!-- DESCRIPTION -->
-                                <p class="text-muted mb-3 books-content">
-                                    <?php echo wp_trim_words(get_the_excerpt(), 45); ?>
-                                </p>
-
-                                <!-- BOTTOM META -->
-                                <div class="d-flex justify-content-between mt-auto text-muted small">
-                                    <?php if ($location = get_field('location')) : ?>
-                                        <span>Location: <?php echo esc_html($location); ?></span>
-                                    <?php endif; ?>
-
-                                    <span>Category: Book</span>
-                                </div>
-
+                                <?php if ($availability && isset($availability_map[$availability])) : ?>
+                                    <span class="availability-badge <?php echo esc_attr($availability_map[$availability]['class']); ?>">
+                                        <?php echo esc_html($availability_map[$availability]['label']); ?>
+                                    </span>
+                                <?php endif; ?>
                             </div>
+
+                            <!-- TITLE -->
+                            <h2 class="books-title fw-semibold ">
+                                <?php the_title(); ?>
+                            </h2>
+
+                            <!-- CALL NUMBER -->
+                            <?php if ($call_number = get_field('call_number')) : ?>
+                                <small class="text-muted fst-italic mb-2 d-block">
+                                    Call Number: <?php echo esc_html($call_number); ?>
+                                </small>
+                            <?php endif; ?>
+
+                            <!-- DESCRIPTION -->
+                            <p class="text-muted mb-3 books-content">
+                                <?php
+                                $excerpt = get_the_excerpt();
+
+                                if (! empty($excerpt)) {
+                                    echo wp_trim_words($excerpt, 45);
+                                } else {
+                                    echo 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.';
+                                }
+                                ?>
+                            </p>
+
+                            <!-- BOTTOM META -->
+                            <div class="d-flex justify-content-between mt-auto text-muted small">
+                                <?php if ($location = get_field('location')) : ?>
+                                    <span>Location: <?php echo esc_html($location); ?></span>
+                                <?php endif; ?>
+
+                                <span>Category: Book</span>
                             </div>
+
+                        </div>
+                    </div>
                 </a>
             <?php endwhile; ?>
             <!-- bottom Bar: Results Count & Pagination -->
@@ -335,7 +343,7 @@
                     <!-- APPLY BUTTON -->
                     <div class="col-12 mt-4">
                         <button type="submit"
-                            class="btn w-100 fw-bold"
+                            class="btn w-100 fw-bold archive-filter-btn"
                             style="background-color:#6b4a1f;color:white;">
                             Search
                         </button>
