@@ -478,3 +478,11 @@ ul.page-numbers {
     img.default-image {
     object-fit: contain;
 }
+.archive-filter-btn {
+    border-radius: 10px !important;
+    border: none !important;
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0;
+    margin-top: 30px !important;
+}

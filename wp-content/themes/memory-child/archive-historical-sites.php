@@ -377,7 +377,7 @@
                     <!-- BUTTON -->
                     <div class="col-12">
                         <button type="submit"
-                            class="btn w-100 mt-4 fw-bold"
+                            class="btn w-100  fw-bold archive-filter-btn"
                             style="background-color:#6b4a1f;color:white;">
                             Search
                         </button>

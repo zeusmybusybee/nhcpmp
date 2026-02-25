@@ -69,6 +69,33 @@
         font-weight: 300 !important;
         margin: 0;
     }
+
+    .artifacts-archive-title {
+        font-size: 20px;
+        font-weight: 300 !important;
+        line-height: 20px;
+    }
+
+    .artifacts-pages .custom-pagination {
+        text-align: center;
+        margin: 15px 0 0;
+    }
+
+    .artifacts-pages .pagination-prev,
+    .artifacts-pages .pagination-next,
+    .artifacts-pages .pagination-info {
+        color: #fff;
+    }
+
+    .post-type-archive-artifacts .back-to-top-text {
+        color: #fff !important;
+    }
+
+    /* artifacts filter */
+    .artifacts-filter div label {
+        font-size: 15px;
+        font-family: 'Ysabeau', sans-serif;
+    }
 </style>
 
 <div class="container my-5 artifacts-pages">
@@ -97,24 +124,31 @@
                 </div>
 
 
-                <!-- Top Bar: Results Count & Pagination -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="d-flex align-items-center gap-2 text-white">
-                        <meduim>Top <?php echo $wp_query->post_count; ?> results for <?php single_cat_title(); ?></meduim>
-                        <select class="form-select form-select-md" style="width: 50px;">
+                <!-- bottom Bar: Results Count & Pagination -->
+                <div class="d-flex justify-content-between align-items-center mb-4 top-result">
+
+                    <!-- LEFT -->
+                    <div class="d-flex align-items-center gap-3 text-light">
+                        <span>Results per page:</span>
+                        <select class="form-select form-select-sm" style="width: auto;">
                             <option selected>10</option>
                             <option>25</option>
                             <option>50</option>
                         </select>
                     </div>
+
+
+                    <!-- RIGHT -->
                     <div class="pagination-nav">
-                        <?php the_posts_pagination(['type' => 'list']); ?>
+                        <?php echo do_shortcode('[custom_pagination]'); ?>
                     </div>
+
                 </div>
-                <div class="row g-4">
+
+                <div class="row g-4 mt-0">
                     <?php if (have_posts()) : ?>
                         <?php while (have_posts()) : the_post(); ?>
-                            <div class="col-lg-4 col-md-6">
+                            <div class="col-lg-4 col-md-6 mb-5">
                                 <div class=" h-100 border-0 shadow-sm text-center">
 
                                     <!-- Thumbnail -->
@@ -131,7 +165,7 @@
 
 
                                     <!-- TITLE -->
-                                    <h3 class="fw-semibold mb-2 text-start">
+                                    <h3 class="fw-semibold mb-2 text-start artifacts-archive-title">
                                         <a href="<?php the_permalink(); ?>" class="text-decoration-none text-white text-start">
                                             <?php the_title(); ?>
                                         </a>
@@ -155,6 +189,30 @@
 
 
             </div>
+            <!-- bottom Bar: Results Count & Pagination -->
+            <div class="d-flex justify-content-between align-items-center mb-4 top-result">
+
+                <!-- LEFT -->
+                <div class="d-flex align-items-center gap-3 text-light">
+                    <span>Results per page:</span>
+                    <select class="form-select form-select-sm" style="width: auto;">
+                        <option selected>10</option>
+                        <option>25</option>
+                        <option>50</option>
+                    </select>
+                </div>
+
+                <!-- CENTER -->
+                <div class="text-center">
+                    <a href="#top" class="back-to-top-text">Back to Top</a>
+                </div>
+
+                <!-- RIGHT -->
+                <div class="pagination-nav">
+                    <?php echo do_shortcode('[custom_pagination]'); ?>
+                </div>
+
+            </div>
         </div>
 
         <!-- RIGHT: SIDEBAR -->
@@ -171,7 +229,7 @@
             <form method="get" action="<?php echo esc_url(get_post_type_archive_link('artifacts')); ?>" class="p-4">
 
                 <!-- SEARCH -->
-                <div class="row g-4 border rounded mb-5">
+                <div class="row g-4 border rounded mb-5 ">
                     <div class="input-group">
                         <input type="search" name="s" class="form-control border-0" placeholder="Search items..."
                             value="<?php echo esc_attr($search_term); ?>">
@@ -181,7 +239,7 @@
 
                 <!-- APPLIED FILTERS SUMMARY -->
                 <?php if (!empty($location_items_selected) || !empty($type_of_artifacts_selected) || !empty($sort_by) || !empty($search_term)): ?>
-                    <div class="row g-4 border rounded mb-5">
+                    <div class="row g-4 border rounded mb-5 artifacts-filter">
                         <strong>Applied Filters:</strong>
                         <ul class="mb-0 list-unstyled">
                             <?php
@@ -208,8 +266,8 @@
                 <div class="row g-4 border rounded p-4 bg-body-tertiary">
 
                     <!-- HERALDIC ITEMS -->
-                    <div class="col-6 text-white ">
-                        <h6 class="section-title text-white ">Location:</h6>
+                    <div class="col-6 text-white artifacts-filter">
+                        <h5 class="section-title text-white ">Location:</h5>
                         <?php
                         $items_options = [
                             'central'     => 'NHCP Central',
@@ -228,8 +286,8 @@
                     </div>
 
                     <!-- SORTING -->
-                    <div class="col-6">
-                        <h6 class="section-title text-white">Sort by:</h6>
+                    <div class="col-6 artifacts-filter">
+                        <h5 class="section-title text-white">Sort by:</h5>
                         <?php
                         $sort_options = [
                             'relevant' => 'Most relevant',
@@ -248,8 +306,8 @@
                     </div>
 
                     <!-- SEALS / LOGOS -->
-                    <div class="col-12 mt-4">
-                        <h6 class="section-title text-white">Type of Artifact</h6>
+                    <div class="col-12 mt-4 artifacts-filter">
+                        <h5 class="section-title text-white">Type of Artifact</h5>
 
                         <div class="row">
                             <?php
@@ -286,7 +344,7 @@
 
 
                     <div class="col-12 mt-4">
-                        <h6 class="fw-bold text-white">Filter by:</h6>
+                        <h5 class="fw-bold text-white">Filter by:</h5>
 
                         <div class="container p-3  text-light">
                             <select name="personage" class="form-select">
@@ -309,8 +367,8 @@
 
                     <!-- APPLY BUTTON -->
                     <div class="col-12 mt-4">
-                        <button type="submit" class="btn w-100 fw-bold" style="background-color:#6b4a1f;color:white;">
-                            Apply Filters
+                        <button type="submit" class="btn w-100 fw-bold archive-filter-btn" style="background-color:#6b4a1f;color:white;">
+                            Search
                         </button>
                     </div>
 

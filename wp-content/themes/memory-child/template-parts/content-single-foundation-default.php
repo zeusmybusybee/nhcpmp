@@ -326,9 +326,9 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                     <!-- APPLY BUTTON -->
                     <div class="col-12 mt-4">
                         <button type="submit"
-                            class="btn w-100 fw-bold"
+                            class="btn w-100 fw-bold archive-filter-btn"
                             style="background-color:#6b4a1f;color:white;">
-                            Apply Filters
+                            Search
                         </button>
                     </div>
 

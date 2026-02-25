@@ -9,7 +9,7 @@
 
 @font-face {
   font-family: 'Ysabeau';
-  src: url('assets/fonts/Ysabeau-VariableFont_wght.ttf') format('truetype');
+  src: url('/nhcpmp/wp-content/themes/memory-child/assets/fonts/Ysabeau-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -17,7 +17,7 @@
 
 @font-face {
   font-family: 'Ysabeau';
-  src: url('assets/fonts/Ysabeau-Italic-VariableFont_wght.ttf') format('truetype');
+  src: url('/nhcpmp/wp-content/themes/memory-child/assets/fonts/Ysabeau-Italic-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-style: italic;
   font-display: swap;

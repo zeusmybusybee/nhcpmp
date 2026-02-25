@@ -120,16 +120,16 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
     }
 
     .single-books h2.main-title {
-
-        font-size: 50px;
+        font-size: 40px;
         margin: 30px 0;
         font-weight: 800;
-        line-height: 60px;
+        line-height: 50px;
     }
 
     .single-books .post-content a {
         padding: 10px 68px;
         font-size: 20px;
+        border-radius: 10px !important;
         font-weight: 800;
         line-height: 22px;
         text-transform: none;
@@ -166,7 +166,7 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
         <!-- left column -->
         <div class="col-md-8 left-column  ">
             <div class="d-flex gap-4 c_bg-lightgray pt-5 pl-4 pr-4 pb-5 single-item rounded flex-wrap">
-                <div class="col-5">
+                <div class="col-4">
                     <?php
                     if ('show-ft' === $memory_hide_featured_image) {
 
@@ -185,7 +185,7 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                     }
                     ?>
                 </div>
-                <div class="col-6">
+                <div class="col-7">
                     <div class="d-flex gap-2 mb-2 flex-wrap">
                         <?php
                         $access = get_field('level_of_access');
@@ -332,8 +332,15 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
 
                                             <h3 class="mb-2 mt-4"><?php the_title(); ?></h3>
 
-                                            <?php echo wp_trim_words(get_the_content(), 40, '...'); ?>
+                                            <?php
+                                            $content = get_the_content();
 
+                                            if (! empty($content)) {
+                                                echo wp_trim_words($content, 45);
+                                            } else {
+                                                echo 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.';
+                                            }
+                                            ?>
 
 
                                             <!-- BOTTOM META -->
@@ -528,7 +535,7 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                     <!-- APPLY BUTTON -->
                     <div class="col-12 mt-4">
                         <button type="submit"
-                            class="btn w-100 fw-bold"
+                            class="btn w-100 fw-bold archive-filter-btn"
                             style="background-color:#6b4a1f;color:white;">
                             Search
                         </button>
