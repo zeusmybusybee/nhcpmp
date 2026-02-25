@@ -16,10 +16,12 @@
 			the_post();
 			?>
 			<?php
-			if ( 'foundation-of-towns' === get_post_type() ) {
-				get_template_part( 'template-parts/content', 'single-foundation-default' );
+			if ('foundation-of-towns' === get_post_type()) {
+				get_template_part('template-parts/content', 'single-foundation-default');
+			} elseif ('book' === get_post_type()) {
+				get_template_part('template-parts/content', 'single-book-default');
 			} else {
-				get_template_part( 'template-parts/content', 'single-default' );
+				get_template_part('template-parts/content', 'single-default');
 			}
 			?>
 

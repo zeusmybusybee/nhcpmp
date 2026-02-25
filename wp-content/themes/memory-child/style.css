@@ -9,7 +9,7 @@
 
 @font-face {
   font-family: 'Ysabeau';
-  src: url('../fonts/Ysabeau-VariableFont_wght.ttf') format('truetype');
+  src: url('assets/fonts/Ysabeau-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -17,12 +17,11 @@
 
 @font-face {
   font-family: 'Ysabeau';
-  src: url('../fonts/Ysabeau-Italic-VariableFont_wght.ttf') format('truetype');
+  src: url('assets/fonts/Ysabeau-Italic-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-style: italic;
   font-display: swap;
 }
-
 :root {
   --brown: #7a4f1d;
   --light: #f7f5f2;
@@ -162,9 +161,10 @@ div#content {
   margin: 0;
 }
 ul#primary-menu li a {
-    font-size: 18px;
+    font-size: 20px;
     text-transform: none;
-    font-weight: 400;
+        font-family: 'Ysabeau', sans-serif;
+    font-weight: 600;
     margin: 0 ;
     color: #8b5e3c;
     padding: 5px 20px;
