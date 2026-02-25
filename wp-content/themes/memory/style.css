@@ -1691,9 +1691,6 @@ ol.children {
   margin-bottom: 0;
 }
 
-.single .page-header {
-  display: none;
-}
 .single.single-below-header .page-header {
   display: block;
 }

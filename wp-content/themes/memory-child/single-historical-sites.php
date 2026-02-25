@@ -154,6 +154,29 @@
         opacity: 0.4;
         cursor: not-allowed;
     }
+
+    .custom-tag {
+        background-color: #ffe5e5;
+        color: #dc3545;
+        border: 1px solid #dc3545;
+        padding: 6px 12px;
+        border-radius: 50px;
+        font-size: 14px;
+        text-decoration: none;
+        display: inline-block;
+        margin: 4px 4px 4px 0;
+        transition: 0.3s ease;
+    }
+
+    .custom-tag:hover {
+        background-color: #dc3545;
+        color: #fff;
+    }
+
+    .historic-tags span,
+    .historic-tags a {
+        font-size: 16px;
+    }
 </style>
 <div class="container my-5">
     <div class="row">
@@ -247,6 +270,38 @@
 
                         <div class="content mb-5">
                             <?php the_content(); ?>
+                            <div class=" mt-5 historic-tags">
+                                <div class=" mt-5">
+                                    <div class="p-4 bg-light">
+                                        <p class="mb-0">
+                                            <span class="fw-semibold">Tags:</span>
+
+                                            <?php
+                                            $terms = get_the_terms(get_the_ID(), 'labels');
+
+                                            if ($terms && !is_wp_error($terms)) {
+
+                                                $total = count($terms);
+                                                $count = 0;
+
+                                                foreach ($terms as $term) {
+                                                    $count++;
+
+                                                    echo '<a href="' . esc_url(get_term_link($term)) . '" class="text-danger fst-italic text-decoration-none">';
+                                                    echo esc_html($term->name);
+                                                    echo '</a>';
+
+                                                    if ($count < $total) {
+                                                        echo ', ';
+                                                    }
+                                                }
+                                            }
+                                            ?>
+
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="content list_tags">
