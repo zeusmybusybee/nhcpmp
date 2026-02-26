@@ -385,53 +385,54 @@
                 </div>
 
 
-                <?php
-                $terms = get_terms([
-                    'taxonomy'   => 'level_status',
-                    'hide_empty' => false,
-                ]);
-                ?>
-
-                <div class=" my-5">
-                    <div class="registry-box text-center border">
-                        <h3 class="fw-bold mb-4">REGISTRY IN NUMBERS</h3>
-
-                        <div class="row g-4 justify-content-center">
-
-                            <?php foreach ($terms as $term) : ?>
-
-                                <?php
-                                // Custom colors per term slug
-                                $colors = [
-                                    'level-i'  => 'bg-success',
-                                    'level-ii' => 'bg-warning',
-                                    'delisted' => 'bg-brown',
-                                    'removed'  => 'bg-danger',
-                                ];
-
-                                $bg_class = isset($colors[$term->slug]) ? $colors[$term->slug] : 'bg-primary';
-                                ?>
-
-                                <div class="col-md-5 col-6">
-                                    <div class="stat-card <?php echo $bg_class; ?>">
-                                        <div class="stat-number">
-                                            <?php echo $term->count; ?>
-                                        </div>
-                                        <div class="stat-label">
-                                            <?php echo strtoupper($term->name); ?>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            <?php endforeach; ?>
-
-                        </div>
-                    </div>
-                </div>
 
 
                 <div class="sidebar_article">
                     <?php get_template_part('partials/sidebar-welcome'); ?>
+                    <?php
+                    $terms = get_terms([
+                        'taxonomy'   => 'level_status',
+                        'hide_empty' => false,
+                    ]);
+                    ?>
+
+                    <div class=" my-5">
+                        <div class="registry-box text-center border">
+                            <h3 class="fw-bold mb-4">REGISTRY IN NUMBERS</h3>
+
+                            <div class="row g-4 justify-content-center">
+
+                                <?php foreach ($terms as $term) : ?>
+
+                                    <?php
+                                    // Custom colors per term slug
+                                    $colors = [
+                                        'level-i'  => 'bg-success',
+                                        'level-ii' => 'bg-warning',
+                                        'delisted' => 'bg-brown',
+                                        'removed'  => 'bg-danger',
+                                    ];
+
+                                    $bg_class = isset($colors[$term->slug]) ? $colors[$term->slug] : 'bg-primary';
+                                    ?>
+
+                                    <div class="col-md-5 col-6">
+                                        <div class="stat-card <?php echo $bg_class; ?>">
+                                            <div class="stat-number">
+                                                <?php echo $term->count; ?>
+                                            </div>
+                                            <div class="stat-label">
+                                                <?php echo strtoupper($term->name); ?>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                <?php endforeach; ?>
+
+                            </div>
+                        </div>
+                    </div>
+
                     <?php get_template_part('partials/sidebar-location-info'); ?>
 
                 </div>

@@ -160,6 +160,10 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
         border-color: #704B10;
         margin-right: 10px;
     }
+
+    .books-single-content h2 {
+        margin: 0 0 15px;
+    }
 </style>
 <div class="container single-books">
     <div class="row justify-content-between">
@@ -229,7 +233,7 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
 
                 </div>
                 <div class="container my-5">
-                    <div class="row align-items-start gap-5">
+                    <div class="row align-items-start gap-5 books-single-content ">
 
                         <!-- Left Side (Description Box) -->
                         <div class="col-md-5 mb-4">
