@@ -1,4 +1,27 @@
 <?php get_header(); ?>
+<style>
+    h2.books-title {
+        font-size: 25px;
+        margin: 15px 0;
+    }
+
+    .books-filter h5 {
+        color: #704B10;
+    }
+
+    .books-filter div label {
+        font-size: 18px;
+        font-family: 'Ysabeau', sans-serif;
+        color: #704B10;
+    }
+
+    .books-filter .form-check-input[type=radio] {
+        border-radius: 62%;
+        padding: 8px;
+        border-color: #704B10;
+        margin-right: 10px;
+    }
+</style>
 
 <div class="container py-5">
 
@@ -6,105 +29,161 @@
 
         <!-- LEFT: RESULTS -->
         <div class="col-lg-8">
+            <?php
+            global $wp_query;
+
+
+            ?>
+
+            <div class="d-flex justify-content-between align-items-center mb-3 total-result  p-4 mb-3">
+                <h4 class="mb-0 mt-0" style="color:#704b10">
+                    Top <?php echo $wp_query->post_count;  ?> results for All Towns
+                </h4>
+            </div>
             <!-- Top Bar: Results Count & Pagination -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="d-flex align-items-center gap-2">
-                    <small>Top <?php echo $wp_query->post_count; ?> results for <?php single_cat_title(); ?></small>
+            <!-- bottom Bar: Results Count & Pagination -->
+            <div class="d-flex justify-content-between align-items-center mb-4 top-result">
+
+                <!-- LEFT -->
+                <div class="d-flex align-items-center gap-3">
+                    <span>Results per page:</span>
                     <select class="form-select form-select-sm" style="width: auto;">
                         <option selected>10</option>
                         <option>25</option>
                         <option>50</option>
                     </select>
                 </div>
+
+                <!-- CENTER -->
+
+
+                <!-- RIGHT -->
                 <div class="pagination-nav">
-                    <?php the_posts_pagination(['type' => 'list']); ?>
+                    <?php echo do_shortcode('[custom_pagination]'); ?>
                 </div>
+
             </div>
             <?php while (have_posts()) : the_post(); ?>
-                <div class="d-flex gap-4 mb-4 p-4 bg-body-tertiary rounded">
+                <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
+                    <div class="d-flex gap-4 mb-4 book-post-item bg-body-tertiary rounded">
 
-                    <!-- Thumbnail -->
-                    <?php if (has_post_thumbnail()) : ?>
-                        <div class="flex-shrink-0" style="width:120px;">
-                            <?php the_post_thumbnail(
-                                'medium',
-                                ['class' => 'img-fluid rounded']
-                            ); ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <!-- DETAILS COLUMN -->
-                    <div class="flex-grow-1 d-flex flex-column">
-
-                        <!-- BADGES -->
-                        <div class="d-flex gap-2 mb-2 flex-wrap">
-                            <?php
-                            $access = get_field('level_of_access');
-                            $availability = get_field('availability');
-
-                            $access_map = [
-                                'open'      => ['label' => 'Open Access',    'class' => 'badge-open'],
-                                'viewing'   => ['label' => 'Viewing',        'class' => 'badge-viewing'],
-                                'limited'   => ['label' => 'Limited',        'class' => 'badge-limited'],
-                                'exclusive' => ['label' => 'Exclusive',     'class' => 'badge-exclusive'],
-                            ];
-
-                            $availability_map = [
-                                'digital' => ['label' => 'Available in Digital File', 'class' => 'badge-digital'],
-                                'library' => ['label' => 'Available in NHCP',        'class' => 'badge-library'],
-                            ];
-                            ?>
-
-                            <?php if ($access && isset($access_map[$access])) : ?>
-                                <span class="access-badge <?php echo esc_attr($access_map[$access]['class']); ?>">
-                                    <?php echo esc_html($access_map[$access]['label']); ?>
-                                </span>
-                            <?php endif; ?>
-
-                            <?php if ($availability && isset($availability_map[$availability])) : ?>
-                                <span class="availability-badge <?php echo esc_attr($availability_map[$availability]['class']); ?>">
-                                    <?php echo esc_html($availability_map[$availability]['label']); ?>
-                                </span>
-                            <?php endif; ?>
-                        </div>
-
-                        <!-- TITLE -->
-                        <h5 class="mb-1">
-                            <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark fw-semibold">
-                                <?php the_title(); ?>
-                            </a>
-                        </h5>
-
-                        <!-- CALL NUMBER -->
-                        <?php if ($call_number = get_field('call_number')) : ?>
-                            <small class="text-muted fst-italic mb-2 d-block">
-                                Call Number: <?php echo esc_html($call_number); ?>
-                            </small>
+                        <!-- Thumbnail -->
+                        <?php if (has_post_thumbnail()) : ?>
+                            <div class="flex-shrink-0 col-3 text-center">
+                                <?php the_post_thumbnail(
+                                    'medium',
+                                    ['class' => 'img-fluid rounded']
+                                ); ?>
+                            </div>
+                        <?php else : ?>
+                            <img
+                                src=" <?php echo get_stylesheet_directory_uri(); ?>/assets/images/books-default.png"
+                                class="img-fluid d-block books-default-image"
+                                alt="Default Image">
                         <?php endif; ?>
 
-                        <!-- DESCRIPTION -->
-                        <p class="text-muted mb-3">
-                            <?php echo wp_trim_words(get_the_excerpt(), 45); ?>
-                        </p>
+                        <!-- DETAILS COLUMN -->
+                        <div class="flex-grow-1 d-flex flex-column col-8">
 
-                        <!-- BOTTOM META -->
-                        <div class="d-flex justify-content-between mt-auto text-muted small">
-                            <?php if ($location = get_field('location')) : ?>
-                                <span>Location: <?php echo esc_html($location); ?></span>
+                            <!-- BADGES -->
+                            <div class="d-flex gap-2 mb-2 flex-wrap">
+                                <?php
+                                $access = get_field('level_of_access');
+                                $availability = get_field('availability');
+
+                                $access_map = [
+                                    'open'      => ['label' => 'Open Access',    'class' => 'badge-open'],
+                                    'viewing'   => ['label' => 'Viewing',        'class' => 'badge-viewing'],
+                                    'limited'   => ['label' => 'Limited',        'class' => 'badge-limited'],
+                                    'exclusive' => ['label' => 'Exclusive',      'class' => 'badge-exclusive'],
+                                ];
+
+                                $availability_map = [
+                                    'digital' => ['label' => 'Available in Digital File', 'class' => 'badge-digital'],
+                                    'library' => ['label' => 'Available in NHCP',         'class' => 'badge-library'],
+                                ];
+                                ?>
+
+                                <?php if ($access && isset($access_map[$access])) : ?>
+                                    <span class="access-badge <?php echo esc_attr($access_map[$access]['class']); ?>">
+                                        <?php echo esc_html($access_map[$access]['label']); ?>
+                                    </span>
+                                <?php endif; ?>
+
+                                <?php if ($availability && isset($availability_map[$availability])) : ?>
+                                    <span class="availability-badge <?php echo esc_attr($availability_map[$availability]['class']); ?>">
+                                        <?php echo esc_html($availability_map[$availability]['label']); ?>
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- TITLE -->
+                            <h2 class="books-title fw-semibold ">
+                                <?php the_title(); ?>
+                            </h2>
+
+                            <!-- CALL NUMBER -->
+                            <?php if ($call_number = get_field('call_number')) : ?>
+                                <small class="text-muted fst-italic mb-2 d-block">
+                                    Call Number: <?php echo esc_html($call_number); ?>
+                                </small>
                             <?php endif; ?>
 
-                            <span>Category: Book</span>
+                            <!-- DESCRIPTION -->
+                            <p class="text-muted mb-3 books-content">
+                                <?php
+                                $excerpt = get_the_excerpt();
+
+                                if (! empty($excerpt)) {
+                                    echo wp_trim_words($excerpt, 45);
+                                } else {
+                                    echo 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.';
+                                }
+                                ?>
+                            </p>
+
+                            <!-- BOTTOM META -->
+                            <div class="d-flex justify-content-between mt-auto text-muted small">
+                                <?php if ($location = get_field('location')) : ?>
+                                    <span>Location: <?php echo esc_html($location); ?></span>
+                                <?php endif; ?>
+
+                                <span>Category: Book</span>
+                            </div>
+
                         </div>
-
                     </div>
-                </div>
+                </a>
             <?php endwhile; ?>
+            <!-- bottom Bar: Results Count & Pagination -->
+            <div class="d-flex justify-content-between align-items-center mb-4 top-result">
 
+                <!-- LEFT -->
+                <div class="d-flex align-items-center gap-3">
+                    <span>Results per page:</span>
+                    <select class="form-select form-select-sm" style="width: auto;">
+                        <option selected>10</option>
+                        <option>25</option>
+                        <option>50</option>
+                    </select>
+                </div>
+
+                <!-- CENTER -->
+                <div class="text-center">
+                    <a href="#top" class="back-to-top-text">Back to Top</a>
+                </div>
+
+                <!-- RIGHT -->
+                <div class="pagination-nav">
+                    <?php echo do_shortcode('[custom_pagination]'); ?>
+                </div>
+
+            </div>
 
         </div>
 
         <!-- RIGHT: SIDEBAR -->
-        <div class="col-lg-4">
+        <div class="col-lg-4 archive-right-col">
 
             <form method="get"
                 action="<?php echo esc_url(get_post_type_archive_link('book')); ?>"
@@ -132,8 +211,8 @@
                 <div class="row g-4 border rounded p-4 bg-body-tertiary">
 
                     <!-- FILTER BY -->
-                    <div class="col-6">
-                        <h6 class="mb-3 fw-bold">Filter by:</h6>
+                    <div class="col-6 books-filter">
+                        <h5 class="mb-3 fw-bold ">Filter by:</h5>
 
                         <?php $filter = $_GET['filter'] ?? ''; ?>
 
@@ -175,8 +254,8 @@
                     </div>
 
                     <!-- SORT BY -->
-                    <div class="col-6">
-                        <h6 class="mb-3 fw-bold">Sort by:</h6>
+                    <div class="col-6 books-filter">
+                        <h5 class="mb-3 fw-bold ">Sort by:</h5>
 
                         <?php $orderby = $_GET['orderby'] ?? ''; ?>
 
@@ -212,8 +291,8 @@
                     </div>
 
                     <!-- LEVEL OF ACCESS -->
-                    <div class="col-6 mt-4">
-                        <h6 class="mb-3 fw-bold">Level of Access</h6>
+                    <div class="col-6 mt-4 books-filter">
+                        <h5 class="mb-3 fw-bold">Level of Access</h5>
 
                         <?php $access = $_GET['level_of_access'] ?? ''; ?>
 
@@ -243,8 +322,8 @@
                     </div>
 
                     <!-- AVAILABILITY -->
-                    <div class="col-6 mt-4">
-                        <h6 class="mb-3 fw-bold">Availability:</h6>
+                    <div class="col-6 mt-4 books-filter">
+                        <h5 class="mb-3 fw-bold ">Availability:</h5>
 
                         <?php $availability = $_GET['availability'] ?? ''; ?>
 
@@ -264,9 +343,9 @@
                     <!-- APPLY BUTTON -->
                     <div class="col-12 mt-4">
                         <button type="submit"
-                            class="btn w-100 fw-bold"
+                            class="btn w-100 fw-bold archive-filter-btn"
                             style="background-color:#6b4a1f;color:white;">
-                            Apply Filters
+                            Search
                         </button>
                     </div>
 

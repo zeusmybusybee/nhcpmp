@@ -9,7 +9,7 @@
 
 @font-face {
   font-family: 'Ysabeau';
-  src: url('../fonts/Ysabeau-VariableFont_wght.ttf') format('truetype');
+  src: url('/nhcpmp/wp-content/themes/memory-child/assets/fonts/Ysabeau-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
@@ -17,12 +17,11 @@
 
 @font-face {
   font-family: 'Ysabeau';
-  src: url('../fonts/Ysabeau-Italic-VariableFont_wght.ttf') format('truetype');
+  src: url('/nhcpmp/wp-content/themes/memory-child/assets/fonts/Ysabeau-Italic-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-style: italic;
   font-display: swap;
 }
-
 :root {
   --brown: #7a4f1d;
   --light: #f7f5f2;
@@ -153,15 +152,19 @@ div#content {
 }
 
 .site-branding {
-    padding: 30px 0 40px;
+    padding: 0 0 10px;
     width: 100%;
-    max-width: 360px;
-    filter: sepia(100%) saturate(300%) brightness(70%) hue-rotate(-15deg);
+    max-width: 403px;
+    /* filter: sepia(100%) saturate(300%) brightness(70%) hue-rotate(-15deg); */
+}
+.site-header .custom-logo-link img, .site-header .retina-logo img{
+  margin: 0;
 }
 ul#primary-menu li a {
-    font-size: 18px;
+    font-size: 20px;
     text-transform: none;
-    font-weight: 400;
+        font-family: 'Ysabeau', sans-serif;
+    font-weight: 600;
     margin: 0 ;
     color: #8b5e3c;
     padding: 5px 20px;
@@ -187,3 +190,16 @@ ul#primary-menu  li:hover a {
 .page-header,.page-header:before {
   border-bottom: none!important;
 }
+   .btn-custom-green {
+        padding: 10px 87px;
+        font-size: 20px;
+        font-weight: 800;
+        background: #09d577;
+        border: none;
+        color: #fff;
+    }
+       .btn-custom-green:hover {
+
+        background: #09d57780;
+         color: #fff;
+    }

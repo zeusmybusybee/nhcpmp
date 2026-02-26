@@ -1,15 +1,45 @@
 <?php get_header(); ?>
+<style>
+    .post-type-archive-ph-heraldry-registry div#content {
+        background: #fff;
+    }
 
+    .ph-heraldy-left-col .card {
+        background: #FAFAFA;
+    }
+
+    .ph-heraldy-title {
+        font-size: 30px;
+        text-align: left;
+        margin: 10px 0;
+        line-height: 30px;
+    }
+
+    .meta-ph-heraldy div {
+        font-size: 15px;
+    }
+</style>
 <div class="container py-5">
 
     <div class="row">
 
         <!-- LEFT: RESULTS -->
-        <div class="col-lg-8">
+        <div class="col-lg-8 ph-heraldy-left-col">
+            <?php
+            global $wp_query;
+
+
+            ?>
+
+            <div class="d-flex justify-content-between align-items-center mb-3 total-result  p-4 mb-4">
+                <h4 class="mb-0 mt-0" style="color:#704b10">
+                    Top <?php echo $wp_query->post_count;  ?> results for All heraldry
+                </h4>
+            </div>
             <!-- Top Bar: Results Count & Pagination -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="d-flex align-items-center gap-2">
-                    <small>Top <?php echo $wp_query->post_count; ?> results for <?php single_cat_title(); ?></small>
+            <div class="d-flex justify-content-between align-items-center mb-4 top-result">
+                <div class="d-flex align-items-center gap-3">
+                    <meduim>Results per page:</meduim>
                     <select class="form-select form-select-sm" style="width: auto;">
                         <option selected>10</option>
                         <option>25</option>
@@ -17,7 +47,7 @@
                     </select>
                 </div>
                 <div class="pagination-nav">
-                    <?php the_posts_pagination(['type' => 'list']); ?>
+                    <?php echo do_shortcode('[custom_pagination]'); ?>
                 </div>
             </div>
             <div class="row g-4">
@@ -39,14 +69,14 @@
                                     <?php endif; ?>
 
                                     <!-- TITLE -->
-                                    <h6 class="fw-semibold mb-2">
+                                    <h3 class="fw-semibold mb-2 ph-heraldy-title">
                                         <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
                                             <?php the_title(); ?>
                                         </a>
-                                    </h6>
+                                    </h3>
 
                                     <!-- META -->
-                                    <div class="text-muted small mt-auto text-start">
+                                    <div class="text-muted small mt-4 text-start meta-ph-heraldy">
                                         <?php if ($region = get_field('region')) :   $region_field = get_field_object('region'); ?>
                                             <div>Location: <?php echo esc_html($region_field['choices'][$region] ?? $region); ?> <?php echo esc_html(get_field('province_text')); ?>, <?php echo esc_html(get_field('city_text')); ?></div>
                                         <?php endif; ?>
@@ -99,7 +129,7 @@
 
 
         <!-- RIGHT: SIDEBAR -->
-        <div class="col-lg-4">
+        <div class="col-lg-4 archive-right-col">
 
             <?php
             // Get current filter values
@@ -149,7 +179,7 @@
                 <div class="row g-4 border rounded p-4 bg-body-tertiary">
 
                     <!-- HERALDIC ITEMS -->
-                    <div class="col-6">
+                    <div class="col-6 archive-right-col">
                         <h6 class="section-title">Heraldic Items:</h6>
                         <?php
                         $items_options = [
@@ -169,7 +199,7 @@
                     </div>
 
                     <!-- SORTING -->
-                    <div class="col-6">
+                    <div class="col-6 archive-right-col">
                         <h6 class="section-title">Sort by:</h6>
                         <?php
                         $sort_options = [
@@ -189,7 +219,7 @@
                     </div>
 
                     <!-- SEALS / LOGOS -->
-                    <div class="col-12 mt-4">
+                    <div class="col-12 mt-4 archive-right-col">
                         <h6 class="section-title">Seals/Logos:</h6>
                         <?php
                         $seals_options = [
@@ -211,7 +241,7 @@
                     </div>
 
                     <!-- FILTER BY PLACE -->
-                    <div class="col-12 mb-3">
+                    <div class="col-12 mb-3 archive-right-col">
                         <h6 class="mb-3 fw-bold">Filter by Place</h6>
 
                         <select id="region" name="region" class="form-select mb-2">
@@ -229,8 +259,8 @@
 
                     <!-- APPLY BUTTON -->
                     <div class="col-12 mt-4">
-                        <button type="submit" class="btn w-100 fw-bold" style="background-color:#6b4a1f;color:white;">
-                            Apply Filters
+                        <button type="submit" class="btn w-100 fw-bold archive-filter-btn" style="background-color:#6b4a1f;color:white;">
+                            Search
                         </button>
                     </div>
 

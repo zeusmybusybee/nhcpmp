@@ -4,7 +4,7 @@
         background: #fff;
     }
 
-    .articles-archive h2 {
+    .articles-archive-single h2 {
         margin: 10px 0;
         font-size: 25px;
         line-height: 30px;
@@ -27,127 +27,61 @@
         margin-right: 10px;
     }
 
-    .article-date {
+    .articles-archive-single .article-date {
         font-size: 18px;
         font-weight: 300;
-        margin: 20px 0 20px;
+        margin: 20px 0 40px;
+    }
+
+    .articles-archive-single h2.articles-title {
+        font-size: 40px;
+        line-height: 50px;
+        margin: 0;
+        color: #68471F;
     }
 </style>
 
-<div class="container py-5 articles-archive">
+<div class="container py-5 articles-archive-single">
 
     <div class="row">
 
         <!-- LEFT: RESULTS -->
         <div class="col-lg-8">
-            <?php
-            global $wp_query;
-
-
-            ?>
-
-            <div class="d-flex justify-content-between align-items-center mb-3 total-result  p-4 mb-3">
-                <h4 class="mb-0 mt-0" style="color:#704b10">
-                    Top <?php echo $wp_query->post_count;  ?> results for All Items
-                </h4>
-            </div>
-            <!-- Top Bar: Results Count & Pagination -->
-            <!-- bottom Bar: Results Count & Pagination -->
-            <div class="d-flex justify-content-between align-items-center mb-4 top-result">
-
-                <!-- LEFT -->
-                <div class="d-flex align-items-center gap-3">
-                    <span>Results per page:</span>
-                    <select class="form-select form-select-sm" style="width: auto;">
-                        <option selected>10</option>
-                        <option>25</option>
-                        <option>50</option>
-                    </select>
-                </div>
-
-                <!-- CENTER -->
-
-
-                <!-- RIGHT -->
-                <div class="pagination-nav">
-                    <?php echo do_shortcode('[custom_pagination]'); ?>
-                </div>
-
-            </div>
-            <?php while (have_posts()) : the_post(); ?>
-                <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
-                    <div class="d-flex gap-4 mb-4 book-post-item bg-body-tertiary rounded">
-
-                        <!-- Thumbnail -->
-                        <?php if (has_post_thumbnail()) : ?>
-                            <div class="flex-shrink-0 col-3 text-center p-0">
-                                <?php the_post_thumbnail(
-                                    'medium',
-                                    ['class' => 'img-fluid rounded']
-                                ); ?>
-                            </div>
-                        <?php else : ?>
-                            <img
-                                src=" <?php echo get_stylesheet_directory_uri(); ?>/assets/images/books-default.png"
-                                class="img-fluid d-block books-default-image"
-                                alt="Default Image">
+            <section>
+                <div class="container">
+                    <div class="row ">
+                        <h2 class="articles-title fw-semibold ">
+                            <?php the_title(); ?>
+                        </h2>
+                        <!-- date-->
+                        <?php if ($date = get_field('date')) : ?>
+                            <div class="article-date mb-5"><?php echo esc_html($date); ?></div>
                         <?php endif; ?>
-
-                        <!-- DETAILS COLUMN -->
-                        <div class="flex-grow-1 d-flex flex-column col-8 p-0">
-
-                            <!-- TITLE -->
-                            <h2 class="books-title fw-semibold ">
-                                <?php the_title(); ?>
-                            </h2>
-
-                            <!-- CALL NUMBER -->
-                            <?php if ($date = get_field('date')) : ?>
-                                <div class="article-date"><?php echo esc_html($date); ?></div>
-                            <?php endif; ?>
-
-                            <!-- DESCRIPTION -->
-                            <p class="text-muted mb-3 books-content">
+                        <!-- TEXT COLUMN -->
+                        <div class="col-lg-6 mb-4 mb-lg-0 mt-5">
+                            <div class="text-muted">
                                 <?php
-                                $excerpt = get_the_excerpt();
-
-                                if (! empty($excerpt)) {
-                                    echo $excerpt;
-                                } else {
-                                    echo 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.';
-                                }
+                                the_content(); // default WordPress content
                                 ?>
-                            </p>
-
+                            </div>
                         </div>
+
+                        <!-- IMAGE COLUMN -->
+                        <div class="col-lg-6 text-center">
+                            <?php
+                            if (has_post_thumbnail()) :
+                                the_post_thumbnail('large', ['class' => 'img-fluid', 'alt' => get_the_title()]);
+                            else : ?>
+                                <img
+                                    src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/default-thumbnail.jpg"
+                                    alt="Default Image"
+                                    class="img-fluid">
+                            <?php endif; ?>
+                        </div>
+
                     </div>
-                </a>
-            <?php endwhile; ?>
-            <!-- bottom Bar: Results Count & Pagination -->
-            <div class="d-flex justify-content-between align-items-center mb-4 top-result">
-
-                <!-- LEFT -->
-                <div class="d-flex align-items-center gap-3">
-                    <span>Results per page:</span>
-                    <select class="form-select form-select-sm" style="width: auto;">
-                        <option selected>10</option>
-                        <option>25</option>
-                        <option>50</option>
-                    </select>
                 </div>
-
-                <!-- CENTER -->
-                <div class="text-center">
-                    <a href="#top" class="back-to-top-text">Back to Top</a>
-                </div>
-
-                <!-- RIGHT -->
-                <div class="pagination-nav">
-                    <?php echo do_shortcode('[custom_pagination]'); ?>
-                </div>
-
-            </div>
-
+            </section>
         </div>
 
         <!-- RIGHT: SIDEBAR -->

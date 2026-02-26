@@ -29,7 +29,7 @@ get_header();
           <section class="hero hero-banner ">
             <div class="container-fluid">
               <div class="row justify-content-center text-center">
-                <div class="col-lg-8">
+                <div class="col-lg-9">
 
                   <?php if (get_sub_field('hero_logo_image')) : ?>
                     <div class="mb-3">
@@ -132,65 +132,11 @@ get_header();
 
 
 
-        <?php if (get_row_layout() === 'featured_collections') : ?>
-          <section class="featured-collections">
-            <div class="container">
-              <h2 class="mt-0">Featured Collections</h2>
-
-              <div class="collections-grid mt-5">
-
-                <?php if (have_rows('featured_collections_item')) : ?>
-
-                  <?php
-                  $classes = [
-                    'navy',
-                    'red',
-                    'purple',
-                    'green',
-                    'teal',
-                    'orange',
-                    'darkgreen',
-                    'gold'
-                  ];
-                  $i = 0;
-                  ?>
-
-                  <?php while (have_rows('featured_collections_item')) : the_row();
-                    $title = get_sub_field('title');
-                    $description = get_sub_field('description');
-                    $card_class = $classes[$i] ?? 'navy';
-                  ?>
-
-                    <article class="card <?php echo esc_attr($card_class); ?>">
-                      <img
-                        src="http://localhost/nhcpmp/wp-content/uploads/2026/02/about-1.png"
-                        alt="Featured Collection">
-
-                      <?php if ($title) : ?>
-                        <h3><?php echo esc_html($title); ?></h3>
-                      <?php endif; ?>
-
-                      <?php if ($description) : ?>
-                        <p><?php echo esc_html($description); ?></p>
-                      <?php endif; ?>
-                    </article>
-
-                  <?php
-                    $i++;
-                  endwhile; ?>
-
-                <?php endif; ?>
-
-              </div>
-            </div>
-          </section>
-        <?php endif; ?>
 
 
       <?php endwhile; ?>
     <?php endif; ?>
-
-
+    <?php get_template_part('partials/featured-collection'); ?>
 
 
 

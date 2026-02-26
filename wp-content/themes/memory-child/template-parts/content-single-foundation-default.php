@@ -25,33 +25,70 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
         font-weight: 300;
         text-transform: none;
     }
+
+    .single-item .entry-media img {
+        margin: 0;
+        border-radius: 15px;
+        width: 100%;
+        object-fit: cover;
+        height: clamp(185px, 25vw, 494px);
+    }
+
+    .single-item {
+        background: #FAFAFA !important;
+        width: 100% !important;
+        position: relative;
+    }
+
+    .single-foundation-town h2 {
+        margin: 0;
+    }
+
+    .single-foundation-info div {
+        font-size: 20px;
+        font-weight: 400;
+        font-style: italic;
+    }
+
+ 
 </style>
-<div class="container single-overflow">
+<div class="container single-foundation-town">
     <div class="row justify-content-between ">
         <!-- left column -->
-        <div class="col-md-7 left-column">
-            <div class="bg-body-tertiary  single-top-content">
-                <div class="d-flex gap-4">
-                    <div class="col-5">
-                        <?php
-                        if ('show-ft' === $memory_hide_featured_image) {
-                            echo '<div class="entry-media">';
+        <!-- left column -->
+        <div class="col-md-8 left-column  ">
+            <div class="d-flex gap-4 c_bg-lightgray pt-5 pl-4 pr-4 pb-5 single-item rounded flex-wrap">
+                <div class="col-4">
+                    <?php
+                    if ('show-ft' === $memory_hide_featured_image) {
+
+                        if (has_post_thumbnail()) {
+                            echo '<div class="entry-media rounded">';
                             the_post_thumbnail('memory-thumbnails-2');
                             echo '</div>';
+                        } else {
+                    ?>
+                            <img
+                                src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/single-book-img.png"
+                                class="img-fluid d-block books-default-image"
+                                alt="Default Image">
+                    <?php
                         }
-                        ?>
-                    </div>
-                    <div class="col-5 single-item bg-white p-5">
-                        <!-- BOTTOM META -->
+                    }
+                    ?>
+                </div>
+                <div class="col-7">
+                    <!-- BOTTOM META -->
+                    <div class="col-11 bg-white p-5">
                         <div class="d-flex mt-3 mb-5">
-                            <div class="col-7 p-0">
+                            <div class="col-7 p-0 single-foundation-info">
                                 <div>Region</div>
                                 <div>Province</div>
                                 <div>City/Municipality:</div>
                                 <div>Category</div>
                                 <div>Year Approved</div>
                             </div>
-                            <div class="col-7 p-0">
+                            <div class="col-7 p-0 single-foundation-info">
                                 <div>
                                     NCR
                                 </div>
@@ -80,19 +117,29 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                                 </div>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-success mt-5">View PDF</button>
+                        <button type="button" class="btn btn-custom-green mt-5">View PDF</button>
                     </div>
-
                 </div>
-                <div>
-                    <h2 class="text-dark"><?php echo get_the_title(); ?></h2>
-                    <div class="post-content text-dark">
-                        <?php the_content(); ?>
+                <div class="container my-5">
+                    <div class="row align-items-start gap-5 books-single-content">
+
+                        <!-- Left Side (Description Box) -->
+                        <div class="col-md-9 mb-4">
+                            <div class="  p-4 h-100">
+                                <h2 class="text-dark"><?php echo get_the_title(); ?></h2>
+                                <p class="mb-0">
+                                    <em>
+                                        <?php the_content(); ?>
+                                    </em>
+                                </p>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
 
-            <h2 class="mb-4 text-dark">Related Artifacts</h2>
+            <h2 class="mb-4 text-dark">Other related resources</h2>
             <div class="row g-4">
 
                 <?php
@@ -111,49 +158,44 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                             <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark d-block">
                                 <div class="h-100 d-flex bg-body-tertiary rounded p-5 hover-card">
 
-                                    <div class="col-4">
+                                    <div class="col-3 text-center">
                                         <?php if (has_post_thumbnail()) : ?>
                                             <?php the_post_thumbnail('medium', ['class' => 'img-fluid rounded']); ?>
+                                        <?php else : ?>
+                                            <img
+                                                src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/books-default.png"
+                                                class="img-fluid d-block books-default-image"
+                                                alt="Default Image">
                                         <?php endif; ?>
+
                                     </div>
 
                                     <div class="col-8">
                                         <div class="card-body p-0">
+                                            <!-- BADGES -->
 
-                                            <h3 class="mb-2 mt-0"><?php the_title(); ?></h3>
+                                            <h3 class="mb-2 mt-4"><?php the_title(); ?></h3>
 
-                                            <?php echo wp_trim_words(get_the_content(), 40, '...'); ?>
+                                            <?php
+                                            $content = get_the_content();
+
+                                            if (! empty($content)) {
+                                                echo wp_trim_words($content, 45);
+                                            } else {
+                                                echo 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.';
+                                            }
+                                            ?>
+
 
                                             <!-- BOTTOM META -->
-                                            <div class="d-flex mt-3">
-                                                <div class="col-5 p-0">
-                                                    <div>Location</div>
-                                                    <div>Category</div>
-                                                    <div>Year Founded:</div>
-                                                </div>
-                                                <div class="col-7 p-0">
-                                                    <div>
-                                                        <?php echo get_field('city_text') . ', ' . get_field('province_text'); ?>
-                                                    </div>
-                                                    <div>
-                                                        <?php
-                                                        $terms = get_the_terms(get_the_ID(), 'foundation-of-towns-category');
-                                                        if ($terms && !is_wp_error($terms)) {
-                                                            $term_names = wp_list_pluck($terms, 'name');
-                                                            echo esc_html(implode(', ', $term_names));
-                                                        } else {
-                                                            echo 'Uncategorized';
-                                                        }
-                                                        ?>
-                                                    </div>
-                                                    <div>
-                                                        <?php
-                                                        $year_founded = get_field('year_founded');
-                                                        echo $year_founded ? esc_html($year_founded) : 'N/A';
-                                                        ?>
-                                                    </div>
-                                                </div>
+                                            <div class="d-flex justify-content-between text-muted small mt-5">
+                                                <?php if ($location = get_field('location')) : ?>
+                                                    <span>Location: <?php echo esc_html($location); ?></span>
+                                                <?php endif; ?>
+
+                                                <span>Category: Book</span>
                                             </div>
+
 
                                         </div>
                                     </div>
@@ -172,17 +214,19 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
 
 
 
+
         </div>
 
         <!-- RIGHT: SIDEBAR -->
-        <div class="col-lg-4">
+        <div class="col-lg-4 archive-right-col">
 
             <form method="get"
                 action="<?php echo esc_url(get_post_type_archive_link('foundation-of-towns')); ?>"
                 class="p-4">
 
+
                 <div class="row g-4 border rounded mb-5">
-                    <!-- Always target foundation of town -->
+                    <!-- Always target Articles -->
                     <input type="hidden" name="post_type" value="foundation-of-towns">
 
                     <!-- SEARCH (only one) -->
@@ -191,7 +235,7 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                             type="search"
                             class="form-control border-0"
                             name="s"
-                            placeholder="Search books..."
+                            placeholder="Search articles..."
                             value="<?php echo esc_attr($_GET['s'] ?? ''); ?>">
                         <button class="button" type="submit">
                             <i class="fas fa-search"></i>
@@ -326,9 +370,9 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                     <!-- APPLY BUTTON -->
                     <div class="col-12 mt-4">
                         <button type="submit"
-                            class="btn w-100 fw-bold"
+                            class="btn w-100 fw-bold archive-filter-btn"
                             style="background-color:#6b4a1f;color:white;">
-                            Apply Filters
+                            Search
                         </button>
                     </div>
 
