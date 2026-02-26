@@ -365,11 +365,25 @@ ul.page-numbers {
     }
 
     .archive-right-col .form-select {
-        background: #707070;
+        background: #707070 !important;
         color: #fff;
         padding: 10px;
         font-size: 14px;
     }
+     .archive-right-col .form-check-input[type=radio] {
+    border-radius: 62%;
+    padding: 8px;
+    border-color: #704B10;
+    margin-right: 10px;
+}
+
+
+   .archive-right-col  div label ,
+     .archive-right-col  label {
+    font-size: 18px;
+    font-family: 'Ysabeau', sans-serif;
+    color: #704B10;
+}
 
     a.back-to-top-text {
         color: #704b10;
@@ -484,5 +498,13 @@ ul.page-numbers {
     font-size: 18px !important;
     font-weight: 800 !important;
     letter-spacing: 0;
-    margin-top: 30px !important;
+    margin-top: 20px !important;
+}
+.archive-filter-btn:hover {
+    border-radius: 10px !important;
+    border: none !important;
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0;
+    margin-top: 20px !important;
 }

@@ -116,12 +116,35 @@
                 </div>
 
             <?php endwhile; ?>
+            <!-- bottom Bar: Results Count & Pagination -->
+            <div class="d-flex justify-content-between align-items-center mb-4 top-result">
 
+                <!-- LEFT -->
+                <div class="d-flex align-items-center gap-3">
+                    <span>Results per page:</span>
+                    <select class="form-select form-select-sm" style="width: auto;">
+                        <option selected>10</option>
+                        <option>25</option>
+                        <option>50</option>
+                    </select>
+                </div>
+
+                <!-- CENTER -->
+                <div class="text-center">
+                    <a href="#top" class="back-to-top-text">Back to Top</a>
+                </div>
+
+                <!-- RIGHT -->
+                <div class="pagination-nav">
+                    <?php echo do_shortcode('[custom_pagination]'); ?>
+                </div>
+
+            </div>
 
         </div>
 
         <!-- RIGHT: SIDEBAR -->
-        <div class="col-lg-4">
+        <div class="col-lg-4 archive-right-col">
 
             <form method="get"
                 action="<?php echo esc_url(get_post_type_archive_link('foundation-of-towns')); ?>"
@@ -275,7 +298,7 @@
                         <button type="submit"
                             class="btn w-100 fw-bold archive-filter-btn"
                             style="background-color:#6b4a1f;color:white;">
-                            Apply Filters
+                            Search
                         </button>
                     </div>
 

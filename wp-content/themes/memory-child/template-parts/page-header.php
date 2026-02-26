@@ -96,6 +96,11 @@ if (is_singular()) {
     padding: 10px 0;
   }
 
+  .ph-heraldy-archive-header {
+    background: url('<?php echo get_stylesheet_directory_uri(); ?>/assets/images/heraldy.png') center/cover no-repeat !important;
+    padding: 10px 0;
+  }
+
   .default-bg-header {
     background: url('<?php echo get_stylesheet_directory_uri(); ?>/assets/images/deafault.png') center/cover no-repeat !important;
     padding: 10px 0;
@@ -165,6 +170,8 @@ if (is_post_type_archive('historical-sites') || is_singular('historical-sites'))
   $archive_class = 'books-archive-header';
 } elseif (is_post_type_archive('artifacts') || is_singular('artifacts')) {
   $archive_class = 'artifacts-archive-header';
+} elseif (is_post_type_archive('ph-heraldry-registry') || is_singular('ph-heraldry-registry')) {
+  $archive_class = 'ph-heraldy-archive-header';
 } else {
   $archive_class = 'default-bg-header';
 }
