@@ -1147,3 +1147,15 @@ function custom_pagination_shortcode()
     return ob_get_clean();
 }
 add_shortcode('custom_pagination', 'custom_pagination_shortcode');
+
+
+function add_featured_archive_body_class($classes)
+{
+
+    if (is_post_type_archive(['local-history', 'philippine-revolution', 'featured-collections'])) {
+        $classes[] = 'featured-collection-archive';
+    }
+
+    return $classes;
+}
+add_filter('body_class', 'add_featured_archive_body_class');

@@ -48,6 +48,11 @@
 		<header id="masthead" class="site-header">
 			<div id="header-top" class="">
 				<div class="container">
+
+
+
+
+					<!-- end of mobile toggle -->
 					<div class="d-flex align-items-center justify-content-between pt-4 pb-2">
 
 						<!-- LOGO (LEFT) -->
@@ -65,7 +70,7 @@
 						</div>
 
 						<!-- MENU (RIGHT) -->
-						<nav id="site-navigation" class="main-navigation">
+						<nav id="site-navigation" class="main-navigation  section-hide">
 							<?php
 							wp_nav_menu(
 								array(
@@ -76,7 +81,29 @@
 							?>
 						</nav>
 
-						<?php echo do_shortcode('[menu_search]'); ?>
+						<div class="section-hide"><?php echo do_shortcode('[menu_search]'); ?></div>
+						<!-- mobile toggle -->
+						<button id="toggleBtn" class="btn  m-3"><i class="fa-solid fa-bars"></i></button>
+
+						<!-- Sidebar -->
+						<div id="sidebar">
+							<!-- Close button sa top-right -->
+							<button id="closeBtn" class="btn btn-light btn-sm position-absolute top-0 end-0 m-2">&times;</button>
+							<?php echo do_shortcode('[menu_search]'); ?>
+							<nav id="site-navigation" class="main-navigation">
+								<?php
+								wp_nav_menu(
+									array(
+										'theme_location' => 'menu-1',
+										'menu_id'        => 'primary-menu',
+									)
+								);
+								?>
+							</nav>
+						</div>
+
+						<!-- Overlay -->
+						<div id="overlay"></div>
 					</div>
 				</div>
 			</div>
@@ -109,10 +136,48 @@
 
 		<?php endif; ?>
 
-		<?php get_template_part('template-parts/page-header'); ?>
+		<?php
+		$special_post_types = array('featured-collections', 'local-history', 'contributed', 'revolution', 'women-in-philippines', 'philippine-muslim', 'nhcp-publications', 'rizal-collection');
 
+		// Single post
+		$pt = get_post_type();
+
+		// Archive page
+		if (is_post_type_archive()) {
+			$pt = get_query_var('post_type');
+		}
+
+		// Check
+		if (in_array($pt, $special_post_types)) {
+			get_template_part('template-parts/page-header-collection');
+		} else {
+			get_template_part('template-parts/page-header');
+		}
+		?>
 		<?php if (is_home() || is_search() || is_archive()) : ?>
 			<div id="content" class="site-content">
 			<?php else : ?>
 				<div id="content" class="site-content">
 				<?php endif; ?>
+
+				<script>
+					const toggleBtn = document.getElementById('toggleBtn');
+					const sidebar = document.getElementById('sidebar');
+					const overlay = document.getElementById('overlay');
+					const closeBtn = document.getElementById('closeBtn');
+
+					toggleBtn.addEventListener('click', () => {
+						sidebar.classList.toggle('show');
+						overlay.classList.toggle('show');
+					});
+
+					overlay.addEventListener('click', () => {
+						sidebar.classList.remove('show');
+						overlay.classList.remove('show');
+					});
+
+					closeBtn.addEventListener('click', () => {
+						sidebar.classList.remove('show');
+						overlay.classList.remove('show');
+					});
+				</script>
