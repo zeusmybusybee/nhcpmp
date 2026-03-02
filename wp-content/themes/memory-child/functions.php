@@ -483,10 +483,10 @@ add_action('pre_get_posts', function ($query) {
 
     $meta_query = [];
 
-    if (!empty($_GET['level_of_access'])) {
+    if (!empty($_GET['level'])) {
         $meta_query[] = [
-            'key'   => 'level_of_access',
-            'value' => sanitize_text_field($_GET['level_of_access']),
+            'key'   => 'level',
+            'value' => sanitize_text_field($_GET['level']),
         ];
     }
 
@@ -560,7 +560,7 @@ add_filter('posts_search', function ($search, $query) {
     $meta_keys = [
         'call_number',
         'location',
-        'level_of_access',
+        'level',
         'availability',
         'book_type',
         'year', // only if you store year as ACF
