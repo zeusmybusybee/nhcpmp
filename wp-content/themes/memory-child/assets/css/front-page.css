@@ -22,7 +22,6 @@ section.hero-banner img {
     height: auto;
     max-width: 159px;
     margin: 8rem 0 4rem;
-    filter: sepia(100%) saturate(300%) brightness(70%) hue-rotate(-15deg);
 }
 .hero-search .hero-input {
   flex: 1;
@@ -48,7 +47,10 @@ form.hero-search .hero-btn {
   font-weight: 600;
   cursor: pointer;
 }
-
+form.hero-search .hero-btn:hover{
+      background: #6b4a1e82 !important;
+    color: #fff !important;
+}
 .hero-btn:hover {
   background-color: #5a3e18;
 }
@@ -98,6 +100,10 @@ form.hero-search .hero-btn {
 .collections {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+}
+.collections a{
+text-decoration: none;
+color: #fff !important;
 }
 
 /* CARD */
@@ -325,4 +331,41 @@ section.featured-collections h2 {
     max-width: 1440px;
     padding: 0 20px;
   }
+}
+
+
+
+/* 💻 Desktop */
+@media (max-width: 1024px) {
+  .collections-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .collection-card h2 {
+    font-size: 20px;
+}
+.collection-content p {
+    font-size: 14px;
+}
+.collection-card .btn {
+    font-size: 15px;
+}
+.hero-banner {
+    padding: 0rem 2rem 13rem;
+}
+section.hero-banner h1 {
+    font-size: 30px;
+}
+}
+
+@media (max-width: 768px) {
+.collections .collection-card div {
+    text-align: center;
+}
+    .collections-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+section.hero-banner img {
+    max-width: 135px;
+          margin: 3rem 0 3rem;
+}
 }

@@ -483,10 +483,10 @@ add_action('pre_get_posts', function ($query) {
 
     $meta_query = [];
 
-    if (!empty($_GET['level_of_access'])) {
+    if (!empty($_GET['level'])) {
         $meta_query[] = [
-            'key'   => 'level_of_access',
-            'value' => sanitize_text_field($_GET['level_of_access']),
+            'key'   => 'level',
+            'value' => sanitize_text_field($_GET['level']),
         ];
     }
 
@@ -560,7 +560,7 @@ add_filter('posts_search', function ($search, $query) {
     $meta_keys = [
         'call_number',
         'location',
-        'level_of_access',
+        'level',
         'availability',
         'book_type',
         'year', // only if you store year as ACF
@@ -1147,3 +1147,15 @@ function custom_pagination_shortcode()
     return ob_get_clean();
 }
 add_shortcode('custom_pagination', 'custom_pagination_shortcode');
+
+
+function add_featured_archive_body_class($classes)
+{
+
+    if (is_post_type_archive(['local-history', 'philippine-revolution', 'featured-collections'])) {
+        $classes[] = 'featured-collection-archive';
+    }
+
+    return $classes;
+}
+add_filter('body_class', 'add_featured_archive_body_class');

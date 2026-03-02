@@ -9,31 +9,32 @@
 if (is_front_page()) {
   return;
 }
-$title       = '';
-$description = '';
+        $title       = '';
+        $description = '';
 
-if (is_singular()) {
+        if (is_singular()) {
+          $post_type_obj = get_post_type_object(get_post_type());
 
-  $post_type = get_post_type_object(get_post_type());
-
-  if ($post_type) {
-    $title = $post_type->labels->name; // <-- Post Type Name
-    $description = $post_type->description ?? '';
-  }
-} elseif (is_post_type_archive()) {
-
-  $title       = post_type_archive_title('', false);
-  $description = get_the_archive_description();
-} elseif (is_archive()) {
-
-  $title       = get_the_archive_title();
-  $description = get_the_archive_description();
-} elseif (is_page()) {
-  $title = get_the_title();
-} else {
-
-  $title = get_bloginfo('name');
-}
+          if ($post_type_obj) {
+            if (get_post_type() === 'page') {
+              $title = get_the_title(); // actual page title
+              $description = ''; // you can leave it empty or add custom description if needed
+            } else {
+              $title = $post_type_obj->labels->name; // post type name
+              $description = $post_type_obj->description ?? '';
+            }
+          }
+        } elseif (is_post_type_archive()) {
+          $title       = post_type_archive_title('', false);
+          $description = get_the_archive_description();
+        } elseif (is_archive()) {
+          $title       = get_the_archive_title();
+          $description = get_the_archive_description();
+        } elseif (is_page()) {
+          $title = get_the_title();
+        } else {
+          $title = get_bloginfo('name');
+        }
 ?>
 
 <style>
@@ -98,6 +99,16 @@ if (is_singular()) {
 
   .ph-heraldy-archive-header {
     background: url('<?php echo get_stylesheet_directory_uri(); ?>/assets/images/heraldy.png') center/cover no-repeat !important;
+    padding: 10px 0;
+  }
+
+  .foundation-archive-header {
+    background: url('<?php echo get_stylesheet_directory_uri(); ?>/assets/images/foundation.png') center/cover no-repeat !important;
+    padding: 10px 0;
+  }
+
+  .av-material-archive-header {
+    background: url('<?php echo get_stylesheet_directory_uri(); ?>/assets/images/audio-visual.png') center/cover no-repeat !important;
     padding: 10px 0;
   }
 
@@ -172,6 +183,10 @@ if (is_post_type_archive('historical-sites') || is_singular('historical-sites'))
   $archive_class = 'artifacts-archive-header';
 } elseif (is_post_type_archive('ph-heraldry-registry') || is_singular('ph-heraldry-registry')) {
   $archive_class = 'ph-heraldy-archive-header';
+} elseif (is_post_type_archive('foundation-of-towns') || is_singular('foundation-of-towns')) {
+  $archive_class = 'foundation-archive-header';
+} elseif (is_post_type_archive('a-v-material') || is_singular('a-v-material')) {
+  $archive_class = 'av-material-archive-header';
 } else {
   $archive_class = 'default-bg-header';
 }

@@ -85,62 +85,66 @@ get_header();
         <?php if (get_row_layout() === 'collection') : ?>
           <section class="collections">
 
-            <?php
-            $i = 0; // counter for static classes
-            ?>
+            <?php $i = 0; ?>
 
             <?php if (have_rows('collection_item')) : ?>
               <?php while (have_rows('collection_item')) : the_row(); ?>
 
                 <?php
                 $bg_class = $background_keys[$i] ?? 'books';
-                $bg_img   = get_sub_field('background'); // IMAGE URL (ACF)
-
-                $title = get_sub_field('title');
-                $desc  = get_sub_field('description');
-                $btn   = get_sub_field('button_link');
-
+                $bg_img   = get_sub_field('background');
+                $title    = get_sub_field('title');
+                $desc     = get_sub_field('description');
+                $btn      = get_sub_field('button_link');
                 $i++;
                 ?>
 
-                <div class="collection-card <?php echo esc_attr($bg_class); ?>"
-                  style="background-image: url('<?php echo esc_url($bg_img); ?>');">
-
-                  <div class="collection-content">
-                    <?php if ($title) : ?>
-                      <h2><?php echo esc_html($title); ?></h2>
+                <?php if ($btn) : ?>
+                  <a href="<?php echo esc_url($btn); ?>"
+                    class="collection-card <?php echo esc_attr($bg_class); ?>"
+                    style="background-image: url('<?php echo esc_url($bg_img); ?>');">
+                  <?php else : ?>
+                    <div class="collection-card <?php echo esc_attr($bg_class); ?>"
+                      style="background-image: url('<?php echo esc_url($bg_img); ?>');">
                     <?php endif; ?>
 
-                    <?php if ($desc) : ?>
-                      <p><?php echo esc_html($desc); ?></p>
-                    <?php endif; ?>
+                    <div class="collection-content">
+                      <?php if ($title) : ?>
+                        <h2><?php echo esc_html($title); ?></h2>
+                      <?php endif; ?>
+
+                      <?php if ($desc) : ?>
+                        <p><?php echo esc_html($desc); ?></p>
+                      <?php endif; ?>
+
+                      <?php if ($btn) : ?>
+                        <span class="btn">Explore</span>
+                      <?php endif; ?>
+                    </div>
 
                     <?php if ($btn) : ?>
-                      <a href="<?php echo esc_url($btn); ?>" class="btn">
-                        Explore
-                      </a>
-                    <?php endif; ?>
-                  </div>
-
-                </div>
-
-              <?php endwhile; ?>
-            <?php endif; ?>
-
-          </section>
-        <?php endif; ?>
-
-
-
-
-
-      <?php endwhile; ?>
-    <?php endif; ?>
-    <?php get_template_part('partials/featured-collection'); ?>
-
-
-
+                  </a>
+                <?php else : ?>
   </div>
+<?php endif; ?>
+
+<?php endwhile; ?>
+<?php endif; ?>
+
+</section>
+<?php endif; ?>
+
+
+
+
+
+<?php endwhile; ?>
+<?php endif; ?>
+<?php get_template_part('partials/featured-collection'); ?>
+
+
+
+</div>
 
 
 </div><!-- #primary -->

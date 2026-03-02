@@ -88,14 +88,14 @@
                             <!-- BADGES -->
                             <div class="d-flex gap-2 mb-2 flex-wrap">
                                 <?php
-                                $access = get_field('level_of_access');
+                                $access = get_field('level');
                                 $availability = get_field('availability');
 
                                 $access_map = [
-                                    'open'      => ['label' => 'Open Access',    'class' => 'badge-open'],
-                                    'viewing'   => ['label' => 'Viewing',        'class' => 'badge-viewing'],
-                                    'limited'   => ['label' => 'Limited',        'class' => 'badge-limited'],
-                                    'exclusive' => ['label' => 'Exclusive',      'class' => 'badge-exclusive'],
+                                    'level_1'      => ['label' => 'Level 1',    'class' => 'badge-open'],
+                                    'level_2'   => ['label' => 'Level 2',        'class' => 'badge-viewing'],
+                                    'level_3'   => ['label' => 'Level 3',        'class' => 'badge-limited'],
+                                    'level_4' => ['label' => 'Level 4',      'class' => 'badge-exclusive'],
                                 ];
 
                                 $availability_map = [
@@ -294,30 +294,30 @@
                     <div class="col-6 mt-4 books-filter">
                         <h5 class="mb-3 fw-bold">Level of Access</h5>
 
-                        <?php $access = $_GET['level_of_access'] ?? ''; ?>
+                        <?php $access = $_GET['level'] ?? ''; ?>
 
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="level_of_access" value="open"
-                                <?php checked($access, 'open'); ?>>
-                            <label class="form-check-label">Open Access</label>
+                            <input class="form-check-input" type="radio" name="level" value="level_1"
+                                <?php checked($access, 'level_1'); ?>>
+                            <label class="form-check-label">Level 1</label>
                         </div>
 
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="level_of_access" value="viewing"
-                                <?php checked($access, 'viewing'); ?>>
-                            <label class="form-check-label">Viewing Access</label>
+                            <input class="form-check-input" type="radio" name="level" value="level_2"
+                                <?php checked($access, 'level_2'); ?>>
+                            <label class="form-check-label">Level 2</label>
                         </div>
 
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="level_of_access" value="limited"
-                                <?php checked($access, 'limited'); ?>>
-                            <label class="form-check-label">Limited Access</label>
+                            <input class="form-check-input" type="radio" name="level" value="level_3"
+                                <?php checked($access, 'level_3'); ?>>
+                            <label class="form-check-label">Level 3</label>
                         </div>
 
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="level_of_access" value="exclusive"
-                                <?php checked($access, 'exclusive'); ?>>
-                            <label class="form-check-label">Exclusive Access</label>
+                            <input class="form-check-input" type="radio" name="level" value="level_4"
+                                <?php checked($access, 'level_4'); ?>>
+                            <label class="form-check-label">Level 4</label>
                         </div>
                     </div>
 
