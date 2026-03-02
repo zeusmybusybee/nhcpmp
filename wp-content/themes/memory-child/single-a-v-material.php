@@ -4,22 +4,6 @@
     }
 </style>
 <?php get_header(); ?>
-<div class="page-header">
-    <div class="container">
-        <h1 class="archive-title">
-            <?php
-            $post_type = 'a-v-material'; // your custom post type slug
-            $post_type_obj = get_post_type_object($post_type);
-
-            if ($post_type_obj) {
-                echo esc_html($post_type_obj->label); // displays the post type name
-            } else {
-                echo 'Archive'; // fallback
-            }
-            ?>
-        </h1>
-    </div>
-</div>
 
 <div class="container my-5">
     <div class="row">

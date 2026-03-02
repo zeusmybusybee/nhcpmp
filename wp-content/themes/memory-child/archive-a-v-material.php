@@ -15,9 +15,35 @@
     .button {
         color: #fff !important;
     }
+
+    .visual-materials-item {
+        background: #000;
+    }
+
+    .visual-materials-img {
+        margin: 0;
+        border-radius: 15px;
+        width: 100%;
+        object-fit: cover;
+        height: clamp(185px, 25vw, 281px);
+    }
+
+    .visual-materials-item h2.texting_title {
+        font-size: 20px;
+        font-weight: 400;
+        font-style: italic;
+        margin: 15px 0;
+    }
+
+    .materials-title-main {
+        font-size: 30px;
+        font-weight: 800;
+        line-height: 40px;
+        margin-bottom: 20px !important;
+    }
 </style>
 
-<div class="container py-5">
+<div class="container py-5 visual-materials">
     <div class="row">
         <div class="col-md-8">
             <?php $is_search = isset($_GET['s']) && ! empty($_GET['s']); ?>
@@ -45,10 +71,10 @@
                                     <div class="card bg-darken border-0 h-100">
                                         <?php if (has_post_thumbnail()) : ?>
                                             <?php the_post_thumbnail('medium_large', [
-                                                'class' => 'card-img-top object-fit-cover'
+                                                'class' => 'card-img-top object-fit-cover visual-materials-img'
                                             ]); ?>
                                         <?php endif; ?>
-                                        <div class="card-body bg-darken p-2">
+                                        <div class="card-body bg-darken p-2 visual-materials-item">
                                             <h2 class="card-title text-white mb-0">
                                                 <?php the_title(); ?>
                                             </h2>
@@ -87,22 +113,9 @@
                 ?>
                         <!-- CATEGORY HEADER -->
                         <div class="d-flex align-items-center justify-content-between mb-3 text-white">
-                            <h3 class="mb-0" style="color:#fff;">
+                            <h3 class="mb-0 materials-title-main" style="color:#fff;">
                                 <?php echo esc_html($category->name); ?>
                             </h3>
-
-                            <div class="d-flex align-items-center gap-2">
-                                <small>
-                                    Top <?php echo esc_html($query->post_count); ?> results for
-                                    <?php echo esc_html($category->name); ?>
-                                </small>
-
-                                <select class="form-select form-select-sm" style="width:auto;">
-                                    <option selected>10</option>
-                                    <option>25</option>
-                                    <option>50</option>
-                                </select>
-                            </div>
                         </div>
 
                         <!-- POSTS GRID -->
@@ -117,11 +130,11 @@
 
                                             <?php if (has_post_thumbnail()) : ?>
                                                 <?php the_post_thumbnail('medium_large', [
-                                                    'class' => 'card-img-top object-fit-cover'
+                                                    'class' => 'card-img-top object-fit-cover visual-materials-img'
                                                 ]); ?>
                                             <?php endif; ?>
 
-                                            <div class="card-body bg-darken p-2">
+                                            <div class="card-body bg-darken p-2 visual-materials-item">
                                                 <h2 class="card-title text-white mb-0 texting_title">
                                                     <?php the_title(); ?>
                                                 </h2>
@@ -145,7 +158,7 @@
         </div>
 
 
-        <div class="col-md-4">
+        <div class="col-md-4 v-materails">
             <form method="get"
                 action="<?php echo esc_url(get_post_type_archive_link('a-v-material')); ?>"
                 class="p-4">
@@ -176,7 +189,7 @@
                         <div class="row">
                             <!-- FILTER BY -->
                             <div class="col-6">
-                                <p class="fw-semibold mb-3">Filter by:</p>
+                                <h5 class="fw-semibold mb-3 text-light">Filter by:</h5>
 
                                 <?php $current_filters = $_GET['filter'] ?? []; ?>
 
@@ -204,7 +217,7 @@
 
                             <!-- SORT BY -->
                             <div class="col-6">
-                                <p class="fw-semibold mb-3">Sort by:</p>
+                                <h5 class="fw-semibold mb-3 text-light">Sort by:</h5>
 
                                 <?php $current_order = $_GET['orderby'] ?? []; ?>
 
@@ -233,9 +246,9 @@
 
                         <div class="mt-4 text-center">
                             <button type="submit"
-                                class="btn px-5 fw-semibold"
+                                class="btn px-5 fw-semibold archive-filter-btn"
                                 style="background-color:#7a4f1d; color:#fff;">
-                                Apply Filters
+                                Search
                             </button>
                         </div>
                     </div>
@@ -256,22 +269,34 @@
 </div>
 
 <style>
+    .v-materails div label,
+    .v-materails label {
+        font-size: 18px;
+        font-family: 'Ysabeau', sans-serif;
+    }
+
+    .v-materails input {
+        font-size: 19px;
+    }
+
     h2.nm-sidebar-title,
     .nm-sidebar-content,
     .nm-sidebar-card p,
-    .nm-sidebar-card a
-     {
+    .nm-sidebar-card a {
         color: #fff;
     }
+
     .nm-sidebar-card {
-        background: #3f3f3f!important;
-        border:none!important;
+        background: #3f3f3f !important;
+        border: none !important;
     }
+
     .nm-sidebar-icon {
-        background: #fff!important;
+        background: #fff !important;
     }
+
     .nm-sidebar-icon i {
-        color: #000!important;
+        color: #000 !important;
     }
 </style>
 
