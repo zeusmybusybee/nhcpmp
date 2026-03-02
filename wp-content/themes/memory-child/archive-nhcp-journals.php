@@ -18,6 +18,11 @@
     .meta-ph-heraldy div {
         font-size: 15px;
     }
+
+    .lineage {
+        width: 100%;
+        border-bottom: 2px solid #000;
+    }
 </style>
 <div class="container py-5">
 
@@ -51,10 +56,11 @@
                 </div>
             </div>
             <!-- query -->
-            <div class="row g-4">      
-                    <?php get_template_part('featured-collection/featured-journal'); ?>
+            <div class="row g-4">
+                <?php get_template_part('featured-collection/featured-journal'); ?>
             </div>
         </div>
+
 
 
 
@@ -81,7 +87,7 @@
                     </div>
                 </div>
 
-                <!-- APPLIED FILTERS SUMMARY -->
+                APPLIED FILTERS SUMMARY
                 <?php if (!empty($heraldric_items_selected) || !empty($seals_selected) || !empty($sort_by) || !empty($search_term)): ?>
                     <div class="row g-4 border rounded mb-5">
                         <strong>Applied Filters:</strong>
@@ -201,11 +207,14 @@
 
             <!-- SIDEBAR CONTENT -->
             <div class="sidebar_article mt-4">
-                <?php get_template_part('partials/sidebar-welcome'); ?>
-                <?php get_template_part('partials/sidebar-location-info'); ?>
+                <?php //get_template_part('partials/sidebar-welcome'); ?>
+                <?php //get_template_part('partials/sidebar-location-info'); ?>
             </div>
 
         </div>
+
+        <div class="lineage"></div>
+        <?php get_template_part('partials/featured-collection'); ?>
 
 
 
