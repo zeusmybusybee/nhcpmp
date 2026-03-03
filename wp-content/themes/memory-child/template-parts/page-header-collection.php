@@ -156,22 +156,74 @@ if (is_singular()) {
 
 
 <?php
-$post_types = ['revolution', 'contributed', 'women-in-philippines', 'local-history', 'nhcp-publications', 'philippine-muslim'];
+global $wp;
+
+$post_types = ['rizal-collection', 'artifacts', 'ph-heraldry-registry', 'historical-sites', 'a-v-material', 'foundation-of-towns'];
+
 if (is_post_type_archive($post_types) || is_singular($post_types)) : ?>
 
     <nav class="collections-nav">
         <div class="container">
+
             <?php
+            // Desktop Menu
             wp_nav_menu([
                 'menu'        => 'Auxiliary Menu',
-                'container'      => false,
-                'menu_class'     => 'nav justify-content-center py-3',
-                'menu_id'        => false,
-                'fallback_cb'    => false,
-                'add_li_class'   => 'nav-item', // (see note below)
-                'link_class'     => 'nav-link', // (see note below)
+                'container'   => false,
+                'menu_class'  => 'nav justify-content-center py-3',
+                'menu_id'     => false,
+                'fallback_cb' => false,
             ]);
             ?>
+
+            <?php
+            /**
+             * Detect current post type PROPERLY
+             */
+            if (is_singular()) {
+                $current_post_type = get_post_type();
+            } elseif (is_post_type_archive()) {
+                $queried_object = get_queried_object();
+                $current_post_type = isset($queried_object->name) ? $queried_object->name : '';
+            } else {
+                $current_post_type = '';
+            }
+
+            $menu_items = wp_get_nav_menu_items('Auxiliary Menu');
+
+            if ($menu_items) :
+            ?>
+
+                <select class="collections-dropdown">
+
+                    <?php foreach ($menu_items as $item) :
+
+                        $selected = '';
+
+                        // Match archive menu items correctly
+                        if (
+                            $item->type === 'post_type_archive' &&
+                            $item->object === $current_post_type
+                        ) {
+                            $selected = 'selected';
+                        }
+
+                        // Add spacing if submenu
+                        $prefix = '';
+                        if ($item->menu_item_parent != 0) {
+                            $prefix = '— '; // pwede mo dagdagan ng space or dash
+                        }
+
+                    ?>
+                        <option value="<?php echo esc_url($item->url); ?>" <?php echo $selected; ?>>
+                            <?php echo esc_html($prefix . $item->title); ?>
+                        </option>
+                    <?php endforeach; ?>
+
+                </select>
+
+            <?php endif; ?>
+
         </div>
     </nav>
 
