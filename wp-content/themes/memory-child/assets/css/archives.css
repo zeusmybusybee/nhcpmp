@@ -506,3 +506,28 @@ ul.page-numbers {
     letter-spacing: 0;
     margin-top: 20px !important;
 }
+@media (max-width: 991px) {
+.archive-left {
+    order: 2;
+}
+.archive-right {
+    order: 1;
+    padding: 0;
+}
+.archive-hide{
+    display: none !important;
+}
+.top-result {
+    flex-direction: column;
+}
+.custom-pagination {
+    margin: 20px 0;
+}
+.result-item{
+    margin-top: 20px !important;
+}
+.archive-right form {
+    padding: 0 !important;
+}
+
+}

@@ -4,7 +4,7 @@
     <div class="row">
 
         <!-- LEFT: RESULTS -->
-        <div class="col-lg-8">
+        <div class="col-lg-8 archive-left">
             <?php
             global $wp_query;
 
@@ -18,7 +18,7 @@
             </div>
             <!-- Top Bar: Results Count & Pagination -->
             <div class="d-flex justify-content-between align-items-center mb-4 top-result">
-                <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-3 result-item">
                     <meduim>Results per page:</meduim>
                     <select class="form-select form-select-sm" style="width: auto;">
                         <option selected>10</option>
@@ -179,8 +179,8 @@
                 </div>
 
                 <!-- CENTER -->
-                <div class="text-center">
-                    <a href="#top" class="back-to-top-text">Back to Top</a>
+                <div class="text-center mt-4">
+                    <a href="#top" class="back-to-top-text ">Back to Top</a>
                 </div>
 
                 <!-- RIGHT -->
@@ -192,7 +192,7 @@
         </div>
 
         <!-- RIGHT: SIDEBAR -->
-        <div class="col-lg-4 archive-right-col">
+        <div class="col-lg-4 archive-right-col archive-right ">
             <?php
             // Get current filter values
             $heraldric_items_selected = $_GET['heraldric_items'] ?? [];
@@ -387,7 +387,7 @@
 
 
 
-                <div class="sidebar_article">
+                <div class="sidebar_article archive-hide">
                     <?php get_template_part('partials/sidebar-welcome'); ?>
                     <?php
                     $terms = get_terms([
