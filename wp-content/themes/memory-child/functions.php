@@ -756,6 +756,17 @@ function ph_historical_sites_filters($query)
             ];
         }
 
+        // location 
+        if (!empty($_GET['location'])) {
+            $location = sanitize_text_field($_GET['location']);
+
+            $meta_query[] = [
+                'key'     => 'location',
+                'value'   => $location,
+                'compare' => 'LIKE'
+            ];
+        }
+
         // INTERNATIONAL (meta)
         if (!empty($_GET['international'])) {
             $meta_query[] = [

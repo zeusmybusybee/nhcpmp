@@ -336,6 +336,28 @@
                         <select id="city" name="city" class="form-select mb-2">
                             <option value="">City / Municipality</option>
                         </select>
+
+                        <?php
+                        $field_location = get_field_object('location');
+
+                        if ($field_location && isset($field_location['choices'])) :
+                            // Get all choices
+                            $choices = $field_location['choices'];
+
+                            // Sort keys (year values) descending
+                            krsort($choices);
+
+                        ?>
+                            <select id="location" name="location" class="form-select mb-2">
+                                <option value="">Location</option>
+                                <?php foreach ($choices as $value => $label): ?>
+                                    <option value="<?php echo esc_attr($value); ?>">
+                                        <?php echo esc_html($label); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        <?php endif; ?>
+
                     </div>
 
 
