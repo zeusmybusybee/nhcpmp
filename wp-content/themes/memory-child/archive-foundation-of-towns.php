@@ -28,7 +28,7 @@
     <div class="row">
 
         <!-- LEFT: RESULTS -->
-        <div class="col-lg-8 foundation-town">
+        <div class="col-lg-8 foundation-town archive-left">
             <?php
             global $wp_query;
 
@@ -144,7 +144,7 @@
         </div>
 
         <!-- RIGHT: SIDEBAR -->
-        <div class="col-lg-4 archive-right-col">
+        <div class="col-lg-4 archive-right-col archive-right ">
 
             <form method="get"
                 action="<?php echo esc_url(get_post_type_archive_link('foundation-of-towns')); ?>"
@@ -310,7 +310,7 @@
 
             </form>
 
-            <div class="sidebar_article">
+            <div class="sidebar_article archive-hide">
                 <?php get_template_part('partials/sidebar-welcome'); ?>
                 <?php get_template_part('partials/sidebar-location-info'); ?>
 
