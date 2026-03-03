@@ -24,7 +24,7 @@
     <div class="row">
 
         <!-- LEFT: RESULTS -->
-        <div class="col-lg-8 ph-heraldy-left-col">
+        <div class="col-lg-8 ph-heraldy-left-col archive-left ">
             <?php
             global $wp_query;
 
@@ -129,7 +129,7 @@
 
 
         <!-- RIGHT: SIDEBAR -->
-        <div class="col-lg-4 archive-right-col">
+        <div class="col-lg-4 archive-right-col archive-right">
 
             <?php
             // Get current filter values
@@ -269,7 +269,7 @@
             </form>
 
             <!-- SIDEBAR CONTENT -->
-            <div class="sidebar_article mt-4">
+            <div class="sidebar_article mt-4 archive-hide">
                 <?php get_template_part('partials/sidebar-welcome'); ?>
                 <?php get_template_part('partials/sidebar-location-info'); ?>
             </div>

@@ -9,32 +9,32 @@
 if (is_front_page()) {
   return;
 }
-        $title       = '';
-        $description = '';
+$title       = '';
+$description = '';
 
-        if (is_singular()) {
-          $post_type_obj = get_post_type_object(get_post_type());
+if (is_singular()) {
+  $post_type_obj = get_post_type_object(get_post_type());
 
-          if ($post_type_obj) {
-            if (get_post_type() === 'page') {
-              $title = get_the_title(); // actual page title
-              $description = ''; // you can leave it empty or add custom description if needed
-            } else {
-              $title = $post_type_obj->labels->name; // post type name
-              $description = $post_type_obj->description ?? '';
-            }
-          }
-        } elseif (is_post_type_archive()) {
-          $title       = post_type_archive_title('', false);
-          $description = get_the_archive_description();
-        } elseif (is_archive()) {
-          $title       = get_the_archive_title();
-          $description = get_the_archive_description();
-        } elseif (is_page()) {
-          $title = get_the_title();
-        } else {
-          $title = get_bloginfo('name');
-        }
+  if ($post_type_obj) {
+    if (get_post_type() === 'page') {
+      $title = get_the_title(); // actual page title
+      $description = ''; // you can leave it empty or add custom description if needed
+    } else {
+      $title = $post_type_obj->labels->name; // post type name
+      $description = $post_type_obj->description ?? '';
+    }
+  }
+} elseif (is_post_type_archive()) {
+  $title       = post_type_archive_title('', false);
+  $description = get_the_archive_description();
+} elseif (is_archive()) {
+  $title       = get_the_archive_title();
+  $description = get_the_archive_description();
+} elseif (is_page()) {
+  $title = get_the_title();
+} else {
+  $title = get_bloginfo('name');
+}
 ?>
 
 <style>
@@ -137,6 +137,38 @@ if (is_front_page()) {
     font-weight: 800 !important;
   }
 
+  /* Hide dropdown on desktop */
+  .collections-dropdown {
+    display: none;
+  }
+
+  /* Tablet & below */
+  @media (max-width: 1024px) {
+
+    /* Hide horizontal nav */
+    .collections-nav .nav {
+      display: none;
+    }
+
+    /* Show dropdown */
+    .collections-dropdown {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+    }
+
+    select.collections-dropdown {
+      background: #6b4a1e;
+      color: #fff;
+      width: 100%;
+      max-width: 500px;
+      margin: 10px auto;
+      padding: 10px !important;
+    }
+
+  }
+
   /* Mobile */
   @media (max-width: 768px) {
     .collections-nav ul {
@@ -149,24 +181,69 @@ if (is_front_page()) {
   }
 </style>
 
-
 <?php
+global $wp;
+
 $post_types = ['book', 'artifacts', 'ph-heraldry-registry', 'historical-sites', 'a-v-material', 'foundation-of-towns'];
+
 if (is_post_type_archive($post_types) || is_singular($post_types)) : ?>
 
   <nav class="collections-nav">
     <div class="container">
+
       <?php
+      // Desktop Menu
       wp_nav_menu([
         'menu'        => 'Auxiliary Menu',
-        'container'      => false,
-        'menu_class'     => 'nav justify-content-center py-3',
-        'menu_id'        => false,
-        'fallback_cb'    => false,
-        'add_li_class'   => 'nav-item', // (see note below)
-        'link_class'     => 'nav-link', // (see note below)
+        'container'   => false,
+        'menu_class'  => 'nav justify-content-center py-3',
+        'menu_id'     => false,
+        'fallback_cb' => false,
       ]);
       ?>
+
+      <?php
+      /**
+       * Detect current post type PROPERLY
+       */
+      if (is_singular()) {
+        $current_post_type = get_post_type();
+      } elseif (is_post_type_archive()) {
+        $queried_object = get_queried_object();
+        $current_post_type = isset($queried_object->name) ? $queried_object->name : '';
+      } else {
+        $current_post_type = '';
+      }
+
+      $menu_items = wp_get_nav_menu_items('Auxiliary Menu');
+
+      if ($menu_items) :
+      ?>
+
+        <select class="collections-dropdown">
+
+          <?php foreach ($menu_items as $item) :
+
+            $selected = '';
+
+            // Match archive menu items correctly
+            if (
+              $item->type === 'post_type_archive' &&
+              $item->object === $current_post_type
+            ) {
+              $selected = 'selected';
+            }
+
+          ?>
+            <option value="<?php echo esc_url($item->url); ?>" <?php echo $selected; ?>>
+              <?php echo esc_html($item->title); ?>
+            </option>
+          <?php endforeach; ?>
+
+        </select>
+
+      <?php endif; ?>
+
     </div>
   </nav>
 
@@ -228,3 +305,16 @@ if (is_post_type_archive('historical-sites') || is_singular('historical-sites'))
   </div>
 </div>
 </div>
+
+<script>
+  jQuery(document).ready(function($) {
+
+    $('.collections-dropdown').on('change', function() {
+      var url = $(this).val();
+      if (url) {
+        window.location.href = url;
+      }
+    });
+
+  });
+</script>

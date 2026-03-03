@@ -337,6 +337,12 @@ section.featured-collections h2 {
 
 /* 💻 Desktop */
 @media (max-width: 1024px) {
+  .featured-collections .card h3 {
+font-size: 20px;
+}
+section.featured-collections h2 {
+  font-size: 30px;
+}
   .collections-grid {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -358,6 +364,21 @@ section.hero-banner h1 {
 }
 
 @media (max-width: 768px) {
+      section.hero-banner h1 {
+        font-size: 25px;
+    }
+   section.hero-banner  p {
+    font-size: 15px;
+    width: 100% !important;
+    
+}
+.hero-search{
+  flex-direction: column  ;
+}
+button.hero-btn {
+    padding: 10px !important;
+    text-align: center;
+}
 .collections .collection-card div {
     text-align: center;
 }
@@ -367,5 +388,14 @@ section.hero-banner h1 {
 section.hero-banner img {
     max-width: 135px;
           margin: 3rem 0 3rem;
+}
+.collection-content span.btn {
+    display: none;
+}
+.featured-collections {
+    padding: 5rem 2rem;
+}
+.total-result {
+margin-top: 20px;
 }
 }

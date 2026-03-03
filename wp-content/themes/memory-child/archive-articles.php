@@ -39,7 +39,7 @@
     <div class="row">
 
         <!-- LEFT: RESULTS -->
-        <div class="col-lg-8">
+        <div class="col-lg-8 archive-left">
             <?php
             global $wp_query;
 
@@ -101,7 +101,7 @@
                                 <?php the_title(); ?>
                             </h2>
 
-                            <!-- CALL NUMBER -->
+                            <!-- date-->
                             <?php if ($date = get_field('date')) : ?>
                                 <div class="article-date"><?php echo esc_html($date); ?></div>
                             <?php endif; ?>
@@ -137,7 +137,7 @@
                 </div>
 
                 <!-- CENTER -->
-                <div class="text-center">
+                <div class="text-center  mt-4">
                     <a href="#top" class="back-to-top-text">Back to Top</a>
                 </div>
 
@@ -151,7 +151,7 @@
         </div>
 
         <!-- RIGHT: SIDEBAR -->
-        <div class="col-lg-4 archive-right-col">
+        <div class="col-lg-4 archive-right-col archive-right">
 
             <form method="get"
                 action="<?php echo esc_url(get_post_type_archive_link('articles')); ?>"
@@ -261,7 +261,7 @@
 
             </form>
 
-            <div class="sidebar_article">
+            <div class="sidebar_article archive-hide">
                 <?php get_template_part('partials/sidebar-welcome'); ?>
                 <?php get_template_part('partials/sidebar-location-info'); ?>
 

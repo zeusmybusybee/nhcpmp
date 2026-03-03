@@ -103,7 +103,7 @@
     <div class="row justify-content-between ">
 
         <!-- LEFT: RESULTS -->
-        <div class="col-lg-8 content">
+        <div class="col-lg-8 content archive-left ">
             <div class="row ">
 
                 <?php
@@ -128,7 +128,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-4 top-result">
 
                     <!-- LEFT -->
-                    <div class="d-flex align-items-center gap-3 text-light">
+                    <div class="d-flex align-items-center gap-3 text-light result-item">
                         <span>Results per page:</span>
                         <select class="form-select form-select-sm" style="width: auto;">
                             <option selected>10</option>
@@ -203,7 +203,7 @@
                 </div>
 
                 <!-- CENTER -->
-                <div class="text-center">
+                <div class="text-center  mt-5">
                     <a href="#top" class="back-to-top-text">Back to Top</a>
                 </div>
 
@@ -216,7 +216,7 @@
         </div>
 
         <!-- RIGHT: SIDEBAR -->
-        <div class="col-lg-4">
+        <div class="col-lg-4 archive-right">
 
             <?php
             // Get current filter values
@@ -376,7 +376,7 @@
 
             </form>
 
-            <div class="sidebar_article text-white artifacts-sidebar">
+            <div class="sidebar_article text-white artifacts-sidebar archive-hide">
                 <?php get_template_part('partials/sidebar-welcome'); ?>
                 <?php get_template_part('partials/sidebar-location-info'); ?>
 

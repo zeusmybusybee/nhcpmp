@@ -178,13 +178,14 @@ ul#primary-menu  li:hover a {
 /* toggle menu */
   button#toggleBtn{
      display: none;
+         padding: 13px 19px;
   }
 #sidebar {
 
     position: fixed;
     top: 0;
     left: -420px;
-    width: 421px;
+       width: 358px;
     height: 100%;
     background: #6b4a1e;
     color: white;
@@ -213,7 +214,7 @@ ul#primary-menu  li:hover a {
     border-radius: 10px;
     outline: none;
     font-size: 14px;
-    width: 388px;
+    width: 333px;
 }
 button#closeBtn {
     background: none;
@@ -246,29 +247,6 @@ button#closeBtn {
     font-size: 25px;
     color: #6b4a1e;
 }
-@media (max-width: 1024px) {
-   button#toggleBtn {
-    display: block;
-   }
-   .section-hide{
-    display: none;
-   }
-
-}
-/* toggle menu */
-@media (min-width: 922px) {
-    .ast-container {
-        max-width: 80%;
-    }
-}
-
-/* bootstrap overide */
-@media (min-width: 1400px) {
-  .container {
-    max-width: 1440px;
-    padding: 0 20px;
-  }
-}
 .page-header,.page-header:before {
   border-bottom: none!important;
 }
@@ -284,3 +262,32 @@ button#closeBtn {
         background: #09d57780;
          color: #fff;
     }
+    
+@media (max-width: 1024px) {
+   button#toggleBtn {
+    display: block;
+   }
+   .section-hide{
+    display: none;
+   }
+body:not(.home) #content {
+    padding: 2rem 20px;
+}
+.page-header h1 {
+    font-size: 30px;
+}
+}
+/* toggle menu */
+@media (min-width: 922px) {
+    .ast-container {
+        max-width: 80%;
+    }
+}
+
+/* bootstrap overide */
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1440px;
+    padding: 0 20px;
+  }
+}
