@@ -205,6 +205,32 @@ color: #fff !important;
 .collection-card .btn:hover {
     background: #ffffff33;
 }
+@media (max-width: 768px) {
+  .collection-card {
+    aspect-ratio: auto;
+    min-height: 320px;   /* pwede mo pa taasan */
+    padding: 30px 20px;
+    background-size: cover;
+  }
+
+  .collection-card div {
+    width: 100%;
+  }
+
+  .collection-card h2 {
+    font-size: 30px !important;
+  }
+
+  .collection-card p {
+    font-size: 14px;
+  }
+
+  .collection-card .btn {
+    font-size: 20px !important; 
+    opacity: 1;          /* always visible sa mobile */
+    transform: none;
+  }
+}
 /* BACKGROUND IMAGES */
 
 
@@ -374,6 +400,11 @@ section.hero-banner h1 {
 }
 .hero-search{
   flex-direction: column  ;
+  border: unset;
+  border-radius: unset;
+}
+button.hero-btn {
+    margin-top: 11px;
 }
 button.hero-btn {
     padding: 10px !important;
@@ -388,9 +419,6 @@ button.hero-btn {
 section.hero-banner img {
     max-width: 135px;
           margin: 3rem 0 3rem;
-}
-.collection-content span.btn {
-    display: none;
 }
 .featured-collections {
     padding: 5rem 2rem;

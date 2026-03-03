@@ -531,3 +531,35 @@ ul.page-numbers {
 }
 
 }
+
+  /* Hide dropdown on desktop */
+  .collections-dropdown {
+    display: none;
+  }
+
+  /* Tablet & below */
+  @media (max-width: 1024px) {
+
+    /* Hide horizontal nav */
+    .collections-nav .nav {
+      display: none;
+    }
+
+    /* Show dropdown */
+    .collections-dropdown {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+    }
+
+    select.collections-dropdown {
+      background: #6b4a1e;
+      color: #fff;
+      width: 100%;
+      max-width: 500px;
+      margin: 10px auto;
+      padding: 10px !important;
+    }
+
+  }

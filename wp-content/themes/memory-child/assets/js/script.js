@@ -29,3 +29,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+
+  jQuery(document).ready(function ($) {
+    $(".collections-dropdown").on("change", function () {
+      var url = $(this).val();
+      if (url) {
+        window.location.href = url;
+      }
+    });
+  });
+

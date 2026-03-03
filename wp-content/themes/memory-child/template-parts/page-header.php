@@ -137,37 +137,6 @@ if (is_singular()) {
     font-weight: 800 !important;
   }
 
-  /* Hide dropdown on desktop */
-  .collections-dropdown {
-    display: none;
-  }
-
-  /* Tablet & below */
-  @media (max-width: 1024px) {
-
-    /* Hide horizontal nav */
-    .collections-nav .nav {
-      display: none;
-    }
-
-    /* Show dropdown */
-    .collections-dropdown {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-    }
-
-    select.collections-dropdown {
-      background: #6b4a1e;
-      color: #fff;
-      width: 100%;
-      max-width: 500px;
-      margin: 10px auto;
-      padding: 10px !important;
-    }
-
-  }
 
   /* Mobile */
   @media (max-width: 768px) {
@@ -234,12 +203,17 @@ if (is_post_type_archive($post_types) || is_singular($post_types)) : ?>
               $selected = 'selected';
             }
 
+            // Add spacing if submenu
+            $prefix = '';
+            if ($item->menu_item_parent != 0) {
+              $prefix = '— '; // pwede mo dagdagan ng space or dash
+            }
+
           ?>
             <option value="<?php echo esc_url($item->url); ?>" <?php echo $selected; ?>>
-              <?php echo esc_html($item->title); ?>
+              <?php echo esc_html($prefix . $item->title); ?>
             </option>
           <?php endforeach; ?>
-
         </select>
 
       <?php endif; ?>
@@ -305,16 +279,3 @@ if (is_post_type_archive('historical-sites') || is_singular('historical-sites'))
   </div>
 </div>
 </div>
-
-<script>
-  jQuery(document).ready(function($) {
-
-    $('.collections-dropdown').on('change', function() {
-      var url = $(this).val();
-      if (url) {
-        window.location.href = url;
-      }
-    });
-
-  });
-</script>
