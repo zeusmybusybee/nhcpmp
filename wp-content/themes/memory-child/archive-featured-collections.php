@@ -19,7 +19,7 @@
         font-size: 15px;
     }
 </style>
-<div class="container py-5">
+<div class="container">
 
     <div class="row">
 

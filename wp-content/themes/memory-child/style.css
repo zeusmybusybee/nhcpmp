@@ -45,9 +45,7 @@ div#content .ast-container {
     max-width: 100%;
     padding:0;
 }
-#content {
-    padding: 2rem 0;
-}
+
 h1, h2, h3 , h4, h5 a {
  font-family: 'Ysabeau', sans-serif;
   font-weight: 400;
@@ -333,3 +331,25 @@ body:not(.home) #content {
 }
 }
 
+/* bootstrap overide */
+@media (max-width: 1399px) {
+ .gov_footer {
+    padding: 61px 20px;
+}
+}
+
+
+@media (min-width: 1025px) and (max-width: 1399px) {
+  .site-branding {
+    max-width: 300px;
+
+}
+.menu-search-form input[type="search"] {
+          font-size: 12px;
+        width: 288px;
+    
+}
+ul#primary-menu li a {
+    font-size: 16px;
+}
+}

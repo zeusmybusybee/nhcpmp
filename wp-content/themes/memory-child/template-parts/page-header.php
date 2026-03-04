@@ -38,6 +38,10 @@ if (is_singular()) {
 ?>
 
 <style>
+  .pages-banner-default {
+    margin-bottom: 32px;
+  }
+
   /* Secondary collections menu */
   .collections-nav {
     background: #fff;
@@ -243,32 +247,17 @@ if (is_post_type_archive('historical-sites') || is_singular('historical-sites'))
 }
 ?>
 
-<div class="page-header <?php echo $archive_class ?? ''; ?>">
+<div class="pages-banner-default page-header <?php echo $archive_class ?? ''; ?>">
   <div class="container">
     <div class="header-inner">
 
-      <ul class="breadcrumbs">
-        <li class="breadcrumbs-item">
-          <a class="home" href="<?php echo home_url(); ?>">Home</a>
-        </li>
 
-        <?php if ($parent_link) : ?>
-          <li class="breadcrumbs-item">
-            <i class="icofont icofont-caret-right"></i>
-            <a href="<?php echo $parent_link; ?>">
-              <?php echo $parent_name; ?>
-            </a>
-          </li>
-        <?php endif; ?>
-
-        <li class="breadcrumbs-item">
-          <i class="icofont icofont-caret-right"></i>
-          <span class="last-item"><?php echo $title; ?></span>
-        </li>
-      </ul>
 
       <div class="page-header-title">
+
         <h1><?php echo $title; ?></h1>
+
+        <?php get_template_part('partials/breadcrumbs'); ?>
 
         <?php if ($description) : ?>
           <h2 class="entry-description"><?php echo $description; ?></h2>
@@ -277,5 +266,7 @@ if (is_post_type_archive('historical-sites') || is_singular('historical-sites'))
 
     </div>
   </div>
+
 </div>
+
 </div>

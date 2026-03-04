@@ -34,24 +34,13 @@
     }
 </style>
 
-<div class="container py-5 articles-archive">
+<div class="container articles-archive">
 
     <div class="row">
 
         <!-- LEFT: RESULTS -->
         <div class="col-lg-8 archive-left">
-            <?php
-            global $wp_query;
-
-
-            ?>
-
-            <div class="d-flex justify-content-between align-items-center mb-3 total-result  p-4 mb-3">
-                <h4 class="mb-0 mt-0" style="color:#704b10">
-                    Top <?php echo $wp_query->post_count;  ?> results for All Items
-                </h4>
-            </div>
-            <!-- Top Bar: Results Count & Pagination -->
+            <?php get_template_part('partials/total-result'); ?>
             <!-- bottom Bar: Results Count & Pagination -->
             <div class="d-flex justify-content-between align-items-center mb-4 top-result">
 

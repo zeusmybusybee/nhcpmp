@@ -19,33 +19,20 @@
         font-size: 15px;
     }
 </style>
-<div class="container py-5">
+<div class="container ">
 
     <div class="row">
 
         <!-- LEFT: RESULTS -->
         <div class="col-lg-8 ph-heraldy-left-col archive-left ">
-            <?php
-            global $wp_query;
-
-
-            ?>
-
-            <div class="d-flex justify-content-between align-items-center mb-3 total-result  p-4 mb-4">
-                <h4 class="mb-0 mt-0" style="color:#704b10">
-                    Top <?php echo $wp_query->post_count;  ?> results for All heraldry
-                </h4>
-            </div>
+            <?php get_template_part('partials/total-result'); ?>
             <!-- Top Bar: Results Count & Pagination -->
             <div class="d-flex justify-content-between align-items-center mb-4 top-result">
-                <div class="d-flex align-items-center gap-3">
-                    <meduim>Results per page:</meduim>
-                    <select class="form-select form-select-sm" style="width: auto;">
-                        <option selected>10</option>
-                        <option>25</option>
-                        <option>50</option>
-                    </select>
-                </div>
+
+                <!-- LEFT -->
+                <?php get_template_part('partials/result-perpage'); ?>
+
+
                 <div class="pagination-nav">
                     <?php echo do_shortcode('[custom_pagination]'); ?>
                 </div>
@@ -122,6 +109,24 @@
                         <p>Please try a different search term or filter.</p>
                     </div>
                 <?php endif; ?>
+            </div>
+
+            <!-- bottom Bar: Results Count & Pagination -->
+            <div class="d-flex justify-content-between align-items-center mb-4 top-result">
+
+                <!-- LEFT -->
+                <?php get_template_part('partials/result-perpage'); ?>
+
+                <!-- CENTER -->
+                <div class="text-center mt-5">
+                    <a href="#top" class="back-to-top-text">Back to Top</a>
+                </div>
+
+                <!-- RIGHT -->
+                <div class="pagination-nav">
+                    <?php echo do_shortcode('[custom_pagination]'); ?>
+                </div>
+
             </div>
         </div>
 

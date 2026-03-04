@@ -233,7 +233,7 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
 
                 </div>
                 <div class="container my-5">
-                    <div class="row align-items-start gap-5 books-single-content ">
+                    <div class="row align-items-start gap-5 books-single-content">
 
                         <!-- Left Side (Description Box) -->
                         <div class="col-md-5 mb-4">

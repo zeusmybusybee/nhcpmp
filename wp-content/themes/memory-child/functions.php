@@ -1170,3 +1170,18 @@ function add_featured_archive_body_class($classes)
     return $classes;
 }
 add_filter('body_class', 'add_featured_archive_body_class');
+
+
+
+function modify_book_archive_posts_per_page($query)
+{
+    if (!is_admin() && $query->is_main_query() && is_post_type_archive('book')) {
+
+        if (isset($_GET['posts_per_page']) && in_array($_GET['posts_per_page'], ['10', '25', '50'])) {
+            $query->set('posts_per_page', intval($_GET['posts_per_page']));
+        } else {
+            $query->set('posts_per_page', 10); // default
+        }
+    }
+}
+add_action('pre_get_posts', 'modify_book_archive_posts_per_page');
