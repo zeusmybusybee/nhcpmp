@@ -1,4 +1,5 @@
 <?php
+
 /**
  * The template for displaying all pages
  *
@@ -14,11 +15,16 @@
 
 get_header();
 ?>
-        <!-- custom content -->
-            <?php if ( have_rows('pages_section') ) : ?>
-    <?php while ( have_rows('pages_section') ) : the_row(); ?>
+<style>
+    .page-template-default {
+        background: #F7F7F7;
+    }
+</style>
+<!-- custom content -->
+<?php if (have_rows('pages_section')) : ?>
+    <?php while (have_rows('pages_section')) : the_row(); ?>
 
-        <?php if ( get_row_layout() === 'two_column_with_images' ) : ?>
+        <?php if (get_row_layout() === 'two_column_with_images') : ?>
 
             <section class="py-5">
                 <div class="container">
@@ -33,15 +39,14 @@ get_header();
 
                         <!-- IMAGE COLUMN -->
                         <div class="col-lg-6 text-center">
-                            <?php 
-                                $thumbnail_url = get_sub_field('thumbnails');
-                                if ( $thumbnail_url ) :
+                            <?php
+                            $thumbnail_url = get_sub_field('thumbnails');
+                            if ($thumbnail_url) :
                             ?>
-                                <img 
+                                <img
                                     src="<?php echo esc_url($thumbnail_url); ?>"
                                     alt=""
-                                    class="img-fluid"
-                                >
+                                    class="img-fluid">
                             <?php endif; ?>
                         </div>
 
@@ -51,24 +56,23 @@ get_header();
 
         <?php endif; ?>
 
-           <?php if ( get_row_layout() === 'tabs' ) : ?>
+        <?php if (get_row_layout() === 'tabs') : ?>
 
             <section class="custom-tab">
                 <div class="container my-5">
 
                     <!-- TAB NAV -->
                     <ul class="nav nav-tabs custom-tabs" role="tablist">
-                        <?php if ( have_rows('tabs_item') ) : ?>
+                        <?php if (have_rows('tabs_item')) : ?>
                             <?php $i = 0; ?>
-                            <?php while ( have_rows('tabs_item') ) : the_row(); ?>
+                            <?php while (have_rows('tabs_item')) : the_row(); ?>
                                 <li class="nav-item flex-fill" role="presentation">
                                     <button
                                         class="nav-link <?php echo $i === 0 ? 'active' : ''; ?>"
                                         data-bs-toggle="tab"
                                         data-bs-target="#tab-<?php echo $i; ?>"
                                         type="button"
-                                        role="tab"
-                                    >
+                                        role="tab">
                                         <?php the_sub_field('title'); ?>
                                     </button>
                                 </li>
@@ -78,23 +82,22 @@ get_header();
                     </ul>
 
                     <!-- TAB CONTENT -->
-                        <div class="container">
-                    <div class="tab-content pt-4">
-                  
-                        <?php if ( have_rows('tabs_item') ) : ?>
-                            <?php $i = 0; ?>
-                            <?php while ( have_rows('tabs_item') ) : the_row(); ?>
-                                <div
-                                    class="tab-pane fade <?php echo $i === 0 ? 'show active' : ''; ?>"
-                                    id="tab-<?php echo $i; ?>"
-                                    role="tabpanel"
-                                >
-                                    <?php the_sub_field('content'); ?>
-                                </div>
-                                <?php $i++; ?>
-                            <?php endwhile; ?>
-                        <?php endif; ?>
-                      </div>
+                    <div class="container">
+                        <div class="tab-content pt-4">
+
+                            <?php if (have_rows('tabs_item')) : ?>
+                                <?php $i = 0; ?>
+                                <?php while (have_rows('tabs_item')) : the_row(); ?>
+                                    <div
+                                        class="tab-pane fade <?php echo $i === 0 ? 'show active' : ''; ?>"
+                                        id="tab-<?php echo $i; ?>"
+                                        role="tabpanel">
+                                        <?php the_sub_field('content'); ?>
+                                    </div>
+                                    <?php $i++; ?>
+                                <?php endwhile; ?>
+                            <?php endif; ?>
+                        </div>
                     </div>
 
                 </div>

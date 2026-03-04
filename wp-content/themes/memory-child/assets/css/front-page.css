@@ -303,11 +303,11 @@ section.featured-collections h2 {
     margin-bottom: 50px;
 }
 /* Card colors */
-.navy::before { background: #2c2f6c; }
-.red::before { background: #c7373f; }
-.purple::before { background: #8e2f8f; }
-.green::before { background: #4f7f3f; }
-.teal::before { background: #1fa3a3; }
+.navy::before { background: #29286B; }
+.red::before { background: #C43540; }
+.purple::before { background: #992E99; }
+.green::before { background: #3D7A39; }
+.teal::before { background: #219E9E; }
 .orange::before { background: #d87434; }
 .darkgreen::before { background: #0f5c2e; }
 .gold::before { background: #c7ad2a; }
@@ -329,6 +329,19 @@ section.featured-collections h2 {
 .featured-collections  .card p {
   line-height: 1.4;
 }
+.featured-collections  a {
+ text-decoration: none;
+}
+a.navy:hover {color: #2c2f6c;}
+a.navy:hover  { color: #2c2f6c; }
+a.red:hover  { color: #c7373f; }
+a.purple:hover  { color: #8e2f8f; }
+a.green:hover  { color: #4f7f3f; }
+a.teal:hover  { color: #1fa3a3; }
+a.orange:hover { color: #d87434; }
+a.darkgreen:hover  { color: #0f5c2e; }
+a.gold:hover  { color: #c7ad2a; }
+
 /* 🌐 Tablet & up */
 @media (min-width: 768px) {
   .hero {
@@ -390,6 +403,10 @@ section.hero-banner h1 {
 }
 
 @media (max-width: 768px) {
+  .hero-search .hero-input {
+    font-size: 13px;
+
+}
       section.hero-banner h1 {
         font-size: 25px;
     }

@@ -10,6 +10,10 @@ get_header();
 
 ?>
 <style>
+  .page-template-page-contact {
+    background: #F7F7F7
+  }
+
   .contact-us__form input[type="text"],
   .contact-us__form input[type="email"],
   .contact-us__form textarea {

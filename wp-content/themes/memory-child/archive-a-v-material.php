@@ -1,6 +1,8 @@
 <?php get_header(); ?>
 <style>
-    div#content {
+    .post-type-archive-a-v-material{
+        background-color: #000;
+    } div#content {
         background: #000;
     }
 
@@ -41,11 +43,21 @@
         line-height: 40px;
         margin-bottom: 20px !important;
     }
+
+    .total-result {
+        background: #ffffff42;
+    }
+
+    .total-result h4 {
+        color: #fff !important;
+    }
 </style>
 
-<div class="container py-5 visual-materials">
+<div class="container  visual-materials">
     <div class="row">
         <div class="col-md-8 archive-left ">
+            <?php get_template_part('partials/total-result'); ?>
+
             <?php $is_search = isset($_GET['s']) && ! empty($_GET['s']); ?>
             <?php if ($is_search) : ?>
 

@@ -81,7 +81,7 @@
 							?>
 						</nav>
 
-						<div class="section-hide"><?php echo do_shortcode('[menu_search]'); ?></div>
+						<div class="section-hide search-header"><?php echo do_shortcode('[menu_search]'); ?></div>
 						<!-- mobile toggle -->
 						<button id="toggleBtn" class="btn  m-3"><i class="fa-solid fa-bars"></i></button>
 

@@ -247,6 +247,16 @@ button.box a {
         width: 70px;
         height: 70px;
     }
+    .pagination-prev, .pagination-next, .pagination-info {
+    font-size: 14px !important;
+}
+.archive-card-mobile {
+    flex-direction: column !important;
+}
+.mobile-100{
+    width: 100% !important;
+    max-width: 100% !important;
+}
 }
 /* badge tags */
 /* Badge styling */
@@ -275,7 +285,7 @@ ul.page-numbers {
 }
 .custom-pagination {
     text-align: center;
-    margin: 40px 0;
+      margin: 24px 0;
 }
 
 .pagination-inner {

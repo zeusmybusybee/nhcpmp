@@ -23,35 +23,20 @@
         border-radius: 10px;
     }
 </style>
-<div class="container py-5">
+<div class="container ">
 
     <div class="row">
 
         <!-- LEFT: RESULTS -->
         <div class="col-lg-8 foundation-town archive-left">
-            <?php
-            global $wp_query;
+            <?php get_template_part('partials/total-result'); ?>
+    
 
-
-            ?>
-            <?php get_template_part('partials/breadcrumbs'); ?>
-            <div class="d-flex justify-content-between align-items-center mb-3 total-result bg-light  mb-4">
-                <h4 class="text-dark mb-0 mt-0">
-                    Results for All Towns
-                </h4>
-            </div>
             <!-- Top Bar: Results Count & Pagination -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="d-flex align-items-center gap-2">
-                    <meduim>Top <?php echo $wp_query->post_count; ?> results for <?php single_cat_title(); ?></meduim>
-                    <select class="form-select form-select-sm p-2" style="width: 50px;">
-                        <option selected>10</option>
-                        <option>25</option>
-                        <option>50</option>
-                    </select>
-                </div>
-                <div class="pagination-nav">
-                    <?php the_posts_pagination(['type' => 'list']); ?>
+            <div class="d-flex justify-content-between align-items-center mb-4 top-result">
+                <?php get_template_part('partials/result-perpage'); ?>
+                <div class="pagination-nav mt-4">
+                    <?php echo do_shortcode('[custom_pagination]'); ?>
                 </div>
             </div>
             <?php while (have_posts()) : the_post(); ?>
