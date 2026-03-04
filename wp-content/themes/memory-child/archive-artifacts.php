@@ -111,10 +111,10 @@
 
 
                 ?>
-
+                <?php get_template_part('partials/breadcrumbs'); ?>
                 <div class="d-flex justify-content-between align-items-center mb-3 total-result">
                     <h4 class="text-white mb-0 mt-0">
-                        Top <?php echo $wp_query->post_count;  ?> results for All artifacts
+                        Results for All artifacts
                     </h4>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-3">

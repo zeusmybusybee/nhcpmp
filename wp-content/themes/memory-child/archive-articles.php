@@ -45,10 +45,10 @@
 
 
             ?>
-
+            <?php get_template_part('partials/breadcrumbs'); ?>
             <div class="d-flex justify-content-between align-items-center mb-3 total-result  p-4 mb-3">
                 <h4 class="mb-0 mt-0" style="color:#704b10">
-                    Top <?php echo $wp_query->post_count;  ?> results for All Items
+                    Results for All Items
                 </h4>
             </div>
             <!-- Top Bar: Results Count & Pagination -->

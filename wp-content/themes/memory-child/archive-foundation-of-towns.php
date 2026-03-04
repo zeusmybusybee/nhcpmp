@@ -34,10 +34,10 @@
 
 
             ?>
-
+            <?php get_template_part('partials/breadcrumbs'); ?>
             <div class="d-flex justify-content-between align-items-center mb-3 total-result bg-light  mb-4">
                 <h4 class="text-dark mb-0 mt-0">
-                    Top <?php echo $wp_query->post_count;  ?> results for All artifacts
+                    Results for All Towns
                 </h4>
             </div>
             <!-- Top Bar: Results Count & Pagination -->
