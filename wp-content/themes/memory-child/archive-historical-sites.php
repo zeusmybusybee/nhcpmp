@@ -1,31 +1,18 @@
 <?php get_header(); ?>
-<div class="container py-5">
+<div class="container ">
 
     <div class="row">
 
         <!-- LEFT: RESULTS -->
         <div class="col-lg-8 archive-left">
-            <?php
-            global $wp_query;
 
+            <?php get_template_part('partials/total-result'); ?>
 
-            ?>
-            <?php get_template_part('partials/breadcrumbs'); ?>
-            <div class="d-flex justify-content-between align-items-center mb-3 total-result  p-4 mb-3">
-                <h4 class="mb-0 mt-0" style="color:#704b10">
-                    Results for All Historical Sites
-                </h4>
-            </div>
             <!-- Top Bar: Results Count & Pagination -->
             <div class="d-flex justify-content-between align-items-center mb-4 top-result">
-                <div class="d-flex align-items-center gap-3 result-item">
-                    <meduim>Results per page:</meduim>
-                    <select class="form-select form-select-sm" style="width: auto;">
-                        <option selected>10</option>
-                        <option>25</option>
-                        <option>50</option>
-                    </select>
-                </div>
+                <!-- LEFT -->
+                <?php get_template_part('partials/result-perpage'); ?>
+
                 <div class="pagination-nav">
                     <?php echo do_shortcode('[custom_pagination]'); ?>
                 </div>
@@ -169,14 +156,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4 top-result">
 
                 <!-- LEFT -->
-                <div class="d-flex align-items-center gap-3">
-                    <span>Results per page:</span>
-                    <select class="form-select form-select-sm" style="width: auto;">
-                        <option selected>10</option>
-                        <option>25</option>
-                        <option>50</option>
-                    </select>
-                </div>
+                <?php get_template_part('partials/result-perpage'); ?>
 
                 <!-- CENTER -->
                 <div class="text-center mt-4">

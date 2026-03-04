@@ -51,11 +51,15 @@ get_header();
                     </p>
                   <?php endif; ?>
 
-                  <form class="hero-search d-flex mx-auto mt-5">
+                  <form role="search" method="get" class="hero-search d-flex mx-auto mt-5" action="<?php echo esc_url(home_url('/')); ?>">
                     <input
-                      type="text"
+                      type="search"
                       class="hero-input"
-                      placeholder="Search the National Memory Project">
+                      placeholder="Search the National Memory Project"
+                      value="<?php echo get_search_query(); ?>"
+                      name="s"
+                      title="Search for:">
+
                     <button type="submit" class="hero-btn">
                       Search
                     </button>
@@ -63,7 +67,7 @@ get_header();
 
                   <div class="container mt-5">
                     <div class="scroll-wrapper d-flex align-items-center justify-content-center">
-                      <div class="arrow-hover">
+                      <div class="arrow-hover scroll-next" style="cursor:pointer;">
                         <div class="scroll-text">Scroll down</div>
                         <div class="icon">
                           <?php include get_stylesheet_directory() . '/assets/svg/triangle-down.svg'; ?>
@@ -83,7 +87,7 @@ get_header();
 
 
         <?php if (get_row_layout() === 'collection') : ?>
-          <section class="collections">
+          <section class="collections" id="next-section">
 
             <?php $i = 0; ?>
 

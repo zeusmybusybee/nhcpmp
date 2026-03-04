@@ -39,3 +39,17 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
+
+  
+jQuery(document).ready(function ($) {
+  $(".scroll-next").click(function (e) {
+    e.preventDefault();
+
+    $("html, body").animate(
+      {
+        scrollTop: $("#next-section").offset().top,
+      },
+      800,
+    );
+  });
+});

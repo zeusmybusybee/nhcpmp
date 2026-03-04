@@ -4,7 +4,15 @@
         color: #fff !important;
     }
 
+    .post-type-archive-artifacts {
+        background: #000;
+    }
+
     .artifacts-pages input.form-control.border-0 {
+        color: #fff;
+    }
+
+    .post-type-archive-artifacts .result-item span {
         color: #fff;
     }
 
@@ -40,6 +48,10 @@
 
     .post-type-archive-artifacts span.select2.select2-container.select2-container--default {
         margin-top: 10px;
+    }
+
+    .post-type-archive-artifacts .total-result h4 {
+        color: #fff !important;
     }
 
     .artifacts-sidebar h2,
@@ -96,46 +108,29 @@
         font-size: 15px;
         font-family: 'Ysabeau', sans-serif;
     }
+
+    .post-type-archive-artifacts nav.breadcrumb-nav a,
+    .post-type-archive-artifacts nav.breadcrumb-nav span {
+        font-size: 16px;
+        font-weight: 500;
+        color: #fff;
+    }
 </style>
 
-<div class="container my-5 artifacts-pages">
+<div class="container  artifacts-pages">
 
     <div class="row justify-content-between ">
 
         <!-- LEFT: RESULTS -->
         <div class="col-lg-8 content archive-left ">
+            <?php get_template_part('partials/total-result'); ?>
             <div class="row ">
-
-                <?php
-                global $wp_query;
-
-
-                ?>
-                <?php get_template_part('partials/breadcrumbs'); ?>
-                <div class="d-flex justify-content-between align-items-center mb-3 total-result">
-                    <h4 class="text-white mb-0 mt-0">
-                        Results for All artifacts
-                    </h4>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mb-3">
-
-
-
-                </div>
-
-
                 <!-- bottom Bar: Results Count & Pagination -->
                 <div class="d-flex justify-content-between align-items-center mb-4 top-result">
 
                     <!-- LEFT -->
-                    <div class="d-flex align-items-center gap-3 text-light result-item">
-                        <span>Results per page:</span>
-                        <select class="form-select form-select-sm" style="width: auto;">
-                            <option selected>10</option>
-                            <option>25</option>
-                            <option>50</option>
-                        </select>
-                    </div>
+                    <?php get_template_part('partials/result-perpage'); ?>
+
 
 
                     <!-- RIGHT -->
@@ -193,14 +188,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4 top-result">
 
                 <!-- LEFT -->
-                <div class="d-flex align-items-center gap-3 text-light">
-                    <span>Results per page:</span>
-                    <select class="form-select form-select-sm" style="width: auto;">
-                        <option selected>10</option>
-                        <option>25</option>
-                        <option>50</option>
-                    </select>
-                </div>
+                <?php get_template_part('partials/result-perpage'); ?>
 
                 <!-- CENTER -->
                 <div class="text-center  mt-5">
