@@ -63,55 +63,78 @@
                 </div>
 
             </div>
-            <?php while (have_posts()) : the_post(); ?>
-                <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
-                    <div class="d-flex gap-4 mb-4 book-post-item bg-body-tertiary rounded">
+            <?php if (have_posts()) : ?>
+                <?php while (have_posts()) : the_post(); ?>
+                    <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
+                        <div class="d-flex gap-4 mb-4 book-post-item bg-body-tertiary rounded">
 
-                        <!-- Thumbnail -->
-                        <?php if (has_post_thumbnail()) : ?>
-                            <div class="flex-shrink-0 col-3 text-center p-0">
-                                <?php the_post_thumbnail(
-                                    'medium',
-                                    ['class' => 'img-fluid rounded']
-                                ); ?>
-                            </div>
-                        <?php else : ?>
-                            <img
-                                src=" <?php echo get_stylesheet_directory_uri(); ?>/assets/images/books-default.png"
-                                class="img-fluid d-block books-default-image"
-                                alt="Default Image">
-                        <?php endif; ?>
-
-                        <!-- DETAILS COLUMN -->
-                        <div class="flex-grow-1 d-flex flex-column col-8 p-0">
-
-                            <!-- TITLE -->
-                            <h2 class="books-title fw-semibold ">
-                                <?php the_title(); ?>
-                            </h2>
-
-                            <!-- date-->
-                            <?php if ($date = get_field('date')) : ?>
-                                <div class="article-date"><?php echo esc_html($date); ?></div>
+                            <!-- Thumbnail -->
+                            <?php if (has_post_thumbnail()) : ?>
+                                <div class="flex-shrink-0 col-3 text-center p-0">
+                                    <?php the_post_thumbnail(
+                                        'medium',
+                                        ['class' => 'img-fluid rounded']
+                                    ); ?>
+                                </div>
+                            <?php else : ?>
+                                <img
+                                    src=" <?php echo get_stylesheet_directory_uri(); ?>/assets/images/books-default.png"
+                                    class="img-fluid d-block books-default-image"
+                                    alt="Default Image">
                             <?php endif; ?>
 
-                            <!-- DESCRIPTION -->
-                            <p class="text-muted mb-3 books-content">
-                                <?php
-                                $excerpt = get_the_excerpt();
+                            <!-- DETAILS COLUMN -->
+                            <div class="flex-grow-1 d-flex flex-column col-8 p-0">
 
-                                if (! empty($excerpt)) {
-                                    echo $excerpt;
-                                } else {
-                                    echo 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.';
-                                }
-                                ?>
-                            </p>
+                                <!-- TITLE -->
+                                <h2 class="books-title fw-semibold ">
+                                    <?php the_title(); ?>
+                                </h2>
 
+                                <!-- date-->
+                                <?php if ($date = get_field('date')) : ?>
+                                    <div class="article-date"><?php echo esc_html($date); ?></div>
+                                <?php endif; ?>
+
+                                <!-- DESCRIPTION -->
+                                <p class="text-muted mb-3 books-content">
+                                    <?php
+                                    $excerpt = get_the_excerpt();
+
+                                    if (! empty($excerpt)) {
+                                        echo $excerpt;
+                                    } else {
+                                        echo 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.';
+                                    }
+                                    ?>
+                                </p>
+
+                            </div>
                         </div>
+                    </a>
+                <?php endwhile; ?>
+            <?php else : ?>
+
+                <div class="d-flex align-items-center mb-5 mt-4">
+
+                    <div class="archive-no-results-icon col-3">
+                        <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/404-img.png" alt="404">
                     </div>
-                </a>
-            <?php endwhile; ?>
+                    <div class="col-9">
+                        <h2>We're still gathering memories.</h2>
+
+                        <p class="archive-subtext">
+                            It looks like nothing was found at this location. Maybe try one of the links below or a search?
+                        </p>
+
+                        <a href="javascript:history.back()" class="archive-back">
+                            Back to previous
+                        </a>
+                    </div>
+
+                </div>
+
+            <?php endif; ?>
             <!-- bottom Bar: Results Count & Pagination -->
             <div class="d-flex justify-content-between align-items-center mb-4 top-result">
 

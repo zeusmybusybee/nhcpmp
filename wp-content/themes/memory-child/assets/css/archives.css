@@ -199,11 +199,29 @@ button.box a {
 .nrhss-featured-img {
     width: 100%;
     height: 420px;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: 6px;
     transition: opacity 0.25s ease-in-out;
 }
-
+.search-no-results .total-result,
+.search-no-results .top-result{
+    display: none !important;
+}
+a.archive-back {
+    color: #704B10;
+    font-size: 20px;
+    font-style: italic;
+}
+.no-result-text{
+    filter: invert(1);
+    object-fit: cover !important;
+    width: 100%;
+    height: auto !important;
+}
+.no-result-item h2,
+.no-result-item p{
+    color: #fff;
+}
 /* THUMBNAILS */
 .nrhss-gallery {
     width: 90px;
