@@ -1,4 +1,13 @@
 
+
+    .my-flipbook-button {
+        background-color: #198754;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        display:inline;
+    }
     .page-header {
         background: #704b10!important;
     }
