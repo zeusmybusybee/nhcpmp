@@ -29,6 +29,37 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+jQuery(document).ready(function ($) {
+  let currentIndex = 0;
+  const visibleCount = 3;
+  const thumbHeight = 100; // 90px + 10px gap
+  const $gallery = $(".nrhss-gallery");
+  const totalThumbs = $(".nrhss-thumb").length;
+
+  $(".thumb-next").click(function () {
+    if (currentIndex < totalThumbs - visibleCount) {
+      currentIndex++;
+      $gallery.animate(
+        {
+          scrollTop: currentIndex * thumbHeight,
+        },
+        200,
+      );
+    }
+  });
+
+  $(".thumb-prev").click(function () {
+    if (currentIndex > 0) {
+      currentIndex--;
+      $gallery.animate(
+        {
+          scrollTop: currentIndex * thumbHeight,
+        },
+        200,
+      );
+    }
+  });
+});
 
   jQuery(document).ready(function ($) {
     $(".collections-dropdown").on("change", function () {

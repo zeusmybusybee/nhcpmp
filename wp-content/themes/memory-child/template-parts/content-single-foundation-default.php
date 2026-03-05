@@ -143,17 +143,26 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
             <div class="row g-4">
 
                 <?php
+                $current_id = get_the_ID();
+                $current_title = get_the_title();
+
+                // kunin first word lang (example: "How")
+                $title_words = explode(' ', $current_title);
+                $keyword = $title_words[0];
+
                 $args = [
                     'post_type'      => 'foundation-of-towns',
-                    'posts_per_page' => 6, // 6 posts
+                    'posts_per_page' => 6,
                     'post_status'    => 'publish',
-                    'orderby'        => 'date',
+                    'post__not_in'   => [$current_id],
+                    'title_like'     => $keyword,
                 ];
+                
 
-                $artifacts = new WP_Query($args);
+                $foundation = new WP_Query($args);
 
-                if ($artifacts->have_posts()) :
-                    while ($artifacts->have_posts()) : $artifacts->the_post(); ?>
+                if ($foundation->have_posts()) :
+                    while ($foundation->have_posts()) : $foundation->the_post(); ?>
                         <div class="col-md-12">
                             <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark d-block">
                                 <div class="h-100 d-flex bg-body-tertiary rounded p-5 hover-card">

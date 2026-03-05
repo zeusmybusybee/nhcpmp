@@ -1,8 +1,10 @@
 <?php get_header(); ?>
 <style>
-    .post-type-archive-a-v-material{
+    .post-type-archive-a-v-material {
         background-color: #000;
-    } div#content {
+    }
+
+    div#content {
         background: #000;
     }
 
@@ -99,7 +101,24 @@
                     </div>
 
                 <?php else : ?>
-                    <p class="text-white">No results found.</p>
+                    <div class="d-flex align-items-center mb-5 mt-4">
+
+                        <div class="archive-no-results-icon col-3">
+                            <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/404-img.png" alt="404" class="no-result-text">
+                        </div>
+                        <div class="col-9 no-result-item">
+                            <h2>We're still gathering memories.</h2>
+
+                            <p class="archive-subtext">
+                                It looks like nothing was found at this location. Maybe try one of the links below or a search?
+                            </p>
+
+                            <a href="javascript:history.back()" class="archive-back">
+                                Back to previous
+                            </a>
+                        </div>
+
+                    </div>
                 <?php endif; ?>
 
                 <?php wp_reset_postdata(); ?>
