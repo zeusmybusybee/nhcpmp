@@ -222,12 +222,14 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                     </div>
                     <h2 class="text-dark main-title"><?php echo get_the_title(); ?></h2>
                     <div class="post-content text-dark">
+                        <?php $pdf = get_field('file_content');
+                        $cover_image = get_field('cover_image'); ?>
+                        <?php if (!empty($pdf['url'])) : ?>
+                            <div class="my-flipbook-button">
+                                <?php echo do_shortcode('[real3dflipbook pdf="' . $pdf['url'] . '" mode="lightbox" thumb="View PDF"]'); ?>
+                            </div>
 
-                        <a href="<?php echo esc_url($pdf['url']); ?>"
-                            class="btn btn-success"
-                            target="_blank">
-                            View PDF
-                        </a>
+                        <?php endif; ?>
 
                     </div>
 
@@ -273,7 +275,7 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
             <div class="row g-4">
 
                 <?php
-             
+
                 $current_id = get_the_ID();
                 $current_title = get_the_title();
 
