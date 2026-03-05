@@ -140,14 +140,21 @@
             $current_id = get_the_ID();
             // echo $current_id;
 
+            $current_id = get_the_ID();
+            $current_title = get_the_title();
+
+            // kunin first word lang (example: "How")
+            $title_words = explode(' ', $current_title);
+            $keyword = $title_words[0];
+
             $args = [
                 'post_type'      => 'ph-heraldry-registry',
-                'posts_per_page' => 6, // change if needed
-                'post__not_in'   => [$current_id],
-                'orderby'        => 'date',
-                'order'          => 'DESC',
+                'posts_per_page' => 6,
                 'post_status'    => 'publish',
+                'post__not_in'   => [$current_id],
+                'title_like'     => $keyword,
             ];
+            
 
             $other_posts = new WP_Query($args);
             ?>
@@ -368,7 +375,7 @@
             </form>
 
             <!-- SIDEBAR CONTENT -->
-            <div class="sidebar_article mt-4">
+            <div class="sidebar_article mt-4 result-item">
                 <?php get_template_part('partials/sidebar-welcome'); ?>
                 <?php get_template_part('partials/sidebar-location-info'); ?>
             </div>

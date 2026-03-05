@@ -22,6 +22,10 @@
         padding: 21px 10px;
         border-radius: 10px;
     }
+
+    .archive-no-results-icon img{
+        height: auto  !important;
+    }
 </style>
 <div class="container ">
 
@@ -30,7 +34,7 @@
         <!-- LEFT: RESULTS -->
         <div class="col-lg-8 foundation-town archive-left">
             <?php get_template_part('partials/total-result'); ?>
-    
+
 
             <!-- Top Bar: Results Count & Pagination -->
             <div class="d-flex justify-content-between align-items-center mb-4 top-result">
@@ -39,68 +43,89 @@
                     <?php echo do_shortcode('[custom_pagination]'); ?>
                 </div>
             </div>
-            <?php while (have_posts()) : the_post(); ?>
-                <div class="position-relative d-flex gap-5 mb-4 foundation-item bg-body-tertiary rounded">
+            <?php if (have_posts()) : ?>
+                <?php while (have_posts()) : the_post(); ?>
+                    <div class="position-relative d-flex gap-5 mb-4 foundation-item bg-body-tertiary rounded">
 
-                    <!-- Invisible stretched link -->
-                    <a href="<?php the_permalink(); ?>" class="stretched-link"></a>
+                        <!-- Invisible stretched link -->
+                        <a href="<?php the_permalink(); ?>" class="stretched-link"></a>
 
-                    <!-- Thumbnail -->
-                    <?php if (has_post_thumbnail()) : ?>
-                        <div class="flex-shrink-0" style="width:120px;">
-                            <?php the_post_thumbnail(
-                                'medium',
-                                ['class' => 'img-fluid rounded']
-                            ); ?>
+                        <!-- Thumbnail -->
+                        <?php if (has_post_thumbnail()) : ?>
+                            <div class="flex-shrink-0" style="width:120px;">
+                                <?php the_post_thumbnail(
+                                    'medium',
+                                    ['class' => 'img-fluid rounded']
+                                ); ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <!-- DETAILS COLUMN -->
+                        <div class="flex-grow-1 d-flex flex-column">
+
+                            <!-- TITLE -->
+                            <h3 class="mt-0">
+                                <?php the_title(); ?>
+                            </h3>
+
+                            <!-- DESCRIPTION -->
+                            <p class="text-muted mb-5">
+                                <?php echo wp_trim_words(get_the_excerpt(), 45); ?>
+                            </p>
+
+                            <!-- BOTTOM META -->
+                            <div class="d-flex">
+                                <div class="col-3 p-0">
+                                    <div>Location</div>
+                                    <div>Category</div>
+                                    <div>Year Founded:</div>
+                                </div>
+                                <div class="col-3 p-0">
+                                    <div><?php echo get_field('city_text') . ', ' . get_field('province_text'); ?></div>
+                                    <div>
+                                        <?php
+                                        $terms = get_the_terms(get_the_ID(), 'foundation-of-towns-category');
+                                        if ($terms && !is_wp_error($terms)) {
+                                            $term_names = wp_list_pluck($terms, 'name');
+                                            echo esc_html(implode(', ', $term_names));
+                                        } else {
+                                            echo 'Uncategorized';
+                                        }
+                                        ?>
+                                    </div>
+                                    <div>
+                                        <?php
+                                        $year_founded = get_field('year_founded');
+                                        echo $year_founded ? esc_html($year_founded) : 'N/A';
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
-                    <?php endif; ?>
+                    </div>
 
-                    <!-- DETAILS COLUMN -->
-                    <div class="flex-grow-1 d-flex flex-column">
+                <?php endwhile; ?>
+            <?php else : ?>
+                <div class="d-flex align-items-center mb-5 mt-4">
 
-                        <!-- TITLE -->
-                        <h3 class="mt-0">
-                            <?php the_title(); ?>
-                        </h3>
+                    <div class="archive-no-results-icon col-3">
+                        <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/404-img.png" alt="404">
+                    </div>
+                    <div class="col-9 ">
+                        <h2>We're still gathering memories.</h2>
 
-                        <!-- DESCRIPTION -->
-                        <p class="text-muted mb-5">
-                            <?php echo wp_trim_words(get_the_excerpt(), 45); ?>
+                        <p class="archive-subtext">
+                            It looks like nothing was found at this location. Maybe try one of the links below or a search?
                         </p>
 
-                        <!-- BOTTOM META -->
-                        <div class="d-flex">
-                            <div class="col-3 p-0">
-                                <div>Location</div>
-                                <div>Category</div>
-                                <div>Year Founded:</div>
-                            </div>
-                            <div class="col-3 p-0">
-                                <div><?php echo get_field('city_text') . ', ' . get_field('province_text'); ?></div>
-                                <div>
-                                    <?php
-                                    $terms = get_the_terms(get_the_ID(), 'foundation-of-towns-category');
-                                    if ($terms && !is_wp_error($terms)) {
-                                        $term_names = wp_list_pluck($terms, 'name');
-                                        echo esc_html(implode(', ', $term_names));
-                                    } else {
-                                        echo 'Uncategorized';
-                                    }
-                                    ?>
-                                </div>
-                                <div>
-                                    <?php
-                                    $year_founded = get_field('year_founded');
-                                    echo $year_founded ? esc_html($year_founded) : 'N/A';
-                                    ?>
-                                </div>
-                            </div>
-                        </div>
-
+                        <a href="javascript:history.back()" class="archive-back">
+                            Back to previous
+                        </a>
                     </div>
-                </div>
 
-            <?php endwhile; ?>
+                </div>
+            <?php endif; ?>
             <!-- bottom Bar: Results Count & Pagination -->
             <div class="d-flex justify-content-between align-items-center mb-4 top-result">
 

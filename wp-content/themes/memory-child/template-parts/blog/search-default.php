@@ -11,6 +11,14 @@
         font-weight: 300;
     }
 
+    .search-no-results div#content {
+        background-color: #fff !important;
+    }
+
+    .search-results {
+        background-color: #f8f8f8 !important;
+    }
+
     .search-img img {
         margin: 0;
         border-radius: 15px;
@@ -37,6 +45,10 @@
         text-decoration: none;
     }
 
+    .no-result-section {
+        margin: 50px 0 78px !important;
+    }
+
     .search-result {
         border-top: 1px solid #dbdbdb;
         padding-top: 50px;
@@ -59,10 +71,10 @@
         margin-bottom: 13px;
     }
 </style>
-<div class="container my-4">
-    <h2>Search Results for: <?php echo get_search_query(); ?></h2>
+<div class="container my-5">
 
     <?php if (have_posts()) : ?>
+        <h2>Search Results for: <?php echo get_search_query(); ?></h2>
         <?php
         $count = 0;
         while (have_posts()) : the_post();
@@ -102,7 +114,26 @@
         <?php endwhile; ?>
 
     <?php else : ?>
-        <p>No results found.</p>
+
+        <div class="d-flex align-items-center mb-5 mt-4 no-result-section">
+
+            <div class="archive-no-results-icon col-3">
+                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/404-img.png" alt="404">
+            </div>
+            <div class="col-9">
+                <h2>We're still gathering memories.</h2>
+
+                <p class="archive-subtext">
+                    It looks like nothing was found at this location. Maybe try one of the links below or a search?
+                </p>
+
+                <a href="javascript:history.back()" class="archive-back">
+                    Back to previous
+                </a>
+            </div>
+
+        </div>
+
     <?php endif; ?>
 </div>
 

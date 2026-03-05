@@ -172,10 +172,25 @@
                         <?php endwhile; ?>
 
                     <?php else : ?>
-                        <div class="col-12 text-center py-5">
-                            <h4>No items found matching your search or filters.</h4>
-                            <p>Please try a different search term or filter.</p>
+                        <div class="d-flex align-items-center mb-5 mt-4">
+
+                            <div class="archive-no-results-icon col-3">
+                                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/404-img.png" alt="404" class="no-result-text">
+                            </div>
+                            <div class="col-9 no-result-item">
+                                <h2>We're still gathering memories.</h2>
+
+                                <p class="archive-subtext">
+                                    It looks like nothing was found at this location. Maybe try one of the links below or a search?
+                                </p>
+
+                                <a href="javascript:history.back()" class="archive-back">
+                                    Back to previous
+                                </a>
+                            </div>
+
                         </div>
+
                     <?php endif; ?>
                 </div>
 

@@ -8,9 +8,10 @@
         height: clamp(185px, 25vw, 372px);
     }
 
-    .post-type-archive-historical-sites div#content {
-        background: #ffff;
+    .single-historical-sites {
+        background-color: #F7F7F7;
     }
+
 
     .historic-content h3 {
         font-size: 20px;
@@ -177,6 +178,48 @@
     .historic-tags a {
         font-size: 16px;
     }
+
+    .historical-thumbnail .nrhss-featured {
+        border-radius: 10px;
+        background: #6b4a1f;
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+
+
+    .nrhss-gallery-wrapper {
+        width: 90px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .nrhss-gallery {
+        display: flex;
+        flex-direction: column;
+        gap: 19px;
+        height: 351px;
+        overflow: hidden;
+    }
+
+    .nrhss-thumb {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 6px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        opacity: 0.75;
+        transition: all 0.2s ease;
+    }
+
+    button.thumb-prev,
+    button.thumb-next {
+        background: transparent;
+        border: transparent;
+        font-size: 24px;
+        color: #6b4a1f;
+    }
 </style>
 <div class="container my-5">
     <div class="row">
@@ -194,33 +237,44 @@
                         $gallery = get_field('nrhss_gallery');
                         ?>
 
-                        <div class="nrhss-media-wrapper mb-4">
+                        <div class="nrhss-media-wrapper mb-4 historical-thumbnail">
 
                             <!-- MAIN IMAGE -->
                             <div class="nrhss-featured">
                                 <?php if (has_post_thumbnail()) :
                                     $featured_url = get_the_post_thumbnail_url(get_the_ID(), 'large');
                                 ?>
-                                    <img
-                                        src="<?php echo esc_url($featured_url); ?>"
-                                        class="nrhss-featured-img"
-                                        id="nrhss-main-image">
+                                    <a data-fancybox="gallery"
+                                        href="<?php echo esc_url($featured_url); ?>"
+                                        id="nrhss-main-link">
+
+                                        <img
+                                            src="<?php echo esc_url($featured_url); ?>"
+                                            class="nrhss-featured-img"
+                                            id="nrhss-main-image">
+                                    </a>
                                 <?php endif; ?>
                             </div>
 
                             <!-- THUMBNAILS -->
                             <?php if ($gallery) : ?>
-                                <div class="nrhss-gallery">
-                                    <?php foreach ($gallery as $index => $image) : ?>
-                                        <img
-                                            src="<?php echo esc_url($image['sizes']['thumbnail']); ?>"
-                                            data-full="<?php echo esc_url($image['sizes']['large']); ?>"
-                                            class="nrhss-thumb <?php echo $index === 0 ? 'active' : ''; ?>">
-                                    <?php endforeach; ?>
+                                <div class="nrhss-gallery-wrapper">
+                                    <button class="thumb-prev">▲</button>
+
+                                    <div class="nrhss-gallery">
+                                        <?php foreach ($gallery as $index => $image) : ?>
+                                            <img
+                                                src="<?php echo esc_url($image['sizes']['thumbnail']); ?>"
+                                                data-full="<?php echo esc_url($image['sizes']['large']); ?>"
+                                                class="nrhss-thumb <?php echo $index === 0 ? 'active' : ''; ?>">
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <button class="thumb-next">▼</button>
                                 </div>
                             <?php endif; ?>
 
                         </div>
+
 
                         <div class="content mb-5">
                             <h1 class="mb-3"><?php the_title(); ?></h1>
@@ -329,19 +383,28 @@
 
             <!-- OTHER POSTS (SAME CPT, EXCLUDE CURRENT) -->
             <?php
-            $current_id = get_the_ID();
-            // echo $current_id;
+   
 
-            $args = [
-                'post_type'      => 'historical-sites',
-                'posts_per_page' => 6, // change if needed
-                'post__not_in'   => [$current_id],
-                'orderby'        => 'date',
-                'order'          => 'DESC',
-                'post_status'    => 'publish',
-            ];
+                $current_id = get_the_ID();
+                // echo $current_id;
 
-            $other_posts = new WP_Query($args);
+                $current_id = get_the_ID();
+                $current_title = get_the_title();
+
+                // kunin first word lang (example: "How")
+                $title_words = explode(' ', $current_title);
+                $keyword = $title_words[0];
+
+                $args = [
+                    'post_type'      => 'historical-sites',
+                    'posts_per_page' => 6,
+                    'post_status'    => 'publish',
+                    'post__not_in'   => [$current_id],
+                    'title_like'     => $keyword,
+                ];
+
+
+                $other_posts = new WP_Query($args);
             ?>
 
             <?php if ($other_posts->have_posts()) : ?>

@@ -273,14 +273,24 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
             <div class="row g-4">
 
                 <?php
+             
+                $current_id = get_the_ID();
+                $current_title = get_the_title();
+
+                // kunin first word lang (example: "How")
+                $title_words = explode(' ', $current_title);
+                $keyword = $title_words[0];
+
                 $args = [
                     'post_type'      => 'book',
-                    'posts_per_page' => 6, // 6 posts
+                    'posts_per_page' => 6,
                     'post_status'    => 'publish',
-                    'orderby'        => 'date',
+                    'post__not_in'   => [$current_id],
+                    'title_like'     => $keyword,
                 ];
 
                 $artifacts = new WP_Query($args);
+
 
                 if ($artifacts->have_posts()) :
                     while ($artifacts->have_posts()) : $artifacts->the_post(); ?>

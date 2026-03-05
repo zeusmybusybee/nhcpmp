@@ -73,6 +73,10 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
         opacity: 1;
     }
 
+    .single-artifacts {
+        background-color: #000 !important;
+    }
+
     .total-result {
         background: #ffffff42;
         padding: 21px 10px;
@@ -146,11 +150,22 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
             <div class="d-flex gap-4 c_bg-lightgray pt-5 pl-4 pr-4 pb-5 single-item rounded flex-wrap">
                 <div class="col-5">
                     <?php
-                    if ('show-ft' === $memory_hide_featured_image) {
-                        echo '<div class="entry-media rounded">';
-                        the_post_thumbnail('memory-thumbnails-2');
-                        echo '</div>';
-                    }
+                    $image = wp_get_attachment_image_src(get_post_thumbnail_id(), 'memory-thumbnails-2');
+
+                    if ('show-ft' === $memory_hide_featured_image && $image) :
+                    ?>
+
+                        <a data-fancybox="gallery"
+                            href="<?php echo esc_url($image[0]); ?>"
+                            id="nrhss-main-link">
+
+                            <div class="entry-media rounded">
+                                <?php the_post_thumbnail('memory-thumbnails-2'); ?>
+                            </div>
+
+                        </a>
+
+                    <?php endif; ?>
                     ?>
                 </div>
                 <div class="col-6">
@@ -161,16 +176,61 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
 
                 </div>
                 <div class="label-item col-10">
-                    <ul>
-                        <li>Title</li>
-                        <li>Description</li>
-                        <li>Author/Creator/Proponent/Artist</li>
-                        <li>Date Created/Published </li>
-                        <li>Type of Artifact</li>
-                        <li>Location</li>
-                        <li>Collection Series</li>
-                        <li>Number of Views</li>
-                        <li>Subject / Keyword</li>
+
+                    <ul class="artifact-metadata">
+                        <li><strong>Title:</strong> <span class="artifact-value"><?php the_title(); ?></span></li>
+                        <li><strong>Description:</strong> <span class="artifact-value"><?php the_excerpt(); ?></span></li>
+                        <li><strong>Author/Creator/Proponent/Artist:</strong> <span class="artifact-value"><?php the_author(); ?></span></li>
+                        <li><strong>Date Created/Published:</strong> <span class="artifact-value"><?php the_date(); ?></span></li>
+                        <li><strong>Type of Artifact:</strong>
+                            <span class="artifact-value">
+                                <?php
+                                $types = get_post_meta(get_the_ID(), 'type_of_artifacts', true);
+                                if (is_array($types)) {
+                                    echo implode(', ', $types);
+                                } else {
+                                    echo $types ?: '—';
+                                }
+                                ?>
+                            </span>
+                        </li>
+                        <li><strong>Location:</strong>
+                            <span class="artifact-value">
+                                <?php
+                                $location = get_post_meta(get_the_ID(), 'location', true);
+                                if (is_array($location)) {
+                                    echo implode(', ', $location);
+                                } else {
+                                    echo $location ?: '—';
+                                }
+                                ?>
+                            </span>
+                        </li>
+                        <li><strong>Collection Series:</strong>
+                            <span class="artifact-value">
+                                <?php
+                                $collection = get_post_meta(get_the_ID(), 'collection', true);
+                                if (is_array($collection)) {
+                                    echo implode(', ', $collection);
+                                } else {
+                                    echo $collection ?: '—';
+                                }
+                                ?>
+                            </span>
+                        </li>
+                        <li><strong>Number of Views:</strong> <span class="artifact-value"><?php echo get_post_meta(get_the_ID(), 'number_of_views', true) ?: '0'; ?></span></li>
+                        <li><strong>Subject / Keyword:</strong>
+                            <span class="artifact-value">
+                                <?php
+                                $subjects = get_post_meta(get_the_ID(), 'subject_keyword', true);
+                                if (is_array($subjects)) {
+                                    echo implode(', ', $subjects);
+                                } else {
+                                    echo $subjects ?: '—';
+                                }
+                                ?>
+                            </span>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -179,11 +239,19 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
             <div class="row g-4">
 
                 <?php
+                $current_id = get_the_ID();
+                $current_title = get_the_title();
+
+                // kunin first word lang (example: "How")
+                $title_words = explode(' ', $current_title);
+                $keyword = $title_words[0];
+
                 $args = [
                     'post_type'      => 'artifacts',
-                    'posts_per_page' => 6, // 6 posts
+                    'posts_per_page' => 6,
                     'post_status'    => 'publish',
-                    'orderby'        => 'date',
+                    'post__not_in'   => [$current_id],
+                    'title_like'     => $keyword,
                 ];
 
                 $artifacts = new WP_Query($args);

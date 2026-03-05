@@ -1037,21 +1037,19 @@ function town_foundation_registry_filters($query)
 add_action('pre_get_posts', 'town_foundation_registry_filters');
 
 
-// Force 404 on empty search results for Articles & Books archives
 function articles_books_search_404()
 {
     if (
-        ! is_admin() &&
+        !is_admin() &&
         is_search() &&
         is_main_query() &&
         is_post_type_archive(['articles', 'book', 'ph-heraldry-registry', 'artifacts', 'historical-sites', 'a-v-material', 'foundation-of-towns'])
     ) {
         global $wp_query;
 
-        if (! $wp_query->have_posts()) {
-            $wp_query->set_404();
-            status_header(404);
-            nocache_headers();
+        if (!$wp_query->have_posts()) {
+            // wag na mag 404
+            // archive page lang with "no results"
         }
     }
 }
@@ -1185,3 +1183,19 @@ function modify_book_archive_posts_per_page($query)
     }
 }
 add_action('pre_get_posts', 'modify_book_archive_posts_per_page');
+
+
+
+function filter_by_title_like($where, $wp_query) {
+    global $wpdb;
+
+    if ($search_term = $wp_query->get('title_like')) {
+        $where .= $wpdb->prepare(
+            " AND {$wpdb->posts}.post_title LIKE %s",
+            '%' . $wpdb->esc_like($search_term) . '%'
+        );
+    }
+
+    return $where;
+}
+add_filter('posts_where', 'filter_by_title_like', 10, 2);

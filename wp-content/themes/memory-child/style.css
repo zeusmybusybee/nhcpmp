@@ -80,7 +80,10 @@ p {
     position: relative;
     display: inline-block;
 }
-
+div#header-top input[type=submit]:hover, div#header-top button[type=submit]:hover {
+    background: unset;
+    color: #000;
+}
 /* header sub menu */
 /* Parent menu item */
 .collections-nav .menu-item-has-children {

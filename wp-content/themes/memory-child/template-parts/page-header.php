@@ -9,32 +9,41 @@
 if (is_front_page()) {
   return;
 }
-$title       = '';
-$description = '';
+        $title       = '';
+        $description = '';
 
-if (is_singular()) {
-  $post_type_obj = get_post_type_object(get_post_type());
+        if (is_singular()) {
 
-  if ($post_type_obj) {
-    if (get_post_type() === 'page') {
-      $title = get_the_title(); // actual page title
-      $description = ''; // you can leave it empty or add custom description if needed
-    } else {
-      $title = $post_type_obj->labels->name; // post type name
-      $description = $post_type_obj->description ?? '';
-    }
-  }
-} elseif (is_post_type_archive()) {
-  $title       = post_type_archive_title('', false);
-  $description = get_the_archive_description();
-} elseif (is_archive()) {
-  $title       = get_the_archive_title();
-  $description = get_the_archive_description();
-} elseif (is_page()) {
-  $title = get_the_title();
-} else {
-  $title = get_bloginfo('name');
-}
+          $post_type_obj = get_post_type_object(get_post_type());
+
+          if ($post_type_obj) {
+            if (get_post_type() === 'page') {
+              $title = get_the_title();
+              $description = '';
+            } else {
+              $title = $post_type_obj->labels->name;
+              $description = $post_type_obj->description ?? '';
+            }
+          }
+        } elseif (is_search()) {
+
+          $title = 'Search ';
+          $description = '';
+        } elseif (is_post_type_archive()) {
+
+          $title       = post_type_archive_title('', false);
+          $description = get_the_archive_description();
+        } elseif (is_archive()) {
+
+          $title       = get_the_archive_title();
+          $description = get_the_archive_description();
+        } elseif (is_page()) {
+
+          $title = get_the_title();
+        } else {
+
+          $title = get_bloginfo('name');
+        }
 ?>
 
 <style>
