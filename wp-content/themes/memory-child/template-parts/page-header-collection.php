@@ -9,32 +9,7 @@
 if (is_front_page()) {
     return;
 }
-$title       = '';
-$description = '';
 
-if (is_singular()) {
-    $post_type_obj = get_post_type_object(get_post_type());
-
-    if ($post_type_obj) {
-        if (get_post_type() === 'page') {
-            $title = get_the_title(); // actual page title
-            $description = ''; // you can leave it empty or add custom description if needed
-        } else {
-            $title = $post_type_obj->labels->name; // post type name
-            $description = $post_type_obj->description ?? '';
-        }
-    }
-} elseif (is_post_type_archive()) {
-    $title       = post_type_archive_title('', false);
-    $description = get_the_archive_description();
-} elseif (is_archive()) {
-    $title       = get_the_archive_title();
-    $description = get_the_archive_description();
-} elseif (is_page()) {
-    $title = get_the_title();
-} else {
-    $title = get_bloginfo('name');
-}
 ?>
 
 <style>
@@ -82,7 +57,7 @@ if (is_singular()) {
         background: #6b4a1f;
     }
 
-    .local-hitory-archive-header {
+    .history-archive-header {
         background: url('<?php echo get_stylesheet_directory_uri(); ?>/assets/images/local-history.png') center/cover no-repeat !important;
         padding: 10px 0;
     }
@@ -230,57 +205,43 @@ if (is_post_type_archive($post_types) || is_singular($post_types)) : ?>
 <?php endif; ?>
 
 <?php
-$archive_class = '';
+$archive_class = 'default-bg-header'; // default class
 
-if (is_post_type_archive('local-history') || is_singular('local-history')) {
-    $archive_class = 'local-hitory-archive-header';
-} elseif (is_post_type_archive('revolution') || is_singular('revolution')) {
-    $archive_class = 'revolution-archive-header';
-} elseif (is_post_type_archive('contributed') || is_singular('contributed')) {
-    $archive_class = 'contributed-archive-header';
-} elseif (is_post_type_archive('women-in-philippines') || is_singular('women-in-philippines')) {
-    $archive_class = 'women-archive-header';
-} elseif (is_post_type_archive('philippine-muslim') || is_singular('philippine-muslim')) {
-    $archive_class = 'muslim-archive-header';
-} elseif (is_post_type_archive('nhcp-publications') || is_singular('nhcp-publications')) {
-    $archive_class = 'publication-archive-header';
-} elseif (is_post_type_archive('rizal-collection') || is_singular('rizal-collection')) {
-    $archive_class = 'rizal-archive-header';
-} else {
-    $archive_class = 'default-bg-header';
+if (is_tag()) {
+    $current_tag = get_queried_object(); // WP_Term object
+    $tag_slug = $current_tag->slug;
+
+    switch ($tag_slug) {
+        case 'local-history':
+            $archive_class = 'history-archive-header';
+            break;
+        case 'philippine-revolution':
+            $archive_class = 'revolution-archive-header';
+            break;
+        case 'women':
+            $archive_class = 'women-archive-header';
+            break;
+        case 'philippine-muslim-history-heritage':
+            $archive_class = 'muslim-archive-header';
+            break;
+        case 'nhcp-publication':
+            $archive_class = 'publication-archive-header';
+            break;
+        case 'jose-rizal':
+            $archive_class = 'rizal-archive-header';
+            break;
+        default:
+            $archive_class = 'default-bg-header';
+    }
 }
 ?>
-
 <div class="page-header <?php echo $archive_class ?? ''; ?>">
     <div class="container">
         <div class="header-inner">
-
-            <ul class="breadcrumbs">
-                <li class="breadcrumbs-item">
-                    <a class="home" href="<?php echo home_url(); ?>">Home</a>
-                </li>
-
-                <?php if ($parent_link) : ?>
-                    <li class="breadcrumbs-item">
-                        <i class="icofont icofont-caret-right"></i>
-                        <a href="<?php echo $parent_link; ?>">
-                            <?php echo $parent_name; ?>
-                        </a>
-                    </li>
-                <?php endif; ?>
-
-                <li class="breadcrumbs-item">
-                    <i class="icofont icofont-caret-right"></i>
-                    <span class="last-item"><?php echo $title; ?></span>
-                </li>
-            </ul>
-
             <div class="page-header-title">
-                <h1><?php echo $title; ?></h1>
+                <h1><?php single_tag_title(); ?></h1>
 
-                <?php if ($description) : ?>
-                    <h2 class="entry-description"><?php echo $description; ?></h2>
-                <?php endif; ?>
+            
             </div>
 
         </div>

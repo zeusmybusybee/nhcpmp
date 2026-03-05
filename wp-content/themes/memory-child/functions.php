@@ -1199,3 +1199,5 @@ function filter_by_title_like($where, $wp_query) {
     return $where;
 }
 add_filter('posts_where', 'filter_by_title_like', 10, 2);
+
+
