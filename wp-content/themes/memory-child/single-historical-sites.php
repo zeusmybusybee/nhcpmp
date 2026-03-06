@@ -241,15 +241,15 @@
 
                             <!-- MAIN IMAGE -->
                             <div class="nrhss-featured">
-                                <?php if (has_post_thumbnail()) :
-                                    $featured_url = get_the_post_thumbnail_url(get_the_ID(), 'large');
+                                <?php if ($gallery) :
+                                    $first_image = $gallery[0];
                                 ?>
                                     <a data-fancybox="gallery"
-                                        href="<?php echo esc_url($featured_url); ?>"
+                                        href="<?php echo esc_url($first_image['url']); ?>"
                                         id="nrhss-main-link">
 
                                         <img
-                                            src="<?php echo esc_url($featured_url); ?>"
+                                            src="<?php echo esc_url($first_image['url']); ?>"
                                             class="nrhss-featured-img"
                                             id="nrhss-main-image">
                                     </a>
@@ -264,11 +264,12 @@
                                     <div class="nrhss-gallery">
                                         <?php foreach ($gallery as $index => $image) : ?>
                                             <img
-                                                src="<?php echo esc_url($image['sizes']['thumbnail']); ?>"
-                                                data-full="<?php echo esc_url($image['sizes']['large']); ?>"
+                                                src="<?php echo esc_url($image['sizes']['medium']); ?>"
+                                                data-full="<?php echo esc_url($image['url']); ?>"
                                                 class="nrhss-thumb <?php echo $index === 0 ? 'active' : ''; ?>">
                                         <?php endforeach; ?>
                                     </div>
+
                                     <button class="thumb-next">▼</button>
                                 </div>
                             <?php endif; ?>
@@ -383,28 +384,28 @@
 
             <!-- OTHER POSTS (SAME CPT, EXCLUDE CURRENT) -->
             <?php
-   
-
-                $current_id = get_the_ID();
-                // echo $current_id;
-
-                $current_id = get_the_ID();
-                $current_title = get_the_title();
-
-                // kunin first word lang (example: "How")
-                $title_words = explode(' ', $current_title);
-                $keyword = $title_words[0];
-
-                $args = [
-                    'post_type'      => 'historical-sites',
-                    'posts_per_page' => 6,
-                    'post_status'    => 'publish',
-                    'post__not_in'   => [$current_id],
-                    'title_like'     => $keyword,
-                ];
 
 
-                $other_posts = new WP_Query($args);
+            $current_id = get_the_ID();
+            // echo $current_id;
+
+            $current_id = get_the_ID();
+            $current_title = get_the_title();
+
+            // kunin first word lang (example: "How")
+            $title_words = explode(' ', $current_title);
+            $keyword = $title_words[0];
+
+            $args = [
+                'post_type'      => 'historical-sites',
+                'posts_per_page' => 6,
+                'post_status'    => 'publish',
+                'post__not_in'   => [$current_id],
+                'title_like'     => $keyword,
+            ];
+
+
+            $other_posts = new WP_Query($args);
             ?>
 
             <?php if ($other_posts->have_posts()) : ?>
@@ -483,5 +484,25 @@
 
     </div>
 </div>
+<script>
+    document.querySelectorAll('.nrhss-thumb').forEach(function(thumb) {
 
+        thumb.addEventListener('click', function() {
+
+            let fullImage = this.getAttribute('data-full');
+
+            // change main image
+            document.getElementById('nrhss-main-image').src = fullImage;
+
+            // change fancybox link
+            document.getElementById('nrhss-main-link').href = fullImage;
+
+            // active state
+            document.querySelectorAll('.nrhss-thumb').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+
+        });
+
+    });
+</script>
 <?php get_footer(); ?>
