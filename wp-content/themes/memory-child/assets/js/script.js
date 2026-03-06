@@ -84,3 +84,12 @@ jQuery(document).ready(function ($) {
     );
   });
 });
+
+
+  jQuery(document).ready(function ($) {
+    var filters = $(".applied-filters");
+
+    if (filters.length) {
+      filters.prependTo("#applied-filters-container");
+    }
+  });
