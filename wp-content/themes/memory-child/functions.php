@@ -538,6 +538,8 @@ add_action('pre_get_posts', function ($query) {
 // search by meta fields 
 add_filter('posts_search', function ($search, $query) {
     global $wpdb;
+    $meta_query = [];
+    $tax_query  = [];
 
     if (
         is_admin() ||
@@ -817,6 +819,14 @@ function ph_historical_sites_filters($query)
         // Apply meta queries if any
         if (!empty($meta_query)) {
             $query->set('meta_query', $meta_query);
+        }
+
+
+        // your filters here...
+
+        // RESULTS PER PAGE
+        if (!empty($_GET['posts_per_page'])) {
+            $query->set('posts_per_page', intval($_GET['posts_per_page']));
         }
     }
 }
@@ -1107,55 +1117,115 @@ function custom_pagination_shortcode()
     $current = max(1, get_query_var('paged'));
     $total   = $wp_query->max_num_pages;
 
-    ob_start();
-?>
+    ob_start(); ?>
+
     <nav class="custom-pagination">
         <div class="pagination-inner">
-            <div class="pagination-prev" id="pagination-prev" style="display:inline-block; margin-right:10px; cursor:pointer; opacity: <?php echo $current <= 1 ? '0.5' : '1'; ?>;">
+
+            <div class="pagination-prev" id="pagination-prev"
+                style="display:inline-block;margin-right:10px;cursor:pointer;opacity: <?php echo $current <= 1 ? '0.5' : '1'; ?>;">
                 ‹ prev
             </div>
 
             <div class="pagination-info" style="display:inline-block;">
-                Page <input type="number" id="custom-page-input" min="1" max="<?php echo $total; ?>" value="<?php echo $current; ?>" style="width:50px;"> of <?php echo $total; ?>
+                Page
+                <input
+                    type="number"
+                    id="custom-page-input"
+                    min="1"
+                    max="<?php echo $total; ?>"
+                    value="<?php echo $current; ?>"
+                    style="width:60px;text-align:center;">
+                of <?php echo $total; ?>
             </div>
 
-            <div class="pagination-next" id="pagination-next" style="display:inline-block; margin-left:10px; cursor:pointer; opacity: <?php echo $current >= $total ? '0.5' : '1'; ?>;">
+            <div class="pagination-next" id="pagination-next"
+                style="display:inline-block;margin-left:10px;cursor:pointer;opacity: <?php echo $current >= $total ? '0.5' : '1'; ?>;">
                 next ›
             </div>
+
         </div>
     </nav>
 
-    <script type="text/javascript">
+    <script>
         (function($) {
+
             var maxPages = <?php echo $total; ?>;
 
             function goToPage(page) {
+
                 if (page < 1) page = 1;
                 if (page > maxPages) page = maxPages;
 
-                // Construct URL using query var paged for maximum compatibility
                 var url = new URL(window.location.href);
                 url.searchParams.set('paged', page);
+
                 window.location.href = url.toString();
             }
 
+            // PREV
             $('#pagination-prev').on('click', function() {
+
                 var inputVal = parseInt($('#custom-page-input').val());
                 var currentPage = !isNaN(inputVal) ? inputVal : <?php echo $current; ?>;
-                if (currentPage > 1) goToPage(currentPage - 1);
+
+                if (currentPage > 1) {
+                    goToPage(currentPage - 1);
+                }
+
             });
 
+            // NEXT
             $('#pagination-next').on('click', function() {
+
                 var inputVal = parseInt($('#custom-page-input').val());
                 var currentPage = !isNaN(inputVal) ? inputVal : <?php echo $current; ?>;
-                if (currentPage < maxPages) goToPage(currentPage + 1);
+
+                if (currentPage < maxPages) {
+                    goToPage(currentPage + 1);
+                }
+
             });
+
+            // ENTER KEY
+            $('#custom-page-input').on('keypress', function(e) {
+
+                if (e.which === 13) {
+
+                    var page = parseInt($(this).val());
+
+                    if (!isNaN(page)) {
+                        goToPage(page);
+                    }
+
+                }
+
+            });
+
+            // AUTO CHANGE
+            $('#custom-page-input').on('change', function() {
+
+                var page = parseInt($(this).val());
+
+                if (!isNaN(page)) {
+                    goToPage(page);
+                }
+
+            });
+
         })(jQuery);
     </script>
+
 <?php
     return ob_get_clean();
 }
+
 add_shortcode('custom_pagination', 'custom_pagination_shortcode');
+
+
+
+
+
 
 
 function add_featured_archive_body_class($classes)
@@ -1186,7 +1256,8 @@ add_action('pre_get_posts', 'modify_book_archive_posts_per_page');
 
 
 
-function filter_by_title_like($where, $wp_query) {
+function filter_by_title_like($where, $wp_query)
+{
     global $wpdb;
 
     if ($search_term = $wp_query->get('title_like')) {
@@ -1199,5 +1270,3 @@ function filter_by_title_like($where, $wp_query) {
     return $where;
 }
 add_filter('posts_where', 'filter_by_title_like', 10, 2);
-
-

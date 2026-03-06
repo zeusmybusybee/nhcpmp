@@ -8,6 +8,7 @@
 
             <?php get_template_part('partials/total-result'); ?>
 
+
             <!-- Top Bar: Results Count & Pagination -->
             <div class="d-flex justify-content-between align-items-center mb-4 top-result">
                 <!-- LEFT -->
@@ -17,7 +18,7 @@
                     <?php echo do_shortcode('[custom_pagination]'); ?>
                 </div>
             </div>
-            <div class="row g-5">
+            <div class="row g-5 mt-4">
                 <?php if (have_posts()) : ?>
                     <?php while (have_posts()) : the_post(); ?>
                         <div class="col-lg-6 col-md-6">
@@ -221,7 +222,7 @@
                 ?>
 
                 <?php if ($level_status || $registry_category || $region || $province || $city || $year_filter || $orderby || $search_term): ?>
-                    <div class="row g-4 border rounded mb-5">
+                    <div class="row  applied-filters">
                         <strong>Applied Filters:</strong>
                         <ul class="mb-0 list-unstyled">
 
@@ -249,8 +250,17 @@
                                 <li>Year: <?php echo esc_html($year_filter); ?></li>
                             <?php endif; ?>
 
-                            <?php if ($orderby) : ?>
-                                <li>Sort: <?php echo esc_html(str_replace('-', ' ', $orderby)); ?></li>
+                            <?php if ($orderby) :
+
+                                $sort_labels = [
+                                    'date-desc' => 'Newest to Oldest',
+                                    'date-asc'  => 'Oldest to Newest',
+                                ];
+
+                                $sort_text = $sort_labels[$orderby] ?? $orderby;
+
+                            ?>
+                                <li>Sort: <?php echo esc_html($sort_text); ?></li>
                             <?php endif; ?>
 
                             <?php if ($search_term) : ?>
@@ -404,15 +414,13 @@
 
 
                 <div class="sidebar_article archive-hide">
-                    <?php get_template_part('partials/sidebar-welcome'); ?>
                     <?php
                     $terms = get_terms([
                         'taxonomy'   => 'level_status',
                         'hide_empty' => false,
                     ]);
                     ?>
-
-                    <div class=" my-5">
+                    <div class="my-5">
                         <div class="registry-box text-center border">
                             <h3 class="fw-bold mb-4">REGISTRY IN NUMBERS</h3>
 
@@ -423,24 +431,29 @@
                                     <?php
                                     // Custom colors per term slug
                                     $colors = [
-                                        'level-i'  => 'bg-success',
-                                        'level-ii' => 'bg-warning',
-                                        'delisted' => 'bg-brown',
-                                        'removed'  => 'bg-danger',
+                                        'level-i'  => 'bg-success success-hover',
+                                        'level-ii' => 'bg-warning warning-hover',
+                                        'delisted' => 'bg-brown  brown-hover',
+                                        'removed'  => 'bg-danger danger-hover',
                                     ];
 
-                                    $bg_class = isset($colors[$term->slug]) ? $colors[$term->slug] : 'bg-primary';
+                                    $bg_class = isset($colors[$term->slug]) ? $colors[$term->slug] : 'bg-primary  primary-hover';
+
+                                    // Custom filter link
+                                    $filter_link = home_url('/historical-sites/?s=&level_status=' . $term->slug . '&registry_category=&region=&province=&city=&location=&year_filter=&orderby=date-desc');
                                     ?>
 
                                     <div class="col-md-5 col-6">
-                                        <div class="stat-card <?php echo $bg_class; ?>">
-                                            <div class="stat-number">
-                                                <?php echo $term->count; ?>
+                                        <a href="<?php echo esc_url($filter_link); ?>" class="text-decoration-none">
+                                            <div class="stat-card <?php echo $bg_class; ?>">
+                                                <div class="stat-number">
+                                                    <?php echo $term->count; ?>
+                                                </div>
+                                                <div class="stat-label">
+                                                    <?php echo strtoupper($term->name); ?>
+                                                </div>
                                             </div>
-                                            <div class="stat-label">
-                                                <?php echo strtoupper($term->name); ?>
-                                            </div>
-                                        </div>
+                                        </a>
                                     </div>
 
                                 <?php endforeach; ?>
@@ -448,6 +461,8 @@
                             </div>
                         </div>
                     </div>
+                    <?php get_template_part('partials/sidebar-welcome'); ?>
+
 
                     <?php get_template_part('partials/sidebar-location-info'); ?>
 
