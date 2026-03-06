@@ -19,6 +19,10 @@
         padding: 10px 0;
         width: 50%;
     }
+    .remove_inline > div {
+        display:block!important;
+        padding:unset!important;
+    }
 </style>
 
 <div class="container my-5 ph-heraldy-registry">
@@ -89,13 +93,16 @@
                                     </div>
 
                                     <!-- BUTTON -->
-                                    <?php if ($pdf = get_field('pdf')) : ?>
-                                        <a href="<?php echo esc_url($pdf['url']); ?>"
-                                            class="btn btn-custom-green  mt-4"
-                                            target="_blank">
-                                            View PDF
-                                        </a>
+                                   
+                                    <?php $pdf = get_field('pdf'); ?>
+                                    <?php if (!empty($pdf['url'])) : ?>
+                                        <div class="my-flipbook-button remove_inline">
+                                            <?php echo do_shortcode('[real3dflipbook pdf="' . $pdf['url'] . '" mode="lightbox" thumb="View PDF"]'); ?>
+                                       
+                                        </div>
+            
                                     <?php endif; ?>
+
 
                                 </div>
                             </div>
