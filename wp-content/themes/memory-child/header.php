@@ -137,18 +137,7 @@
 		<?php endif; ?>
 
 		<?php
-		$special_post_types = array('featured-collections', 'local-history', 'contributed', 'revolution', 'women-in-philippines', 'philippine-muslim', 'nhcp-publications', 'rizal-collection');
-
-		// Single post
-		$pt = get_post_type();
-
-		// Archive page
-		if (is_post_type_archive()) {
-			$pt = get_query_var('post_type');
-		}
-
-		// Check
-		if (in_array($pt, $special_post_types)) {
+		if (is_tag()) {
 			get_template_part('template-parts/page-header-collection');
 		} else {
 			get_template_part('template-parts/page-header');
