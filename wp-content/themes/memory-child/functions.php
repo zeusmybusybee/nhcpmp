@@ -13,13 +13,56 @@ function my_menu_search_shortcode()
 }
 add_shortcode('menu_search', 'my_menu_search_shortcode');
 
+function custom_login_redirect($redirect_to, $request, $user) {
+
+    if (isset($user->roles) && is_array($user->roles)) {
+        return home_url('/dashboard');
+    }
+
+    return home_url('/login?login=failed');
+}
+add_filter('login_redirect', 'custom_login_redirect', 10, 3);
+
+// Redirect wp-admin to /login for non-logged-in users
+function redirect_wp_admin_to_login() {
+    if (!is_user_logged_in() && strpos($_SERVER['REQUEST_URI'], '/wp-admin') !== false) {
+        wp_redirect(home_url('/login')); // Redirect to /login page
+        exit;
+    }
+}
+add_action('init', 'redirect_wp_admin_to_login');
+
+function custom_login_failed() {
+    wp_redirect(home_url('/login?login=failed'));
+    exit;
+}
+add_action('wp_login_failed', 'custom_login_failed');
+
 function custom_admin_css()
 {
     echo '<style>
         .d-none { display: none !important; }
+        #menu-posts,#menu-pages,#menu-comments,#menu-tools,
+        #toplevel_page_footer-settings,#toplevel_page_sidebar-settings,
+        #toplevel_page_real3d_flipbook_admin
+        { display:none!important; }
     </style>';
 }
 add_action('admin_head', 'custom_admin_css');
+
+function hide_menu_for_level_users() {
+
+    if (current_user_can('level_3_user') || current_user_can('level_4_user')) {
+        echo '<style>
+        #menu-posts-articles,#menu-posts-artifacts,#menu-posts-foundation-of-towns,#menu-posts-contact-us,
+        #menu-posts-featured-collections,#menu-posts-a-v-material,#menu-posts-local-history,#menu-posts-historical-sites,
+        #menu-posts-ph-heraldry-registry,#menu-posts-serial,#menu-posts-video-recording,#menu-dashboard
+        { display:none !important; }
+        </style>';
+    }
+
+}
+add_action('admin_head', 'hide_menu_for_level_users');
 
 
 // Enable shortcode sa menu items
