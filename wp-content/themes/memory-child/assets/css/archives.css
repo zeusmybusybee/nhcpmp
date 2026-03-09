@@ -18,6 +18,12 @@
     .pagination {
         gap: 4px;
     }
+	.single-historical-sites .content p:nth-child(3) {
+		text-align: justify;
+	}
+	.single-historical-sites .content p:nth-child(2) {
+		text-align: center;
+	}
 
     .page-numbers {
         padding: 6px 12px;
@@ -124,13 +130,20 @@
 .nm-sidebar-card.nm-nhcp-visit {
     padding: 22px 26px;
 }
+/* historic sites */
+.post-type-archive-historical-sites .access-badge,
+ .post-type-archive-historical-sites .availability-badge{
+        top: 9px;
+            top: 9px;
+    position: absolute;
+ }
 /* books */
-.access-badge,
-.availability-badge {
+.access-badge, .availability-badge {
     font-size: 12px;
     padding: 4px 37px;
     border-radius: 5px;
     font-weight: 600;
+
 }
 .book-post-item {
     padding: 30px 20px;
@@ -419,7 +432,7 @@ ul.page-numbers {
         padding: initial;
         padding: 6px 45px;
         position: absolute;
-        top: -10px;
+            top: 4px;
         border-radius: 10px;
     }
 
@@ -429,7 +442,7 @@ ul.page-numbers {
 
     .historic-content {
         padding: 35px 15px !important;
-        background: #FAFAFA;
+        background: #FAFAFA !important;
     }
 
     select.form-select.mb-2 {

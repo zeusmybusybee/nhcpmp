@@ -155,15 +155,13 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                     if ('show-ft' === $memory_hide_featured_image && $image) :
                     ?>
 
-                        <a data-fancybox="gallery"
-                            href="<?php echo esc_url($image[0]); ?>"
-                            id="nrhss-main-link">
+                       
 
                             <div class="entry-media rounded">
                                 <?php the_post_thumbnail('memory-thumbnails-2'); ?>
                             </div>
 
-                        </a>
+                        
 
                     <?php endif; ?>
                     ?>

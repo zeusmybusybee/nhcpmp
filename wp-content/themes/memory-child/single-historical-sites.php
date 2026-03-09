@@ -1,4 +1,6 @@
 <?php get_header(); ?>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.css" />
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
 <style>
     .historic-images img {
         margin: 0;
@@ -181,7 +183,9 @@
 
     .historical-thumbnail .nrhss-featured {
         border-radius: 10px;
-        background: #6b4a1f;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         padding: 20px;
         margin-bottom: 30px;
     }
@@ -220,6 +224,46 @@
         font-size: 24px;
         color: #6b4a1f;
     }
+
+    .registry-item img {
+        margin: 0;
+        width: 100%;
+        object-fit: cover;
+        height: clamp(185px, 25vw, 372px);
+    }
+
+    @media (max-width:768px) {
+
+        .nrhss-gallery-wrapper {
+            width: 100%;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .nrhss-gallery {
+            flex-direction: row;
+            height: auto;
+            overflow-x: auto;
+            overflow-y: hidden;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .nrhss-thumb {
+            width: 80px;
+            height: 80px;
+            flex: 0 0 auto;
+        }
+
+        .nrhss-featured-img {
+            height: 287px;
+        }
+
+        .single-historical-sites .col-md-8 {
+            width: 100% !important;
+        }
+
+    }
 </style>
 <div class="container my-5">
     <div class="row">
@@ -241,32 +285,48 @@
 
                             <!-- MAIN IMAGE -->
                             <div class="nrhss-featured">
-                                <?php if ($gallery) :
-                                    $first_image = $gallery[0];
-                                ?>
-                                    <a data-fancybox="gallery"
-                                        href="<?php echo esc_url($first_image['url']); ?>"
-                                        id="nrhss-main-link">
+                                <?php
+                                $featured_image_url = get_the_post_thumbnail_url(get_the_ID(), 'full');
+                                $all_images = $gallery ?: [];
 
-                                        <img
-                                            src="<?php echo esc_url($first_image['url']); ?>"
-                                            class="nrhss-featured-img"
-                                            id="nrhss-main-image">
+                                // Merge featured image sa gallery nang walang duplicates
+                                if ($featured_image_url) {
+                                    $exists = false;
+                                    foreach ($all_images as $img) {
+                                        if ($img['url'] === $featured_image_url) {
+                                            $exists = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!$exists) {
+                                        array_unshift($all_images, [
+                                            'url' => $featured_image_url,
+                                            'sizes' => ['medium' => $featured_image_url]
+                                        ]);
+                                    }
+                                }
+
+                                $main_image_url = $all_images[0]['url'] ?? '';
+                                ?>
+
+                                <?php if ($main_image_url) : ?>
+                                    <a href="<?php echo esc_url($main_image_url); ?>" id="nrhss-main-link">
+                                        <img src="<?php echo esc_url($main_image_url); ?>" class="nrhss-featured-img" id="nrhss-main-image">
                                     </a>
                                 <?php endif; ?>
                             </div>
 
                             <!-- THUMBNAILS -->
-                            <?php if ($gallery) : ?>
+                            <?php if ($all_images) : ?>
                                 <div class="nrhss-gallery-wrapper">
                                     <button class="thumb-prev">▲</button>
 
-                                    <div class="nrhss-gallery">
-                                        <?php foreach ($gallery as $index => $image) : ?>
+                                    <div class="nrhss-gallery" style="display: flex; overflow-x: auto; gap: 8px;">
+                                        <?php foreach ($all_images as $index => $image) : ?>
                                             <img
                                                 src="<?php echo esc_url($image['sizes']['medium']); ?>"
                                                 data-full="<?php echo esc_url($image['url']); ?>"
-                                                class="nrhss-thumb <?php echo $index === 0 ? 'active' : ''; ?>">
+                                                class="nrhss-thumb <?php echo ($image['url'] === $main_image_url) ? 'active' : ''; ?>">
                                         <?php endforeach; ?>
                                     </div>
 
@@ -416,7 +476,7 @@
                     <div class="row g-4">
                         <?php while ($other_posts->have_posts()) : $other_posts->the_post(); ?>
                             <div class="col-lg-4 col-md-6">
-                                <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
+                                <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark registry-item">
                                     <div class="card h-100 border-0 shadow-sm text-center p-4">
 
                                         <div class="d-flex gap-2 mb-2 flex-wrap">
