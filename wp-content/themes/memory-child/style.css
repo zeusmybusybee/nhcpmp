@@ -344,15 +344,15 @@ body:not(.home) #content {
 
 @media (min-width: 1025px) and (max-width: 1399px) {
   .site-branding {
-    max-width: 300px;
+    max-width: 280px;
 
 }
 .menu-search-form input[type="search"] {
-          font-size: 12px;
-        width: 288px;
+        font-size: 10px;
+        width: 255px;
     
 }
 ul#primary-menu li a {
-    font-size: 16px;
+            font-size: 14px;
 }
 }

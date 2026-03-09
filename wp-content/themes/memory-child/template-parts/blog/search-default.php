@@ -70,6 +70,14 @@
         font-size: 20px;
         margin-bottom: 13px;
     }
+
+    .readbtn-subscriber {
+        color: #fff !important;
+    }
+
+    .view-btn-search:hover {
+        background-color: #3ec5628a;
+    }
 </style>
 <div class="container my-5">
 
@@ -87,28 +95,49 @@
                     if (has_post_thumbnail()) {
                         the_post_thumbnail('medium', ['class' => 'img-fluid']);
                     } else {
-                        echo '<img src="' . get_template_directory_uri() . '/images/placeholder.png" class="img-fluid" alt="No image">';
+                        echo '<img src="' . get_template_directory_uri() . '/assets/images/temp-logo.png" class="img-fluid" alt="No image">';
                     }
                     ?>
-                    <a id="views-btn_147314" class="_df_button readbtn-subscriber view-btn-search" data-postid="147314" href="#item147314_1">View Item</a>
+                    <a id="views-btn_<?php the_ID(); ?>"
+                        class="_df_button readbtn-subscriber view-btn-search"
+                        data-postid="<?php the_ID(); ?>"
+                        href="<?php echo esc_url(get_permalink()); ?>">
+                        View Item
+                    </a>
                 </div>
 
                 <div class="col-8 search-item">
                     <h4><?php the_title(); ?></h4>
 
-                    <!-- Excerpt always visible -->
-                    <p> <strong>Description : </strong><?php the_excerpt(); ?></p>
-                    <div class="no-views"><strong>No. of Views: 0</strong> </div>
-                    <!-- Hidden full content -->
-                    <div class="full-content" id="<?php echo $collapse_id; ?>" style="display:none;">
-                        <p><?php the_content(); ?></p>
 
-                    </div>
 
-                    <!-- Toggle button -->
-                    <button class="btn btn-sm btn-outline-primary see-more-btn" data-target="#<?php echo $collapse_id; ?>">
-                        See More
-                    </button>
+                    <?php if (get_post_type() !== 'historical-sites') : ?>
+
+                        <!-- Excerpt -->
+                        <p><strong>Description :</strong> <?php the_excerpt(); ?></p>
+
+                        <div class="no-views">
+                            <strong>No. of Views: 0</strong>
+                        </div>
+
+                        <!-- Hidden full content -->
+                        <div class="full-content" id="<?php echo $collapse_id; ?>" style="display:none;">
+                            <p><?php the_content(); ?></p>
+                        </div>
+
+                        <!-- Toggle button -->
+                        <button class="btn btn-sm btn-outline-primary see-more-btn" data-target="#<?php echo $collapse_id; ?>">
+                            See More
+                        </button>
+
+                    <?php else : ?>
+
+                        <div class="full-content">
+                            <p><?php echo wp_trim_words(get_the_content(), 100, '...'); ?></p>
+                        </div>
+
+                    <?php endif; ?>
+
                 </div>
             </div>
         <?php endwhile; ?>

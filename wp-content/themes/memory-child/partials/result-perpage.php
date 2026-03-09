@@ -6,12 +6,15 @@
 
         <?php
         $per_page = $_GET['posts_per_page'] ?? 10;
-        $post_type = get_post_type() ?: 'post'; // default post
+
+        foreach ($_GET as $key => $value) {
+            if ($key === 'posts_per_page') continue; // skip para di magduplicate
+            if (is_array($value)) continue;
+
+            echo '<input type="hidden" name="' . esc_attr($key) . '" value="' . esc_attr($value) . '">';
+        }
         ?>
 
-        <!-- preserve current search -->
-        <input type="hidden" name="post_type" value="<?php echo esc_attr($post_type); ?>">
-        <input type="hidden" name="s" value="<?php echo esc_attr($_GET['s'] ?? ''); ?>">
         <input type="hidden" name="paged" value="1">
 
         <select name="posts_per_page"
@@ -26,5 +29,4 @@
         </select>
 
     </form>
-
 </div>

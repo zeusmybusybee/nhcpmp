@@ -67,7 +67,7 @@
                     // Level 3 & 4 → administrators only
                     elseif (
                         in_array($access, ['level_3', 'level_4']) &&
-                        current_user_can('administrator')
+                        (current_user_can('level_3_user') || current_user_can('level_4_user'))
                     ) {
                         $can_view = true;
                     }

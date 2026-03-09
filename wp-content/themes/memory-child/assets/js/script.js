@@ -9,24 +9,55 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    const mainImage = document.getElementById("nrhss-main-image");
-    const thumbs = document.querySelectorAll(".nrhss-thumb");
+  const mainImage = document.getElementById("nrhss-main-image");
+  const mainLink = document.getElementById("nrhss-main-link");
+  const thumbs = document.querySelectorAll(".nrhss-thumb");
 
-    thumbs.forEach(thumb => {
-        thumb.addEventListener("click", function () {
+  // Deduplicate images bago gumawa ng gallery array
+  const uniqueUrls = new Set();
+  const gallery = [];
 
-            // Swap image
-            mainImage.style.opacity = 0;
-            setTimeout(() => {
-                mainImage.src = this.dataset.full;
-                mainImage.style.opacity = 1;
-            }, 150);
+  thumbs.forEach((thumb) => {
+    const src = thumb.dataset.full;
+    if (!uniqueUrls.has(src)) {
+      uniqueUrls.add(src);
+      gallery.push({ src: src, type: "image" });
+    }
+  });
 
-            // Active state
-            thumbs.forEach(t => t.classList.remove("active"));
-            this.classList.add("active");
-        });
+  // Helper: Hanapin index ng current active image sa gallery array
+  function getCurrentIndex() {
+    const currentSrc = mainImage.src;
+    return gallery.findIndex((item) => item.src === currentSrc);
+  }
+
+  // Open Fancybox gallery sa tamang index base sa current preview
+  mainLink.addEventListener("click", function (e) {
+    e.preventDefault();
+    const startIndex = getCurrentIndex();
+    Fancybox.show(gallery, { startIndex: startIndex >= 0 ? startIndex : 0 });
+  });
+
+  // Thumbnail click lang mag swap ng preview
+  thumbs.forEach((thumb) => {
+    thumb.addEventListener("click", function () {
+      mainImage.src = this.dataset.full;
+      thumbs.forEach((t) => t.classList.remove("active"));
+      this.classList.add("active");
     });
+  });
+
+  // Scroll buttons para sa thumbnails
+  const galleryWrapper = document.querySelector(".nrhss-gallery");
+  const prev = document.querySelector(".thumb-prev");
+  const next = document.querySelector(".thumb-next");
+
+  prev.addEventListener("click", () => {
+    galleryWrapper.scrollBy({ left: -120, behavior: "smooth" });
+  });
+  next.addEventListener("click", () => {
+    galleryWrapper.scrollBy({ left: 120, behavior: "smooth" });
+  });
 });
 
 jQuery(document).ready(function ($) {
@@ -84,3 +115,12 @@ jQuery(document).ready(function ($) {
     );
   });
 });
+
+
+  jQuery(document).ready(function ($) {
+    var filters = $(".applied-filters");
+
+    if (filters.length) {
+      filters.prependTo("#applied-filters-container");
+    }
+  });
