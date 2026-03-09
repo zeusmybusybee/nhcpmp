@@ -181,7 +181,7 @@ function memory_child_pages_page_styles()
 function enqueue_place_api_for_foundation()
 {
 
-    $post_types = array('foundation-of-towns', 'historical-sites', 'ph-heraldry-registry');
+    $post_types = array('foundation-of-towns', 'ph-heraldry-registry');
 
     if (is_post_type_archive($post_types) || is_singular($post_types)) {
 
@@ -200,6 +200,8 @@ add_action('wp_enqueue_scripts', 'enqueue_place_api_for_foundation');
 
 
 add_action('acf/input/admin_enqueue_scripts', function () {
+    $post_types = array('foundation-of-towns', 'ph-heraldry-registry');
+    if (is_post_type_archive($post_types) || is_singular($post_types)) {
     wp_enqueue_script(
         'acf-location-script',
         get_stylesheet_directory_uri() . '/assets/js/acf-location.js',
@@ -212,6 +214,7 @@ add_action('acf/input/admin_enqueue_scripts', function () {
         'ajax_url' => admin_url('admin-ajax.php'),
         'proxy'    => get_stylesheet_directory_uri() . '/ph-proxy.php'
     ]);
+    }
 });
 
 // Populate province choices dynamically
@@ -773,31 +776,36 @@ function ph_historical_sites_filters($query)
                 'terms'    => $marker_category,
             ];
         }
-
-        // REGION (meta)
+        // REGION (taxonomy)
         if (!empty($_GET['region'])) {
-            $meta_query[] = [
-                'key'     => 'region',
-                'value'   => sanitize_text_field($_GET['region']),
-                'compare' => '='
+            $region = sanitize_text_field($_GET['region']);
+
+            $tax_query[] = [
+                'taxonomy' => 'regions',
+                'field'    => 'slug',
+                'terms'    => $region,
             ];
         }
 
-        // PROVINCE (meta)
+        // PROVINCE (taxonomy)
         if (!empty($_GET['province'])) {
-            $meta_query[] = [
-                'key'     => 'province',
-                'value'   => sanitize_text_field($_GET['province']),
-                'compare' => '='
+            $province = sanitize_text_field($_GET['province']);
+
+            $tax_query[] = [
+                'taxonomy' => 'provinces',
+                'field'    => 'slug',
+                'terms'    => $province,
             ];
         }
 
-        // CITY / MUNICIPALITY (meta)
+        // CITY / MUNICIPALITY (taxonomy)
         if (!empty($_GET['city'])) {
-            $meta_query[] = [
-                'key'     => 'city',
-                'value'   => sanitize_text_field($_GET['city']),
-                'compare' => '='
+            $city = sanitize_text_field($_GET['city']);
+
+            $tax_query[] = [
+                'taxonomy' => 'citymunicipality',
+                'field'    => 'slug',
+                'terms'    => $city,
             ];
         }
 
@@ -1313,3 +1321,10 @@ function filter_by_title_like($where, $wp_query)
     return $where;
 }
 add_filter('posts_where', 'filter_by_title_like', 10, 2);
+
+
+function enable_tinymce_justify($buttons) {
+    array_push($buttons, 'alignjustify');
+    return $buttons;
+}
+add_filter('mce_buttons_2', 'enable_tinymce_justify');
