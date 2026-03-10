@@ -320,32 +320,32 @@ a.archive-back {
     transition: background-color 0.3s;
 }
       .success-hover:hover {
-                                        --bs-bg-opacity: 1;
-                                        background-color: rgb(25 135 84 / 58%) !important;
-                                    }
+        --bs-bg-opacity: 1;
+        background-color: rgb(25 135 84 / 58%) !important;
+       }
 
-                                    .warning-hover:hover {
-                                        --bs-bg-opacity: 1;
-                                        background-color: rgb(255 193 7 / 54%) !important;
-                                    }
+        .warning-hover:hover {
+        --bs-bg-opacity: 1;
+        background-color: rgb(255 193 7 / 54%) !important;
+        }
 
-                                    .primary-hover:hover {
-                                        --bs-bg-opacity: 1;
-                                        background-color: rgb(13 110 253 / 62%) !important;
-                                    }
+        .primary-hover:hover {
+            --bs-bg-opacity: 1;
+        background-color: rgb(13 110 253 / 62%) !important;
+    }
 
-                                    .bg-brown {
-                                        background: #6b4a1f;
-                                    }
+        .bg-brown {
+             background: #6b4a1f;
+        }
 
-                                    .brown-hover:hover {
-                                        background: #6b4a1fab;
-                                    }
+        .brown-hover:hover {
+                background: #6b4a1fab !important;
+        }
 
-                                    .danger-hover:hover{
-                                        --bs-bg-opacity: 1;
-                                        background-color: rgb(220 53 69 / 68%) !important;
-                                    }
+    .danger-hover:hover{
+     --bs-bg-opacity: 1;
+    background-color: rgb(220 53 69 / 68%) !important;
+}
 .applied-filters {
     background: #FAFAFA;
      padding: 0 1.5rem !important;
@@ -490,7 +490,7 @@ ul.page-numbers {
     .archive-right-col input::placeholder {
         font-weight: 700;
         font-size: 16px;
-        color: #A01515 !important;
+        color: #6b4a1f !important;
     }
 
     .archive-right-col .sidebar_article .nm-sidebar-card {

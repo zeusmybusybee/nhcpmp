@@ -349,15 +349,15 @@
                     <div class="col-12 mt-4">
                         <h5 class="fw-bold text-white">Filter by:</h5>
 
-                        <div class="container p-3  text-light">
-                            <select name="personage" class="form-select">
+                        <div class="container p-0  text-light">
+                            <select name="personage" class="form-select  form-select-lg">
                                 <option value="">Personages</option>
                                 <option value="1">Personage 1</option>
                                 <option value="2">Personage 2</option>
                                 <option value="3">Personage 3</option>
                             </select>
 
-                            <select name="collection" class="form-select mt-2">
+                            <select name="collection" class="form-select mt-2  form-select-lg">
                                 <option value="">Collection</option>
                                 <option value="a">Collection A</option>
                                 <option value="b">Collection B</option>
@@ -392,12 +392,9 @@
 
 
 </div>
+<?php get_footer(); ?>
 <script>
     jQuery(document).ready(function($) {
-        $('.form-select').select2();
+        $(".form-select").select2();
     });
 </script>
-<?php get_footer(); ?>
-
-<style>
-</style>

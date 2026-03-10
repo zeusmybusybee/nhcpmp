@@ -94,21 +94,7 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
         height: clamp(185px, 25vw, 494px);
     }
 
-    .single-item {
-        background: #FAFAFA !important;
-        width: 100% !important;
-        position: relative;
-    }
 
-    .single-item::before {
-        content: '';
-        background: #FAFAFA !important;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        left: -255px;
-        top: 0;
-    }
 
     .label-item {
         margin-top: 30px;

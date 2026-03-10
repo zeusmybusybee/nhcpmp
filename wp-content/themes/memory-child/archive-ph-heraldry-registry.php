@@ -1,5 +1,7 @@
 <?php get_header(); ?>
 <style>
+
+
     .post-type-archive-ph-heraldry-registry div#content {
         background: #fff;
     }
@@ -17,6 +19,14 @@
 
     .meta-ph-heraldy div {
         font-size: 15px;
+    }
+
+    .ph-heraldy-item img {
+        margin: 0;
+        border-radius: 15px;
+        width: 100%;
+        object-fit: cover;
+        height: clamp(185px, 25vw, 270px);
     }
 </style>
 <div class="container ">
@@ -42,7 +52,7 @@
                     <?php while (have_posts()) : the_post(); ?>
                         <div class="col-lg-4 col-md-6">
 
-                            <div class="card h-100 border-0 shadow-sm text-center p-4">
+                            <div class="card h-100 border-0 shadow-sm text-center p-4 ph-heraldy-item">
                                 <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
 
                                     <!-- Thumbnail -->
@@ -104,10 +114,10 @@
                     <?php endwhile; ?>
 
                 <?php else : ?>
-                    <div class="d-flex align-items-center mb-5 mt-4">
+                    <div class="d-flex align-items-center mb-5 mt-4 ph-heraldy-item">
 
                         <div class="archive-no-results-icon col-3">
-                            <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/404-img.png" alt="404" >
+                            <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/404-img.png" alt="404">
                         </div>
                         <div class="col-9 ">
                             <h2>We're still gathering memories.</h2>
