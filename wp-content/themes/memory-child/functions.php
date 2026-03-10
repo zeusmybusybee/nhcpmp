@@ -1,4 +1,5 @@
 <?php
+
 // Shortcode para sa menu search
 function my_menu_search_shortcode()
 {
@@ -86,6 +87,7 @@ function load_select2_assets()
     );
 }
 add_action('wp_enqueue_scripts', 'load_select2_assets');
+
 
 
 //link footer css
@@ -1328,3 +1330,4 @@ function enable_tinymce_justify($buttons) {
     return $buttons;
 }
 add_filter('mce_buttons_2', 'enable_tinymce_justify');
+

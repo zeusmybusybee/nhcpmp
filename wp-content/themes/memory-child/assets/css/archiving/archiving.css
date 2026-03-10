@@ -1,0 +1,22 @@
+html {
+    margin: 0 !important;
+}
+.main-content {
+    width: 100%;
+    margin-top: 0 !important;
+}
+a{
+    text-decoration: none !important;
+}
+.button.plus-btn a {
+    padding-left: 0 !important;
+}
+.button.plus-btn i{
+    margin-right: 10px;
+}
+.action i{
+    margin-right: 5px;
+}
+.table__content .action a {
+    width: 112px !important;
+}

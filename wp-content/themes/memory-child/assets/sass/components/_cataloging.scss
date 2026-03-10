@@ -1,0 +1,268 @@
+.catalog {
+  &__add {
+    &--title {
+      h3 {
+        color: #212121;
+        font-family: $f-bold;
+        font-size: 32px;
+        line-height: 37px;
+      }
+    }
+    &--content {
+      padding-top: 40px;
+      .updated {
+        font-size: 20px;
+        font-family: $f-semibold;
+        color: $blue;
+      }
+      .acf-form {
+        .acf-fields {
+          .acf-field {
+            display: flex;
+            border-top-width: 0px;
+            gap: 30px;
+            .acf-label {
+              flex-basis: 24%;
+              font-size: 18px;
+              color: #000000;
+              line-height: 21px;
+              font-family: $f-semibold;
+            }
+            .acf-input {
+              flex-basis: 76%;
+              input[type="text"] {
+                width: 100%;
+                border: 1px solid #d9d9d9;
+                height: 60px;
+                border-radius: 5px;
+                font-size: 16px;
+                color: #000000;
+                line-height: 21px;
+                font-family: $f-regular;
+              }
+              select {
+                width: 100%;
+                border: 1px solid #d9d9d9;
+                height: 60px;
+                border-radius: 5px;
+                font-size: 16px;
+                color: #000000;
+                line-height: 21px;
+                font-family: $f-regular;
+              }
+              .acf-checkbox-list {
+                display: flex;
+                align-items: center;
+                gap: 30px;
+                flex-wrap: wrap;
+                &::before {
+                  display: none;
+                }
+                li {
+                  flex-basis: 20%;
+
+                  label {
+                    font-size: 16px;
+                    color: #000000;
+                    line-height: 21px;
+                    font-family: $f-regular;
+                  }
+                }
+              }
+              .acf-date-picker {
+                position: relative;
+                &::after {
+                  content: url(../img/icon/ic_calendar.png);
+                  position: absolute;
+                  right: 43%;
+                  transform: scale(0.5);
+                }
+                input {
+                  width: 50%;
+                }
+              }
+            }
+          }
+        }
+        .acf-form-submit {
+          margin-top: 40px;
+          .acf-button {
+            width: 245px;
+            height: 44px;
+            background: #3ec562;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: $white;
+            font-family: $f-bold;
+            line-height: 32px;
+            font-size: 20px;
+            border-radius: 5px;
+            padding: 0;
+            border-bottom: 0px solid #b93207;
+            transition: all 0.3s ease;
+            &:hover {
+              opacity: 0.8;
+              transition: all 0.3s ease;
+            }
+          }
+        }
+      }
+    }
+    .acf-field-group {
+      display: flex;
+      flex-direction: column;
+      .acf-label {
+        label {
+          color: $blue;
+        }
+      }
+      .acf-input {
+        margin-top: -30px;
+        .acf-fields {
+          border-top: 1px solid #cccccc;
+          border-bottom: 0px solid #cccccc;
+          border-left: 0px solid #cccccc;
+          border-right: 0px solid #cccccc;
+
+          .acf-field {
+            .acf-label {
+              label {
+                color: #000000;
+              }
+            }
+            .acf-input {
+              margin-top: 0px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 750px) and (max-width: 1023px) {
+  .catalog {
+    &__add {
+      &--title {
+        h3 {
+          font-size: 24px;
+          line-height: 37px;
+        }
+      }
+      &--content {
+        padding-top: 20px;
+        .updated {
+          font-size: 16px;
+        }
+        .acf-form {
+          .acf-fields {
+            .acf-field {
+              flex-wrap: wrap;
+              gap: 0px;
+              .acf-label {
+                flex-basis: 100%;
+                font-size: 18px;
+              }
+              .acf-input {
+                flex-basis: 100%;
+                input[type="text"] {
+                  height: 55px;
+                  font-size: 16px;
+                }
+                select {
+                  height: 55px;
+                  font-size: 16px;
+                }
+
+                .acf-date-picker {
+                  &::after {
+                    right: 30%;
+                    transform: scale(0.4);
+                  }
+                  input {
+                    width: 50%;
+                  }
+                }
+              }
+            }
+          }
+          .acf-form-submit {
+            margin-top: 30px;
+            .acf-button {
+              width: 245px;
+              height: 44px;
+              line-height: 27px;
+              font-size: 18px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .catalog {
+    &__add {
+      &--title {
+        h3 {
+          font-size: 20px;
+          line-height: 37px;
+          padding: 0;
+          margin: 0;
+        }
+      }
+      &--content {
+        padding-top: 20px;
+        .updated {
+          font-size: 14px;
+        }
+        .acf-form {
+          .acf-fields {
+            .acf-field {
+              padding: 0;
+              flex-wrap: wrap;
+              gap: 0px;
+              .acf-label {
+                margin-top: 20px;
+                flex-basis: 100%;
+                font-size: 16px;
+              }
+              .acf-input {
+                flex-basis: 100%;
+                input[type="text"] {
+                  height: 52px;
+                  font-size: 14px;
+                }
+                select {
+                  height: 52px;
+                  font-size: 16px;
+                }
+
+                .acf-date-picker {
+                  &::after {
+                    right: 30%;
+                    transform: scale(0.4);
+                  }
+                  input {
+                    width: 50%;
+                  }
+                }
+              }
+            }
+          }
+          .acf-form-submit {
+            margin-top: 30px;
+            .acf-button {
+              width: 245px;
+              height: 44px;
+              line-height: 27px;
+              font-size: 18px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
