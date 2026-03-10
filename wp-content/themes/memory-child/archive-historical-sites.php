@@ -419,31 +419,52 @@
                         </select> -->
                     </div>
 
-
                     <!-- FILTER BY TIME -->
                     <div class="col-12">
                         <h6 class="mb-3 fw-bold">Filter by Time</h6>
 
+
                         <?php
                         $field = get_field_object('m_dates');
 
-                        if ($field && isset($field['choices'])) :
-                            // Get all choices
+                        if ($field && isset($field['choices']) && is_array($field['choices'])) :
                             $choices = $field['choices'];
+                            krsort($choices); // descending order
 
-                            // Sort keys (year values) descending
-                            krsort($choices);
+                            // Get all posts of this type
+                            $all_posts = get_posts([
+                                'post_type'      => 'historical-sites',
+                                'posts_per_page' => -1,
+                                'post_status'    => 'publish',
+                                'fields'         => 'ids',
+                            ]);
 
+                            // Count posts per year
+                            $year_counts = [];
+                            foreach ($all_posts as $post_id) {
+                                $years = get_field('m_dates', $post_id);
+                                if ($years && is_array($years)) {
+                                    foreach ($years as $year) {
+                                        if (!isset($year_counts[$year])) {
+                                            $year_counts[$year] = 0;
+                                        }
+                                        $year_counts[$year]++;
+                                    }
+                                }
+                            }
+
+                            $current_year = $_GET['year_filter'] ?? '';
                         ?>
                             <select name="year_filter" class="form-select mb-2">
                                 <option value="">Year</option>
                                 <?php foreach ($choices as $value => $label): ?>
-                                    <option value="<?php echo esc_attr($value); ?>">
-                                        <?php echo esc_html($label); ?>
+                                    <option value="<?php echo esc_attr($value); ?>" <?php selected($current_year, $value); ?>>
+                                        <?php echo esc_html($label); ?> (<?php echo $year_counts[$value] ?? 0; ?>)
                                     </option>
                                 <?php endforeach; ?>
                             </select>
                         <?php endif; ?>
+
 
                         <select name="orderby" class="form-select">
                             <option value="date-desc" <?php selected($_GET['orderby'] ?? '', 'date-desc'); ?>>
@@ -454,6 +475,7 @@
                             </option>
                         </select>
                     </div>
+
 
                     <!-- BUTTON -->
                     <div class="col-12">
