@@ -124,3 +124,45 @@ jQuery(document).ready(function ($) {
       filters.prependTo("#applied-filters-container");
     }
   });
+
+
+     jQuery(document).ready(function ($) {
+       // hide all options except first
+       $("#registry_category option:not(:first)").hide();
+
+       $("#level_status").change(function () {
+         let level = $(this).val();
+
+         let levelI = [
+           "national-historical-landmark",
+           "national-historical-site",
+           "national-monument",
+           "national-shrine",
+           "unesco-world-heritage-site",
+         ];
+
+         let levelII = [
+           "association-institution-organization",
+           "buildings-structures",
+           "heritage-house",
+           "heritage-zone-historic-center",
+           "personages",
+           "sites-events",
+         ];
+
+         // hide all first
+         $("#registry_category option:not(:first)").hide();
+
+         if (level === "level-i") {
+           levelI.forEach(function (slug) {
+             $('#registry_category option[value="' + slug + '"]').show();
+           });
+         }
+
+         if (level === "level-ii") {
+           levelII.forEach(function (slug) {
+             $('#registry_category option[value="' + slug + '"]').show();
+           });
+         }
+       });
+     });

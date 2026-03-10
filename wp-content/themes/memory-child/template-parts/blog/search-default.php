@@ -92,11 +92,13 @@
             <div class="search-result mb-4 d-flex gap-4">
                 <div class="me-3 col-3 search-img">
                     <?php
+
                     if (has_post_thumbnail()) {
                         the_post_thumbnail('medium', ['class' => 'img-fluid']);
                     } else {
-                        echo '<img src="' . get_template_directory_uri() . '/assets/images/temp-logo.png" class="img-fluid" alt="No image">';
+                        echo '<img src="' . get_stylesheet_directory_uri() . '/assets/images/temp-logo.png" class="img-fluid" alt="No image">';
                     }
+
                     ?>
                     <a id="views-btn_<?php the_ID(); ?>"
                         class="_df_button readbtn-subscriber view-btn-search"
@@ -131,9 +133,16 @@
                         </button>
 
                     <?php else : ?>
-
                         <div class="full-content">
-                            <p><?php echo wp_trim_words(get_the_content(), 100, '...'); ?></p>
+                            <?php
+                            $content = get_the_content();
+
+                            if (preg_match('/(.*?Marker date:\s*[^\n<]+)/is', $content, $matches)) {
+                                echo '<p>' . $matches[1] . '</p>';
+                            } else {
+                                echo '<p>' . wp_trim_words($content, 100, '...') . '</p>';
+                            }
+                            ?>
                         </div>
 
                     <?php endif; ?>

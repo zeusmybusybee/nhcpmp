@@ -228,7 +228,7 @@
                             <!-- Era -->
                             <select name="era" class="form-select">
                                 <!-- Unang placeholder option -->
-                                <option value="">Era</option>
+                                <option value="">Period</option>
 
                                 <?php
                                 global $wpdb;

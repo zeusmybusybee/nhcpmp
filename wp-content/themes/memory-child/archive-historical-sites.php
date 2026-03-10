@@ -262,9 +262,15 @@
                     <div class="col-12 mb-3">
                         <h6 class="mb-3 fw-bold">Filter by Status</h6>
 
-
                         <?php
                         $current = $_GET['level_status'] ?? '';
+
+                        $custom_order = [
+                            'level-i',
+                            'level-ii',
+                            'presumption-removed',
+                            'delisted'
+                        ];
 
                         $terms = get_terms([
                             'taxonomy'   => 'level_status',
@@ -272,24 +278,37 @@
                         ]);
                         ?>
 
-                        <select name="level_status" class="form-select mb-2">
+                        <select name="level_status" id="level_status" class="form-select mb-2">
                             <option value="">-Select-</option>
 
-                            <?php if (!is_wp_error($terms) && !empty($terms)): ?>
-                                <?php foreach ($terms as $term): ?>
+                            <?php
+                            if (!is_wp_error($terms) && !empty($terms)) {
 
-                                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected($current, $term->slug); ?>>
-                                        <?php echo esc_html($term->name); ?> (<?php echo $term->count; ?>)
-                                    </option>
+                                $terms_by_slug = [];
 
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                                foreach ($terms as $term) {
+                                    $terms_by_slug[$term->slug] = $term;
+                                }
+
+                                foreach ($custom_order as $slug) {
+
+                                    if (isset($terms_by_slug[$slug])) {
+
+                                        $term = $terms_by_slug[$slug];
+                            ?>
+                                        <option value="<?php echo esc_attr($term->slug); ?>" <?php selected($current, $term->slug); ?>>
+                                            <?php echo esc_html($term->name); ?> (<?php echo $term->count; ?>)
+                                        </option>
+                            <?php
+                                    }
+                                }
+                            }
+                            ?>
 
                         </select>
 
 
                         <?php
-                        // Get terms from the 'registry_category' taxonomy
                         $terms = get_terms([
                             'taxonomy' => 'registry_category',
                             'hide_empty' => false,
@@ -298,7 +317,7 @@
                         $current = $_GET['registry_category'] ?? '';
                         ?>
 
-                        <select name="registry_category" class="form-select">
+                        <select name="registry_category" id="registry_category" class="form-select">
                             <option value="">-Select-</option>
 
                             <?php if (!is_wp_error($terms) && !empty($terms)): ?>
