@@ -8,7 +8,7 @@
 @import url("../memory/style.css");
 
 @font-face {
-  font-family: 'Ysabeau';
+  font-family: 'Ysabeau'!important;
   src: url('/nhcpmp/wp-content/themes/memory-child/assets/fonts/Ysabeau-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-style: normal;
@@ -16,7 +16,7 @@
 }
 
 @font-face {
-  font-family: 'Ysabeau';
+  font-family: 'Ysabeau'!important;
   src: url('/nhcpmp/wp-content/themes/memory-child/assets/fonts/Ysabeau-Italic-VariableFont_wght.ttf') format('truetype');
   font-weight: 100 900;
   font-style: italic;

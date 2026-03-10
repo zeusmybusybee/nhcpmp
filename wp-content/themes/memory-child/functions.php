@@ -88,6 +88,13 @@ function load_select2_assets()
 add_action('wp_enqueue_scripts', 'load_select2_assets');
 
 
+wp_enqueue_style(
+    'memory-style',
+    get_stylesheet_directory_uri() . '/assets/css/style.css',
+    array(),
+    filemtime(get_stylesheet_directory() . '/assets/css/style.css')
+);
+
 //link footer css
 // Enqueue footer CSS for child theme
 function memory_child_footer_styles()
@@ -1328,3 +1335,23 @@ function enable_tinymce_justify($buttons) {
     return $buttons;
 }
 add_filter('mce_buttons_2', 'enable_tinymce_justify');
+
+// library
+// require_once "archiving/includes/function-item-custompost.php";
+// require_once "archiving/includes/function-item-type-custompost.php";
+// require_once "archiving/includes/function-collection-custompost.php";
+// require_once "archiving/includes/function-subcollection-custompost.php";
+require_once "library/functions/catalog-function.php";
+require_once "library/functions/indexing-function.php";
+require_once "library/functions/rare-materials-function.php";
+
+function wpse66094_no_admin_access() {
+    $redirect = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : home_url( '/' );
+    global $current_user;
+    $user_roles = $current_user->roles;
+    $user_role = array_shift($user_roles);
+    if(($user_role === 'Level_3') || ($user_role === 'Level_4') || ($user_role === 'Archiving') || ($user_role === 'library')){
+        exit( wp_redirect( $redirect ) );
+    }
+ }
+ add_action( 'admin_init', 'wpse66094_no_admin_access', 100 );
