@@ -340,3 +340,27 @@ if (is_user_logged_in() && array_intersect($library_roles, $user_info->roles)) {
         </div>
     </div>
 </div>
+<script>
+    console.log("Script loaded");
+    function openTab(evt, tabName) {
+
+    var tabcontent = document.querySelectorAll(".tabcontent");
+    tabcontent.forEach(function(tab){
+        tab.style.display = "none";
+    });
+
+    var tablinks = document.querySelectorAll(".tablinks");
+    tablinks.forEach(function(btn){
+        btn.classList.remove("active");
+    });
+
+    var tab = document.getElementById(tabName);
+
+    if(tab){
+        tab.style.display = "block";
+    }
+
+    evt.currentTarget.classList.add("active");
+
+}
+</script>

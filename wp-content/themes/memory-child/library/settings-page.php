@@ -1,17 +1,8 @@
 <?php
 /*** Template Name: Settings Page */
 acf_form_head();
-get_header();
+get_header('archiving');
 ?>
-<style>
-    .main-content,html {
-        margin-top: 0!important;
-    }
-    .site-header,.pages-banner-default.page-header.default-bg-header,.site-footer,#wpadminbar{
-        display: none;
-    }
-    
-</style>
 <section>
     <div class="main-content">
         <?php include get_theme_file_path('partials/sidebar-library.php');?>
@@ -55,4 +46,4 @@ get_header();
 </section>
 
 
-<?php get_footer();?>
+<?php get_footer('archiving');?>

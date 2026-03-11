@@ -112,12 +112,24 @@ function memory_enqueue_role_styles()
 
         if (in_array('library', $roles) || in_array('archiving', $roles)) {
 
-wp_enqueue_style(
-    'memory-style',
-    get_stylesheet_directory_uri() . '/assets/css/style.css',
-    array(),
-    filemtime(get_stylesheet_directory() . '/assets/css/style.css')
-);
+            wp_enqueue_style(
+                'memory-style',
+                get_stylesheet_directory_uri() . '/assets/css/style.css',
+                array(),
+                filemtime(get_stylesheet_directory() . '/assets/css/style.css')
+            );
+
+            // JavaScript
+             wp_enqueue_script(
+            'script', // Handle
+            get_stylesheet_directory_uri() . '/assets/js/script-library.js', // Path to your JS file
+            array(), // Dependencies (like 'jquery')
+            '1.0', // Version
+            true // Load in footer
+        );
+        }
+    }
+}
 
 //link footer css
 // Enqueue footer CSS for child theme
@@ -1424,13 +1436,14 @@ require_once "library/functions/catalog-function.php";
 require_once "library/functions/indexing-function.php";
 require_once "library/functions/rare-materials-function.php";
 
-function wpse66094_no_admin_access() {
-    $redirect = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : home_url( '/' );
+function wpse66094_no_admin_access()
+{
+    $redirect = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : home_url('/');
     global $current_user;
     $user_roles = $current_user->roles;
     $user_role = array_shift($user_roles);
-    if(($user_role === 'Level_3') || ($user_role === 'Level_4') || ($user_role === 'Archiving') || ($user_role === 'library')){
-        exit( wp_redirect( $redirect ) );
+    if (($user_role === 'Level_3') || ($user_role === 'Level_4') || ($user_role === 'Archiving') || ($user_role === 'library')) {
+        exit(wp_redirect($redirect));
     }
  }
  add_action( 'admin_init', 'wpse66094_no_admin_access', 100 );
