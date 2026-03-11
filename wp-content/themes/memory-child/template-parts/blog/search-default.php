@@ -78,6 +78,27 @@
     .view-btn-search:hover {
         background-color: #3ec5628a;
     }
+
+    @media (max-width: 768px) {
+        .search-result {
+            flex-direction: column;
+        }
+
+        .search-img {
+            margin: auto;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        .search-item {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .search-img img {
+            height: auto;
+        }
+    }
 </style>
 <div class="container my-5">
 
