@@ -229,7 +229,7 @@
         margin: 0;
         width: 100%;
         object-fit: cover;
-        height: clamp(185px, 25vw, 372px);
+        height: clamp(185px, 25vw, 198px);
     }
 
     @media (max-width:768px) {

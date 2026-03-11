@@ -155,13 +155,13 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                     if ('show-ft' === $memory_hide_featured_image && $image) :
                     ?>
 
-                       
 
-                            <div class="entry-media rounded">
-                                <?php the_post_thumbnail('memory-thumbnails-2'); ?>
-                            </div>
 
-                        
+                        <div class="entry-media rounded">
+                            <?php the_post_thumbnail('memory-thumbnails-2'); ?>
+                        </div>
+
+
 
                     <?php endif; ?>
                     ?>
@@ -414,10 +414,9 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
 
 
                     <div class="col-12 mt-4">
-                        <h6 class="mb-3 fw-bold text-white">Filter by:</h6>
+                        <h6 class="mb-1 fw-bold text-white">Filter by:</h6>
 
-                        <div class="container p-3 bg-dark text-light">
-                            <label class="form-label">Filter by:</label>
+                        <div class="container p-0  text-light">
 
                             <select name="personage" class="form-select">
                                 <option value="">Personages</option>
@@ -457,3 +456,8 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
 
     </div>
 </div>
+<script>
+    jQuery(document).ready(function($) {
+        $(".form-select").select2();
+    });
+</script>

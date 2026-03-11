@@ -1,4 +1,5 @@
 <?php
+
 // Shortcode para sa menu search
 function my_menu_search_shortcode()
 {
@@ -13,18 +14,30 @@ function my_menu_search_shortcode()
 }
 add_shortcode('menu_search', 'my_menu_search_shortcode');
 
-function custom_login_redirect($redirect_to, $request, $user) {
+function custom_login_redirect($redirect_to, $request, $user)
+{
 
     if (isset($user->roles) && is_array($user->roles)) {
-        return home_url('/dashboard');
+
+        // roles na gusto mong i-redirect sa custom dashboard
+        $allowed_roles = array('archiving', 'library');
+
+        if (array_intersect($allowed_roles, $user->roles)) {
+            return home_url('/dashboard');
+        }
+
+        // kung admin o ibang role
+        return admin_url();
     }
 
     return home_url('/login?login=failed');
 }
+
 add_filter('login_redirect', 'custom_login_redirect', 10, 3);
 
 // Redirect wp-admin to /login for non-logged-in users
-function redirect_wp_admin_to_login() {
+function redirect_wp_admin_to_login()
+{
     if (!is_user_logged_in() && strpos($_SERVER['REQUEST_URI'], '/wp-admin') !== false) {
         wp_redirect(home_url('/login')); // Redirect to /login page
         exit;
@@ -32,7 +45,8 @@ function redirect_wp_admin_to_login() {
 }
 add_action('init', 'redirect_wp_admin_to_login');
 
-function custom_login_failed() {
+function custom_login_failed()
+{
     wp_redirect(home_url('/login?login=failed'));
     exit;
 }
@@ -50,7 +64,8 @@ function custom_admin_css()
 }
 add_action('admin_head', 'custom_admin_css');
 
-function hide_menu_for_level_users() {
+function hide_menu_for_level_users()
+{
 
     if (current_user_can('level_3_user') || current_user_can('level_4_user')) {
         echo '<style>
@@ -60,7 +75,6 @@ function hide_menu_for_level_users() {
         { display:none !important; }
         </style>';
     }
-
 }
 add_action('admin_head', 'hide_menu_for_level_users');
 
@@ -87,6 +101,35 @@ function load_select2_assets()
 }
 add_action('wp_enqueue_scripts', 'load_select2_assets');
 
+
+function memory_enqueue_role_styles()
+{
+
+    if (is_user_logged_in()) {
+
+        $user = wp_get_current_user();
+        $roles = (array) $user->roles;
+
+        if (in_array('library', $roles) || in_array('archiving', $roles)) {
+
+            wp_enqueue_style(
+                'memory-style',
+                get_stylesheet_directory_uri() . '/assets/css/style.css',
+                array(),
+                filemtime(get_stylesheet_directory() . '/assets/css/style.css')
+            );
+
+            // JavaScript
+             wp_enqueue_script(
+            'script', // Handle
+            get_stylesheet_directory_uri() . '/assets/js/script-library.js', // Path to your JS file
+            array(), // Dependencies (like 'jquery')
+            '1.0', // Version
+            true // Load in footer
+        );
+        }
+    }
+}
 
 //link footer css
 // Enqueue footer CSS for child theme
@@ -202,18 +245,18 @@ add_action('wp_enqueue_scripts', 'enqueue_place_api_for_foundation');
 add_action('acf/input/admin_enqueue_scripts', function () {
     $post_types = array('foundation-of-towns', 'ph-heraldry-registry');
     if (is_post_type_archive($post_types) || is_singular($post_types)) {
-    wp_enqueue_script(
-        'acf-location-script',
-        get_stylesheet_directory_uri() . '/assets/js/acf-location.js',
-        ['jquery'],
-        '1.0',
-        true
-    );
+        wp_enqueue_script(
+            'acf-location-script',
+            get_stylesheet_directory_uri() . '/assets/js/acf-location.js',
+            ['jquery'],
+            '1.0',
+            true
+        );
 
-    wp_localize_script('acf-location-script', 'acfLocation', [
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'proxy'    => get_stylesheet_directory_uri() . '/ph-proxy.php'
-    ]);
+        wp_localize_script('acf-location-script', 'acfLocation', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'proxy'    => get_stylesheet_directory_uri() . '/ph-proxy.php'
+        ]);
     }
 });
 
@@ -797,7 +840,15 @@ function ph_historical_sites_filters($query)
                 'terms'    => $province,
             ];
         }
-
+        // TYPE (meta)
+        if (!empty($_GET['type'])) {
+            $type = sanitize_text_field($_GET['type']);
+            $meta_query[] = [
+                'key'     => 'type',
+                'value'   => $type,
+                'compare' => '=',
+            ];
+        }
         // CITY / MUNICIPALITY (taxonomy)
         if (!empty($_GET['city'])) {
             $city = sanitize_text_field($_GET['city']);
@@ -817,6 +868,40 @@ function ph_historical_sites_filters($query)
                 'key'     => 'location',
                 'value'   => $location,
                 'compare' => 'LIKE'
+            ];
+        }
+        // MARKER SERIES
+        if (!empty($_GET['marker_series'])) {
+            $meta_query[] = [
+                'key'   => 'marker_series',
+                'value' => sanitize_text_field($_GET['marker_series']),
+                'compare' => '='
+            ];
+        }
+
+        // MARKER UPDATES
+        if (!empty($_GET['marker_updates'])) {
+            $meta_query[] = [
+                'key'   => 'marker_updates',
+                'value' => sanitize_text_field($_GET['marker_updates']),
+                'compare' => '='
+            ];
+        }
+        // UPDATES (meta)
+        if (!empty($_GET['update_filter'])) {
+            $meta_query[] = [
+                'key'     => 'updates',
+                'value'   => sanitize_text_field($_GET['update_filter']),
+                'compare' => '='
+            ];
+        }
+
+        // GROUP DECLARATIONS
+        if (!empty($_GET['declaration_filter'])) {
+            $meta_query[] = [
+                'key'   => 'group_declarations',
+                'value' => sanitize_text_field($_GET['declaration_filter']),
+                'compare' => '='
             ];
         }
 
@@ -843,25 +928,37 @@ function ph_historical_sites_filters($query)
         if (!empty($_GET['s'])) {
             $query->set('s', sanitize_text_field($_GET['s']));
         }
-
         // SORTING
+  
         if (!empty($_GET['orderby'])) {
+
             switch ($_GET['orderby']) {
-                case 'date-desc':
-                    $query->set('orderby', 'date');
-                    $query->set('order', 'DESC');
+                case 'title':
+                    $query->set('orderby', 'title');
+                    $query->set('order', 'ASC');  // A-Z
                     break;
+
+                case 'title-desc':
+                    $query->set('orderby', 'title');
+                    $query->set('order', 'DESC'); // Z-A
+                    break;
+
+                case 'date':
+                    $query->set('orderby', 'date');
+                    $query->set('order', 'DESC'); // newest
+                    break;
+
                 case 'date-asc':
                     $query->set('orderby', 'date');
-                    $query->set('order', 'ASC');
+                    $query->set('order', 'ASC');  // oldest
                     break;
+
                 default:
                     $query->set('orderby', 'date');
                     $query->set('order', 'DESC');
                     break;
             }
         }
-
         // Apply taxonomy queries if any
         if (!empty($tax_query)) {
             $query->set('tax_query', $tax_query);
@@ -1323,8 +1420,30 @@ function filter_by_title_like($where, $wp_query)
 add_filter('posts_where', 'filter_by_title_like', 10, 2);
 
 
-function enable_tinymce_justify($buttons) {
+function enable_tinymce_justify($buttons)
+{
     array_push($buttons, 'alignjustify');
     return $buttons;
 }
 add_filter('mce_buttons_2', 'enable_tinymce_justify');
+
+// library
+require_once "archiving/includes/function-item-custompost.php";
+require_once "archiving/includes/function-item-type-custompost.php";
+require_once "archiving/includes/function-collection-custompost.php";
+require_once "archiving/includes/function-subcollection-custompost.php";
+require_once "library/functions/catalog-function.php";
+require_once "library/functions/indexing-function.php";
+require_once "library/functions/rare-materials-function.php";
+
+function wpse66094_no_admin_access()
+{
+    $redirect = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : home_url('/');
+    global $current_user;
+    $user_roles = $current_user->roles;
+    $user_role = array_shift($user_roles);
+    if (($user_role === 'Level_3') || ($user_role === 'Level_4') || ($user_role === 'Archiving') || ($user_role === 'library')) {
+        exit(wp_redirect($redirect));
+    }
+}
+add_action('admin_init', 'wpse66094_no_admin_access', 100);

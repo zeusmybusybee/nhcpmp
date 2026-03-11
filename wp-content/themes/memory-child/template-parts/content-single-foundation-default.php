@@ -49,8 +49,6 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
         font-weight: 400;
         font-style: italic;
     }
-
- 
 </style>
 <div class="container single-foundation-town">
     <div class="row justify-content-between ">
@@ -139,7 +137,7 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                 </div>
             </div>
 
-            <h2 class="mb-4 text-dark">Other related resources</h2>
+            <h2 class="mb-4 text-dark mt-5">Other related resources</h2>
             <div class="row g-4">
 
                 <?php
@@ -157,7 +155,7 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                     'post__not_in'   => [$current_id],
                     'title_like'     => $keyword,
                 ];
-                
+
 
                 $foundation = new WP_Query($args);
 
@@ -301,7 +299,7 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                             <!-- Era -->
                             <select name="era" class="form-select">
                                 <!-- Unang placeholder option -->
-                                <option value="">Era</option>
+                                <option value="">Period</option>
 
                                 <?php
                                 global $wpdb;

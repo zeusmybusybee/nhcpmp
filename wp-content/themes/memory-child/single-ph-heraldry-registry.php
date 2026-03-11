@@ -4,6 +4,10 @@
         min-width: 300px;
     }
 
+    div#content {
+        background: #fff;
+    }
+
     .details>div {
         margin-bottom: 20px;
         font-size: 18px;
@@ -19,9 +23,21 @@
         padding: 10px 0;
         width: 50%;
     }
-    .remove_inline > div {
-        display:block!important;
-        padding:unset!important;
+
+    .remove_inline>div {
+        display: block !important;
+        padding: unset !important;
+    }
+
+    .historic-title,
+    .historic-content-single {
+        position: relative;
+        z-index: 100;
+        margin-top: 0;
+    }
+    .historic-content-single {
+        padding: 0 0 30px;
+        font-size: 18px;
     }
 </style>
 
@@ -30,12 +46,12 @@
         <div class="col-md-8">
             <?php if (have_posts()) : while (have_posts()) : the_post(); ?>
 
-                    <article id="post-<?php the_ID(); ?>" <?php post_class('mb-5'); ?>>
+                    <article id="post-<?php the_ID(); ?>" <?php post_class('single-item'); ?>>
 
                         <?php $gallery = get_field('nrhss_gallery'); ?>
 
                         <!-- TOP SECTION -->
-                        <div class="row mb-5 align-items-start">
+                        <div class="row mb-5 align-items-start p-5">
 
                             <!-- LEFT : IMAGE + GALLERY -->
                             <div class="col-lg-6">
@@ -93,14 +109,14 @@
                                     </div>
 
                                     <!-- BUTTON -->
-                                   
+
                                     <?php $pdf = get_field('pdf'); ?>
                                     <?php if (!empty($pdf['url'])) : ?>
                                         <div class="my-flipbook-button remove_inline">
                                             <?php echo do_shortcode('[real3dflipbook pdf="' . $pdf['url'] . '" mode="lightbox" thumb="View PDF"]'); ?>
-                                       
+
                                         </div>
-            
+
                                     <?php endif; ?>
 
 
@@ -111,10 +127,10 @@
 
 
                         <!-- TITLE -->
-                        <h1 class="mb-3"><?php the_title(); ?></h1>
+                        <h2 class="mb-3 historic-title"><?php the_title(); ?></h2>
 
                         <!-- CONTENT -->
-                        <div class="content mb-5">
+                        <div class="content mb-5 historic-content-single">
                             <?php the_content(); ?>
                         </div>
 
@@ -161,7 +177,7 @@
                 'post__not_in'   => [$current_id],
                 'title_like'     => $keyword,
             ];
-            
+
 
             $other_posts = new WP_Query($args);
             ?>

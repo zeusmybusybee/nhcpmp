@@ -1,0 +1,49 @@
+.rare {
+  &__form {
+    margin-top: 20px;
+  }
+  &__group {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    &--row {
+      padding-top: 40px;
+      display: flex;
+    }
+    &--base {
+      flex-basis: 40%;
+      &:first-child {
+        margin-right: 10%;
+        border-right: 1px solid #cccccc;
+      }
+    }
+  }
+  &__label {
+    flex-basis: 40%;
+    font-size: 18px;
+    font-family: $f-semibold;
+    line-height: 21px;
+    color: #000000;
+  }
+
+  &__input {
+    flex-basis: 60%;
+    input[type="file"] {
+      border: 0px solid $black;
+    }
+    select {
+      padding-left: 20px;
+      padding-right: 20px;
+      width: 541px;
+      height: 69px;
+      border-radius: 5px;
+      border: 1px solid #d9d9d9;
+      background-color: $white;
+      flex-basis: 40%;
+      font-size: 18px;
+      font-family: $f-regular;
+      line-height: 21px;
+      color: #000000;
+    }
+  }
+}

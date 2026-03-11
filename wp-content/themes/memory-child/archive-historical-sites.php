@@ -106,16 +106,14 @@
                                         <?php endif; ?>
 
                                         <?php
-                                        $terms = get_the_terms(get_the_ID(), 'level_status');
-                                        if ($terms && !is_wp_error($terms)) :
+                                        $years = get_field('m_dates');
+
+                                        if ($years) :
                                         ?>
                                             <div>
-                                                <strong class="meta-label">Level & Status:</strong>
+                                                <strong class="meta-label">Year: </strong>
                                                 <span>
-                                                    <?php
-                                                    $term_names = wp_list_pluck($terms, 'name');
-                                                    echo esc_html(implode(', ', $term_names));
-                                                    ?>
+                                                    <?php echo esc_html(implode(', ', $years)); ?>
                                                 </span>
                                             </div>
                                         <?php endif; ?>
@@ -255,16 +253,57 @@
                     </div>
                 <?php endif; ?>
 
+
+
                 <!-- FILTERS -->
                 <div class=" g-4 border rounded p-4 bg-body-tertiary">
+                    <div class="col-11 archive-right-col">
+                        <h6 class="mb-3 fw-bold">Sort by:</h6>
+
+                        <?php
+                        $current_order = $_GET['orderby'] ?? 'relevance';
+                        ?>
+                        <div class="d-flex justify-content-between text-center">
+
+                            <div class="form-check d-flex  align-items-center">
+                                <input class="form-check-input mb-2" type="radio" name="orderby" value="title"
+                                    <?php checked($current_order, 'title'); ?>>
+                                <label class="form-check-label">A–Z</label>
+                            </div>
+                            <div class="form-check d-flex align-items-center">
+                                <input class="form-check-input mb-2" type="radio" name="orderby" value="title-desc"
+                                    <?php checked($current_order, 'title-desc'); ?>>
+                                <label class="form-check-label">Z–A</label>
+                            </div>
+                            <div class="form-check d-flex  align-items-center">
+                                <input class="form-check-input mb-2" type="radio" name="orderby" value="date"
+                                    <?php checked($current_order, 'date'); ?>>
+                                <label class="form-check-label">Newest</label>
+                            </div>
+
+                            <div class="form-check d-flex  align-items-center">
+                                <input class="form-check-input mb-2" type="radio" name="orderby" value="date-asc"
+                                    <?php checked($current_order, 'date-asc'); ?>>
+                                <label class="form-check-label">Oldest</label>
+                            </div>
+
+                        </div>
+
+                    </div>
 
                     <!-- FILTER BY -->
                     <div class="col-12 mb-3">
                         <h6 class="mb-3 fw-bold">Filter by Status</h6>
 
-
                         <?php
                         $current = $_GET['level_status'] ?? '';
+
+                        $custom_order = [
+                            'level-i',
+                            'level-ii',
+                            'presumption-removed',
+                            'delisted'
+                        ];
 
                         $terms = get_terms([
                             'taxonomy'   => 'level_status',
@@ -272,8 +311,47 @@
                         ]);
                         ?>
 
-                        <select name="level_status" class="form-select mb-2">
-                            <option value="">-Select-</option>
+                        <select name="level_status" id="level_status" class="form-select mb-2">
+                            <option value="">-Status-</option>
+
+                            <?php
+                            if (!is_wp_error($terms) && !empty($terms)) {
+
+                                $terms_by_slug = [];
+
+                                foreach ($terms as $term) {
+                                    $terms_by_slug[$term->slug] = $term;
+                                }
+
+                                foreach ($custom_order as $slug) {
+
+                                    if (isset($terms_by_slug[$slug])) {
+
+                                        $term = $terms_by_slug[$slug];
+                            ?>
+                                        <option value="<?php echo esc_attr($term->slug); ?>" <?php selected($current, $term->slug); ?>>
+                                            <?php echo esc_html($term->name); ?> (<?php echo $term->count; ?>)
+                                        </option>
+                            <?php
+                                    }
+                                }
+                            }
+                            ?>
+
+                        </select>
+
+
+                        <?php
+                        $terms = get_terms([
+                            'taxonomy' => 'registry_category',
+                            'hide_empty' => false,
+                        ]);
+
+                        $current = $_GET['registry_category'] ?? '';
+                        ?>
+
+                        <select name="registry_category" id="registry_category" class="form-select">
+                            <option value="">-Category-</option>
 
                             <?php if (!is_wp_error($terms) && !empty($terms)): ?>
                                 <?php foreach ($terms as $term): ?>
@@ -287,25 +365,30 @@
 
                         </select>
 
-
                         <?php
-                        // Get terms from the 'registry_category' taxonomy
-                        $terms = get_terms([
-                            'taxonomy' => 'registry_category',
-                            'hide_empty' => false,
-                        ]);
+                        global $wpdb;
 
-                        $current = $_GET['registry_category'] ?? '';
+                        $field_name = 'type';
+                        $current = $_GET['type'] ?? '';
+
+                        $results = $wpdb->get_results("
+                        SELECT meta_value, COUNT(*) as total
+                        FROM {$wpdb->postmeta}
+                        WHERE meta_key = '{$field_name}'
+                        AND meta_value != ''
+                        GROUP BY meta_value
+                        ORDER BY meta_value ASC
+                    ");
                         ?>
 
-                        <select name="registry_category" class="form-select">
-                            <option value="">-Select-</option>
+                        <select name="type" id="type" class="form-select mb-2 mt-2">
+                            <option value="">-Type-</option>
 
-                            <?php if (!is_wp_error($terms) && !empty($terms)): ?>
-                                <?php foreach ($terms as $term): ?>
+                            <?php if ($results): ?>
+                                <?php foreach ($results as $row): ?>
 
-                                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected($current, $term->slug); ?>>
-                                        <?php echo esc_html($term->name); ?> (<?php echo $term->count; ?>)
+                                    <option value="<?php echo esc_attr($row->meta_value); ?>" <?php selected($current, $row->meta_value); ?>>
+                                        <?php echo esc_html($row->meta_value); ?> (<?php echo $row->total; ?>)
                                     </option>
 
                                 <?php endforeach; ?>
@@ -341,7 +424,7 @@
 
                         </select>
 
-                        <select name="province" class="form-select mb-2">
+                        <select name="province" class="form-select mb-2 d-none">
                             <option value="">Province</option>
 
                             <?php
@@ -365,7 +448,7 @@
                         </select>
                         <!-- CITY -->
 
-                        <select name="city" class="form-select mb-2">
+                        <select name="city" class="form-select mb-2 d-none">
                             <option value="">City / Municipality</option>
 
                             <?php
@@ -400,41 +483,234 @@
                         </select> -->
                     </div>
 
-
                     <!-- FILTER BY TIME -->
                     <div class="col-12">
                         <h6 class="mb-3 fw-bold">Filter by Time</h6>
 
                         <?php
+                        // YEAR FILTER
                         $field = get_field_object('m_dates');
-
-                        if ($field && isset($field['choices'])) :
-                            // Get all choices
+                        if ($field && isset($field['choices']) && is_array($field['choices'])) :
                             $choices = $field['choices'];
-
-                            // Sort keys (year values) descending
                             krsort($choices);
 
+                            $all_posts = get_posts([
+                                'post_type'      => 'historical-sites',
+                                'posts_per_page' => -1,
+                                'post_status'    => 'publish',
+                                'fields'         => 'ids',
+                            ]);
+
+                            $year_counts = [];
+                            foreach ($all_posts as $post_id) {
+                                $years = get_field('m_dates', $post_id);
+                                if ($years && is_array($years)) {
+                                    foreach ($years as $year) {
+                                        if (!isset($year_counts[$year])) {
+                                            $year_counts[$year] = 0;
+                                        }
+                                        $year_counts[$year]++;
+                                    }
+                                }
+                            }
+
+                            $current_year = $_GET['year_filter'] ?? '';
                         ?>
+
+                            <!-- YEAR DROPDOWN -->
                             <select name="year_filter" class="form-select mb-2">
                                 <option value="">Year</option>
                                 <?php foreach ($choices as $value => $label): ?>
-                                    <option value="<?php echo esc_attr($value); ?>">
-                                        <?php echo esc_html($label); ?>
+                                    <option value="<?php echo esc_attr($value); ?>" <?php selected($current_year, $value); ?>>
+                                        <?php echo esc_html($label); ?> (<?php echo $year_counts[$value] ?? 0; ?>)
                                     </option>
                                 <?php endforeach; ?>
                             </select>
+
                         <?php endif; ?>
 
-                        <select name="orderby" class="form-select">
-                            <option value="date-desc" <?php selected($_GET['orderby'] ?? '', 'date-desc'); ?>>
-                                Newest to Oldest
-                            </option>
-                            <option value="date-asc" <?php selected($_GET['orderby'] ?? '', 'date-asc'); ?>>
-                                Oldest to Newest
-                            </option>
-                        </select>
+
+                        <?php
+                        $updates_field = acf_get_field('updates');
+
+                        if ($updates_field && !empty($updates_field['choices'])) :
+
+                            // Get all posts
+                            $all_posts = get_posts([
+                                'post_type'      => 'historical-sites',
+                                'posts_per_page' => -1,
+                                'post_status'    => 'publish',
+                                'fields'         => 'ids',
+                            ]);
+
+                            // Count posts per update
+                            $updates_counts = [];
+
+                            foreach ($all_posts as $post_id) {
+                                $update_value = get_field('updates', $post_id);
+
+                                if ($update_value) {
+                                    if (!isset($updates_counts[$update_value])) {
+                                        $updates_counts[$update_value] = 0;
+                                    }
+                                    $updates_counts[$update_value]++;
+                                }
+                            }
+
+                            $current_update = $_GET['update_filter'] ?? '';
+                        ?>
+
+                            <select name="update_filter" class="form-select mb-2">
+                                <option value="">Updates</option>
+
+                                <?php foreach ($updates_field['choices'] as $value => $label): ?>
+                                    <option value="<?php echo esc_attr($value); ?>" <?php selected($current_update, $value); ?>>
+                                        <?php echo esc_html($label); ?> (<?php echo $updates_counts[$value] ?? 0; ?>)
+                                    </option>
+                                <?php endforeach; ?>
+
+                            </select>
+
+                        <?php endif; ?>
                     </div>
+
+
+
+                    <div class="col-12">
+                        <h6 class="mb-3 fw-bold">Other Features</h6>
+
+                        <?php
+                        $series_field = acf_get_field('marker_series');
+
+                        if ($series_field && !empty($series_field['choices'])) :
+
+                            // Get all posts
+                            $all_posts = get_posts([
+                                'post_type'      => 'historical-sites',
+                                'posts_per_page' => -1,
+                                'post_status'    => 'publish',
+                                'fields'         => 'ids',
+                            ]);
+
+                            // Count posts per marker series
+                            $series_counts = [];
+
+                            foreach ($all_posts as $post_id) {
+                                $series = get_field('marker_series', $post_id);
+
+                                if ($series) {
+                                    if (!isset($series_counts[$series])) {
+                                        $series_counts[$series] = 0;
+                                    }
+                                    $series_counts[$series]++;
+                                }
+                            }
+
+                            $current_series = $_GET['marker_filter'] ?? '';
+                        ?>
+
+                            <select name="marker_series" class="form-select mb-2">
+                                <option value="">Marker Series</option>
+
+                                <?php foreach ($series_field['choices'] as $value => $label): ?>
+                                    <option value="<?php echo esc_attr($value); ?>" <?php selected($current_series, $value); ?>>
+                                        <?php echo esc_html($label); ?> (<?php echo $series_counts[$value] ?? 0; ?>)
+                                    </option>
+                                <?php endforeach; ?>
+
+                            </select>
+
+                        <?php endif; ?>
+
+                        <?php
+                        $updates_field = acf_get_field('marker_updates');
+
+                        if ($updates_field && !empty($updates_field['choices'])) :
+
+                            // Get all posts
+                            $all_posts = get_posts([
+                                'post_type'      => 'historical-sites',
+                                'posts_per_page' => -1,
+                                'post_status'    => 'publish',
+                                'fields'         => 'ids',
+                            ]);
+
+                            // Count posts per marker update
+                            $updates_counts = [];
+
+                            foreach ($all_posts as $post_id) {
+                                $update = get_field('marker_updates', $post_id);
+
+                                if ($update) {
+                                    if (!isset($updates_counts[$update])) {
+                                        $updates_counts[$update] = 0;
+                                    }
+                                    $updates_counts[$update]++;
+                                }
+                            }
+
+                            $current_update = $_GET['marker_filter'] ?? '';
+                        ?>
+
+                            <select name="marker_updates" class="form-select mb-2">
+                                <option value="">Marker Updates</option>
+
+                                <?php foreach ($updates_field['choices'] as $value => $label): ?>
+                                    <option value="<?php echo esc_attr($value); ?>" <?php selected($current_update, $value); ?>>
+                                        <?php echo esc_html($label); ?> (<?php echo $updates_counts[$value] ?? 0; ?>)
+                                    </option>
+                                <?php endforeach; ?>
+
+                            </select>
+
+                        <?php endif; ?>
+
+
+                        <?php
+                        $declarations_field = acf_get_field('group_declarations');
+
+                        if ($declarations_field && !empty($declarations_field['choices'])) :
+
+                            // Get all posts
+                            $all_posts = get_posts([
+                                'post_type'      => 'historical-sites',
+                                'posts_per_page' => -1,
+                                'post_status'    => 'publish',
+                                'fields'         => 'ids',
+                            ]);
+
+                            // Count posts per group declaration
+                            $declarations_counts = [];
+
+                            foreach ($all_posts as $post_id) {
+                                $declaration = get_field('group_declarations', $post_id);
+
+                                if ($declaration) {
+                                    if (!isset($declarations_counts[$declaration])) {
+                                        $declarations_counts[$declaration] = 0;
+                                    }
+                                    $declarations_counts[$declaration]++;
+                                }
+                            }
+
+                            $current_declaration = $_GET['declaration_filter'] ?? '';
+                        ?>
+
+                            <select name="declaration_filter" class="form-select mb-2">
+                                <option value="">Group Declarations</option>
+
+                                <?php foreach ($declarations_field['choices'] as $value => $label): ?>
+                                    <option value="<?php echo esc_attr($value); ?>" <?php selected($current_declaration, $value); ?>>
+                                        <?php echo esc_html($label); ?> (<?php echo $declarations_counts[$value] ?? 0; ?>)
+                                    </option>
+                                <?php endforeach; ?>
+
+                            </select>
+
+                        <?php endif; ?>
+
+                    </div>
+
 
                     <!-- BUTTON -->
                     <div class="col-12">
