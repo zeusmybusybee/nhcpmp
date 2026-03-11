@@ -1,7 +1,7 @@
 <?php
 /*** Template Name: Inventory */
 acf_form_head();
-get_header();
+get_header('archiving');
 ?>
 
 <section>
@@ -38,4 +38,4 @@ get_header();
 </section>
 
 
-<?php get_footer();?>
+<?php get_footer('archiving');?>

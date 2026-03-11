@@ -48,7 +48,7 @@ $arg_audiovisual_query = new WP_Query($arg_audiovisuals);
                                     <img src="<?php echo site_url(); ?>/wp-content/uploads/2023/04/nhcp_logoo.png" style="object-fit: contain; background: rgb(35, 77, 141); padding: 8px;" />
                                 <?php endif;?>
                                 <!--<div class="catalog__img--icon">-->
-                                <!--    <img src="<?php echo THEME_DIR; ?>/assets/img/icon/ic_media.png" alt="">-->
+                                <!--    <img src="<?php //echo THEME_DIR; ?>/assets/img/icon/ic_media.png" alt="">-->
                                 <!--</div>-->
                             </div>
                             <div class="catalog__info">

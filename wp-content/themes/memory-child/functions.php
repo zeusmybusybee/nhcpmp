@@ -36,7 +36,8 @@ function custom_login_redirect($redirect_to, $request, $user)
 add_filter('login_redirect', 'custom_login_redirect', 10, 3);
 
 // Redirect wp-admin to /login for non-logged-in users
-function redirect_wp_admin_to_login() {
+function redirect_wp_admin_to_login()
+{
     if (!is_user_logged_in() && strpos($_SERVER['REQUEST_URI'], '/wp-admin') !== false) {
         wp_redirect(home_url('/login')); // Redirect to /login page
         exit;
@@ -44,7 +45,8 @@ function redirect_wp_admin_to_login() {
 }
 add_action('init', 'redirect_wp_admin_to_login');
 
-function custom_login_failed() {
+function custom_login_failed()
+{
     wp_redirect(home_url('/login?login=failed'));
     exit;
 }
@@ -62,7 +64,8 @@ function custom_admin_css()
 }
 add_action('admin_head', 'custom_admin_css');
 
-function hide_menu_for_level_users() {
+function hide_menu_for_level_users()
+{
 
     if (current_user_can('level_3_user') || current_user_can('level_4_user')) {
         echo '<style>
@@ -72,7 +75,6 @@ function hide_menu_for_level_users() {
         { display:none !important; }
         </style>';
     }
-
 }
 add_action('admin_head', 'hide_menu_for_level_users');
 
@@ -100,6 +102,34 @@ function load_select2_assets()
 add_action('wp_enqueue_scripts', 'load_select2_assets');
 
 
+function memory_enqueue_role_styles()
+{
+
+    if (is_user_logged_in()) {
+
+        $user = wp_get_current_user();
+        $roles = (array) $user->roles;
+
+        if (in_array('library', $roles) || in_array('archiving', $roles)) {
+
+            wp_enqueue_style(
+                'memory-style',
+                get_stylesheet_directory_uri() . '/assets/css/style.css',
+                array(),
+                filemtime(get_stylesheet_directory() . '/assets/css/style.css')
+            );
+
+            // JavaScript
+             wp_enqueue_script(
+            'script', // Handle
+            get_stylesheet_directory_uri() . '/assets/js/script-library.js', // Path to your JS file
+            array(), // Dependencies (like 'jquery')
+            '1.0', // Version
+            true // Load in footer
+        );
+        }
+    }
+}
 
 //link footer css
 // Enqueue footer CSS for child theme
@@ -215,18 +245,18 @@ add_action('wp_enqueue_scripts', 'enqueue_place_api_for_foundation');
 add_action('acf/input/admin_enqueue_scripts', function () {
     $post_types = array('foundation-of-towns', 'ph-heraldry-registry');
     if (is_post_type_archive($post_types) || is_singular($post_types)) {
-    wp_enqueue_script(
-        'acf-location-script',
-        get_stylesheet_directory_uri() . '/assets/js/acf-location.js',
-        ['jquery'],
-        '1.0',
-        true
-    );
+        wp_enqueue_script(
+            'acf-location-script',
+            get_stylesheet_directory_uri() . '/assets/js/acf-location.js',
+            ['jquery'],
+            '1.0',
+            true
+        );
 
-    wp_localize_script('acf-location-script', 'acfLocation', [
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'proxy'    => get_stylesheet_directory_uri() . '/ph-proxy.php'
-    ]);
+        wp_localize_script('acf-location-script', 'acfLocation', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'proxy'    => get_stylesheet_directory_uri() . '/ph-proxy.php'
+        ]);
     }
 });
 
@@ -1390,3 +1420,30 @@ function filter_by_title_like($where, $wp_query)
 add_filter('posts_where', 'filter_by_title_like', 10, 2);
 
 
+function enable_tinymce_justify($buttons)
+{
+    array_push($buttons, 'alignjustify');
+    return $buttons;
+}
+add_filter('mce_buttons_2', 'enable_tinymce_justify');
+
+// library
+require_once "archiving/includes/function-item-custompost.php";
+require_once "archiving/includes/function-item-type-custompost.php";
+require_once "archiving/includes/function-collection-custompost.php";
+require_once "archiving/includes/function-subcollection-custompost.php";
+require_once "library/functions/catalog-function.php";
+require_once "library/functions/indexing-function.php";
+require_once "library/functions/rare-materials-function.php";
+
+function wpse66094_no_admin_access()
+{
+    $redirect = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : home_url('/');
+    global $current_user;
+    $user_roles = $current_user->roles;
+    $user_role = array_shift($user_roles);
+    if (($user_role === 'Level_3') || ($user_role === 'Level_4') || ($user_role === 'Archiving') || ($user_role === 'library')) {
+        exit(wp_redirect($redirect));
+    }
+}
+add_action('admin_init', 'wpse66094_no_admin_access', 100);

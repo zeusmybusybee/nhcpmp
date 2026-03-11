@@ -1,21 +1,21 @@
 <?php
 /*** Template Name: Add Audio Recordings */
 acf_form_head();
-get_header();
+get_header('archiving');
 ?>
 
 <section>
     <div class="main-content">
 
-        <?php include get_theme_file_path('partials/sidebar.php');?>
-        <?php include get_theme_file_path('partials/navbar.php');?>
+        <?php include get_theme_file_path('partials/sidebar-library.php'); ?>
+        <?php include get_theme_file_path('partials/navbar-library.php'); ?>
         <div class="main-body">
             <div class="main-body__content">
                 <div class="main-body__container">
                     <div class="main-body__breadcrumb">
-                        <div class="main-body__breadcrumb--list"><?php get_breadcrumb();?></div>
+                        <!-- <div class="main-body__breadcrumb--list"><?php //get_breadcrumb();?></div> -->
                     </div>
-                    <?php if($_GET['updated']){ ?>
+                    <?php if (isset($_GET['updated'])) { ?>
                         <div class="table__header" style="margin-top: 25px; padding-bottom: 0;">
                             <div class="viewall-area">
                                 <a href="<?php echo get_permalink($_GET['updated']); ?>">View Newly Added</a>
@@ -66,4 +66,4 @@ acf_form(array(
     </div>
 </section>
 
-<?php get_footer();?>
+<?php get_footer('archiving');?>

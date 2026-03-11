@@ -1,4 +1,5 @@
 <?php
+
 /*** Template Name: Add Collection Management */
 // acf_form_head();
 
@@ -41,8 +42,8 @@ class Category_Dropdown_Walker extends Walker_CategoryDropdown
 <section>
     <div class="main-content">
 
-        <?php include get_theme_file_path('partials/sidebar.php');?>
-        <?php include get_theme_file_path('partials/navbar.php');?>
+        <?php include get_theme_file_path('partials/sidebar.php'); ?>
+        <?php include get_theme_file_path('partials/navbar.php'); ?>
         <div class="main-body">
             <div class="main-body__content">
                 <div class="main-body__container">
@@ -78,23 +79,23 @@ class Category_Dropdown_Walker extends Walker_CategoryDropdown
                                                     <label class="parent-cat" for="category-parent">Parent
                                                         Collection</label>
                                                     <?php
-wp_dropdown_categories(array(
-    'taxonomy' => 'collection_management',
-    'id' => 'category-parent',
-    'name' => 'category-parent',
-    'show_option_none' => '-None-',
-    'hide_empty' => false,
-    'class' => 'js-example-basic-single',
-    'hierarchical' => true,
-    'walker' => new Category_Dropdown_Walker(),
-));
-?>
+                                                    wp_dropdown_categories(array(
+                                                        'taxonomy' => 'collection_management',
+                                                        'id' => 'category-parent',
+                                                        'name' => 'category-parent',
+                                                        'show_option_none' => '-None-',
+                                                        'hide_empty' => false,
+                                                        'class' => 'js-example-basic-single',
+                                                        'hierarchical' => true,
+                                                        'walker' => new Category_Dropdown_Walker(),
+                                                    ));
+                                                    ?>
                                                 </div>
                                                 <div class="collection__form--btn">
                                                     <input type="submit" value="Add Collection">
                                                 </div>
                                             </form>
-                                    
+
                                             <div class="table__header" style="margin-top: -48px; justify-content: end; padding-bottom: 0;">
                                                 <div class="viewall-area">
                                                     <a href="<?php echo home_url(add_query_arg(array(), $wp->request)); ?>">Reset</a>
@@ -108,7 +109,7 @@ wp_dropdown_categories(array(
                         </div>
                     </div>
                 </div>
-                <?php include get_theme_file_path('partials/footer.php');?>
+                <?php include get_theme_file_path('partials/footer.php'); ?>
             </div>
         </div>
     </div>
@@ -117,40 +118,40 @@ wp_dropdown_categories(array(
 
 
 <script>
-jQuery(document).ready(function($) {
-    $('#add-category-form').on('submit', function(e) {
-        e.preventDefault();
-        var categoryName = $('#category-name').val();
-        var categoryDescription = $('#category-description').val();
-        var categoryParent = $('#category-parent').val();
-        $.ajax({
-            url: '<?php echo admin_url('admin-ajax.php'); ?>',
-            type: 'POST',
-            data: {
-                action: 'add_category',
-                category_name: categoryName,
-                category_description: categoryDescription,
-                category_parent: categoryParent
-            },
-            beforeSend: function() {
-                $('#result-message').html(
-                    '<p>Adding category...</p>');
-            },
-            success: function(response) {
-                $('#result-message').html(response);
-                // var redirect_url = site_url + "/add-collection/";
-                // window.location.href = redirect_url;
-                l;
-            }
+    jQuery(document).ready(function($) {
+        $('#add-category-form').on('submit', function(e) {
+            e.preventDefault();
+            var categoryName = $('#category-name').val();
+            var categoryDescription = $('#category-description').val();
+            var categoryParent = $('#category-parent').val();
+            $.ajax({
+                url: '<?php echo admin_url('admin-ajax.php'); ?>',
+                type: 'POST',
+                data: {
+                    action: 'add_category',
+                    category_name: categoryName,
+                    category_description: categoryDescription,
+                    category_parent: categoryParent
+                },
+                beforeSend: function() {
+                    $('#result-message').html(
+                        '<p>Adding category...</p>');
+                },
+                success: function(response) {
+                    $('#result-message').html(response);
+                    // var redirect_url = site_url + "/add-collection/";
+                    // window.location.href = redirect_url;
+                    l;
+                }
+            });
         });
     });
-});
 </script>
 
 <script>
-jQuery(document).ready(function($) {
-    $('.js-example-basic-single').select2();
-});
+    jQuery(document).ready(function($) {
+        $('.js-example-basic-single').select2();
+    });
 </script>
 
-<?php get_footer('archiving');?>
+<?php get_footer('archiving'); ?>

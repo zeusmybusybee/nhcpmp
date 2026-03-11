@@ -1,19 +1,19 @@
 <?php
 /*** Template Name: Indexing */
-get_header();
+get_header('archiving');
 ?>
 
 <section>
     <div class="main-content">
-        <?php include get_theme_file_path('partials/sidebar.php');?>
-        <?php include get_theme_file_path('partials/navbar.php');?>
+        <?php include get_theme_file_path('partials/sidebar-library.php');?>
+        <?php include get_theme_file_path('partials/navbar-library.php');?>
         <div class="main-body">
             <div class="main-body__content">
                 <div class="main-body__container">
                     <div class="main-body__content--header">
                         <h3>Indexing </h3>
                         <div class="watermark library">
-                            <img src="<?php echo THEME_DIR; ?>/assets/img/indexing.png" alt="Indexing Icon">
+                            <!-- <img src="<?php // echo THEME_DIR; ?>/assets/img/indexing.png" alt="Indexing Icon"> -->
                         </div>
                     </div>
 
@@ -58,4 +58,4 @@ get_header();
 
 
 
-<?php get_footer();?>
+<?php get_footer('archiving');?>
