@@ -14,14 +14,25 @@ function my_menu_search_shortcode()
 }
 add_shortcode('menu_search', 'my_menu_search_shortcode');
 
-function custom_login_redirect($redirect_to, $request, $user) {
+function custom_login_redirect($redirect_to, $request, $user)
+{
 
     if (isset($user->roles) && is_array($user->roles)) {
-        return home_url('/dashboard');
+
+        // roles na gusto mong i-redirect sa custom dashboard
+        $allowed_roles = array('archiving', 'library');
+
+        if (array_intersect($allowed_roles, $user->roles)) {
+            return home_url('/dashboard');
+        }
+
+        // kung admin o ibang role
+        return admin_url();
     }
 
     return home_url('/login?login=failed');
 }
+
 add_filter('login_redirect', 'custom_login_redirect', 10, 3);
 
 // Redirect wp-admin to /login for non-logged-in users
@@ -799,7 +810,15 @@ function ph_historical_sites_filters($query)
                 'terms'    => $province,
             ];
         }
-
+        // TYPE (meta)
+        if (!empty($_GET['type'])) {
+            $type = sanitize_text_field($_GET['type']);
+            $meta_query[] = [
+                'key'     => 'type',
+                'value'   => $type,
+                'compare' => '=',
+            ];
+        }
         // CITY / MUNICIPALITY (taxonomy)
         if (!empty($_GET['city'])) {
             $city = sanitize_text_field($_GET['city']);
@@ -819,6 +838,40 @@ function ph_historical_sites_filters($query)
                 'key'     => 'location',
                 'value'   => $location,
                 'compare' => 'LIKE'
+            ];
+        }
+        // MARKER SERIES
+        if (!empty($_GET['marker_series'])) {
+            $meta_query[] = [
+                'key'   => 'marker_series',
+                'value' => sanitize_text_field($_GET['marker_series']),
+                'compare' => '='
+            ];
+        }
+
+        // MARKER UPDATES
+        if (!empty($_GET['marker_updates'])) {
+            $meta_query[] = [
+                'key'   => 'marker_updates',
+                'value' => sanitize_text_field($_GET['marker_updates']),
+                'compare' => '='
+            ];
+        }
+        // UPDATES (meta)
+        if (!empty($_GET['update_filter'])) {
+            $meta_query[] = [
+                'key'     => 'updates',
+                'value'   => sanitize_text_field($_GET['update_filter']),
+                'compare' => '='
+            ];
+        }
+
+        // GROUP DECLARATIONS
+        if (!empty($_GET['declaration_filter'])) {
+            $meta_query[] = [
+                'key'   => 'group_declarations',
+                'value' => sanitize_text_field($_GET['declaration_filter']),
+                'compare' => '='
             ];
         }
 
@@ -845,25 +898,37 @@ function ph_historical_sites_filters($query)
         if (!empty($_GET['s'])) {
             $query->set('s', sanitize_text_field($_GET['s']));
         }
-
         // SORTING
+  
         if (!empty($_GET['orderby'])) {
+
             switch ($_GET['orderby']) {
-                case 'date-desc':
-                    $query->set('orderby', 'date');
-                    $query->set('order', 'DESC');
+                case 'title':
+                    $query->set('orderby', 'title');
+                    $query->set('order', 'ASC');  // A-Z
                     break;
+
+                case 'title-desc':
+                    $query->set('orderby', 'title');
+                    $query->set('order', 'DESC'); // Z-A
+                    break;
+
+                case 'date':
+                    $query->set('orderby', 'date');
+                    $query->set('order', 'DESC'); // newest
+                    break;
+
                 case 'date-asc':
                     $query->set('orderby', 'date');
-                    $query->set('order', 'ASC');
+                    $query->set('order', 'ASC');  // oldest
                     break;
+
                 default:
                     $query->set('orderby', 'date');
                     $query->set('order', 'DESC');
                     break;
             }
         }
-
         // Apply taxonomy queries if any
         if (!empty($tax_query)) {
             $query->set('tax_query', $tax_query);
@@ -1324,10 +1389,4 @@ function filter_by_title_like($where, $wp_query)
 }
 add_filter('posts_where', 'filter_by_title_like', 10, 2);
 
-
-function enable_tinymce_justify($buttons) {
-    array_push($buttons, 'alignjustify');
-    return $buttons;
-}
-add_filter('mce_buttons_2', 'enable_tinymce_justify');
 

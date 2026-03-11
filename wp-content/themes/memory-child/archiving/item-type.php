@@ -14,7 +14,7 @@ get_header('archiving');
                     <div class="main-body__content--header">
                         <h3>Item Type Management </h3>
                         <div class="watermark">
-                            <img src="" alt="Notif Icon">
+                            <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/head_frame.png" alt="Notif Icon">
                         </div>
                     </div>
 
@@ -26,8 +26,8 @@ get_header('archiving');
                                     <p>Browse Items</p>
                                     <span>More than 1000+ Browse Items</span>
                                 </div>
-                                <div class="button">
-                                    <a href="<?php echo site_url('/add-item-type'); ?>">Add</a>
+                                <div class="button plus-btn">
+                                    <a href="<?php echo site_url('/add-item-type'); ?>"><i class="fa-solid fa-circle-plus"></i> Add</a>
                                 </div>
                             </div>
 
@@ -81,8 +81,8 @@ get_header('archiving');
                                                 <td class="actions">
                                                     <div class="table__content--body action">
                                                         <a href="<?php the_permalink(); ?>" target="_new" class="preview"><i class="fa-solid fa-magnifying-glass"></i> Preview</a>
-                                                        <a href="<?php echo get_delete_post_link(); ?>" class="delete" onclick="return confirm('Are you sure you wanna delete this?')">Delete</a>
-                                                        <a href="<?php echo site_url('/edit-item-type'); ?>?post=<?php the_ID(); ?>" target="_new" class="edit">Edit</a>
+                                                        <a href="<?php echo get_delete_post_link(); ?>" class="delete" onclick="return confirm('Are you sure you wanna delete this?')"> <i class="fa-solid fa-trash"></i> Delete</a>
+                                                        <a href="<?php echo site_url('/edit-item-type'); ?>?post=<?php the_ID(); ?>" target="_new" class="edit"> <i class="fa-solid fa-pen-to-square"></i> Edit</a>
                                                     </div>
                                                 </td>
                                             </tr>
