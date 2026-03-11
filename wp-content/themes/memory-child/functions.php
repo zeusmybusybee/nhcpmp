@@ -1445,5 +1445,5 @@ function wpse66094_no_admin_access()
     if (($user_role === 'Level_3') || ($user_role === 'Level_4') || ($user_role === 'Archiving') || ($user_role === 'library')) {
         exit(wp_redirect($redirect));
     }
- }
- add_action( 'admin_init', 'wpse66094_no_admin_access', 100 );
+}
+add_action('admin_init', 'wpse66094_no_admin_access', 100);
