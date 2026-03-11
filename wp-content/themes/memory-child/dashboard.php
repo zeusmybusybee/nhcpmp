@@ -13,7 +13,7 @@ get_header('archiving'); ?>
                     <div class="main-body__content--header">
                         <h3>Welcome to the NHCP National Memory Project</h3>
                         <div class="watermark">
-                            <img src="" alt="Notif Icon">
+                            <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/head_frame.png" alt="Notif Icon">
                         </div>
                     </div>
 

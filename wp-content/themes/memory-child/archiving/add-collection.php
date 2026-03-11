@@ -11,13 +11,28 @@ class Category_Dropdown_Walker extends Walker_CategoryDropdown
     public function start_el(&$output, $category, $depth = 0, $args = array(), $id = 0)
     {
         $pad = str_repeat('&nbsp;', $depth * 3);
-        $cat_name = apply_filters('list_cats', $category->name, $category);
-        $output .= "\t<option class=\"level-$depth\" value=\"" . $category->term_id . "\"";
-        if ($category->term_id == $args['selected']) {
+
+        $term_id = '';
+        $cat_name = '';
+
+        if (is_object($category)) {
+            $term_id = $category->term_id ?? '';
+            $cat_name = $category->name ?? '';
+        } elseif (is_array($category)) {
+            $term_id = $category['term_id'] ?? '';
+            $cat_name = $category['name'] ?? '';
+        }
+
+        $cat_name = apply_filters('list_cats', $cat_name, $category);
+
+        $output .= "\t<option class=\"level-$depth\" value=\"" . esc_attr($term_id) . "\"";
+
+        if (isset($args['selected']) && $term_id == $args['selected']) {
             $output .= ' selected="selected"';
         }
+
         $output .= '>';
-        $output .= $pad . '- ' . $cat_name;
+        $output .= $pad . '- ' . esc_html($cat_name);
         $output .= "</option>\n";
     }
 }

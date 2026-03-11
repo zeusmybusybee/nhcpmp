@@ -20,3 +20,10 @@ a{
 .table__content .action a {
     width: 112px !important;
 }
+.main-body__area--form .item-form-area .acf-form-submit .acf-button{
+    width: 255px !important;
+    background: #3ec562 !important;
+    color: #fff !important;
+    text-align: center;
+    letter-spacing: unset;
+}
