@@ -34,7 +34,7 @@
         $current_tag = get_queried_object();
 
         $args = array(
-            'post_type' => 'featured-collections',
+            'post_type' => 'item',
             'posts_per_page' => 10,
             'tag_id' => $current_tag->term_id
         );

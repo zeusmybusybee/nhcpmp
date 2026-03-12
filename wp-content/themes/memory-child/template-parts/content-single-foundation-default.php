@@ -11,8 +11,13 @@
 $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
 ?>
 <style>
+    .single-foundation-of-towns,
     div#content {
-        background: #fff;
+        background: #FAFAFA !important;
+    }
+
+    .foundation-single-content p {
+        text-align: justify;
     }
 
     .single-top-content {
@@ -115,20 +120,25 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                                 </div>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-custom-green mt-5">View PDF</button>
+                        <?php $pdf = get_field('pdf'); ?>
+                        <?php if (!empty($pdf['url'])) : ?>
+                            <div class="my-flipbook-button remove_inline">
+                                <?php echo do_shortcode('[real3dflipbook pdf="' . $pdf['url'] . '" mode="lightbox" thumb="View PDF"]'); ?>
+
+                            </div>
+
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="container my-5">
-                    <div class="row align-items-start gap-5 books-single-content">
+                    <div class="row align-items-start gap-5 foundation-single-content">
 
                         <!-- Left Side (Description Box) -->
                         <div class="col-md-9 mb-4">
                             <div class="  p-4 h-100">
                                 <h2 class="text-dark"><?php echo get_the_title(); ?></h2>
-                                <p class="mb-0">
-                                    <em>
-                                        <?php the_content(); ?>
-                                    </em>
+                                <p class="mb-0 mt-4">
+                                    <?php the_content(); ?>
                                 </p>
                             </div>
                         </div>
@@ -137,33 +147,64 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                 </div>
             </div>
 
-            <h2 class="mb-4 text-dark mt-5">Other related resources</h2>
+            <h2 class="mb-4 text-dark mt-5 mb-5">Other related resources</h2>
             <div class="row g-4">
 
                 <?php
                 $current_id = get_the_ID();
-                $current_title = get_the_title();
 
-                // kunin first word lang (example: "How")
-                $title_words = explode(' ', $current_title);
-                $keyword = $title_words[0];
+                // Get all terms of current post in 'foundation-of-towns-category' taxonomy
+                $terms = wp_get_post_terms($current_id, 'foundation-of-towns-category');
+                $args = [];
 
-                $args = [
-                    'post_type'      => 'foundation-of-towns',
-                    'posts_per_page' => 6,
-                    'post_status'    => 'publish',
-                    'post__not_in'   => [$current_id],
-                    'title_like'     => $keyword,
-                ];
+                if (!empty($terms) && !is_wp_error($terms)) {
+                    $term_ids = wp_list_pluck($terms, 'term_id');
 
+                    $args = [
+                        'post_type'      => 'foundation-of-towns',
+                        'posts_per_page' => 6,
+                        'post_status'    => 'publish',
+                        'post__not_in'   => [$current_id],
+                        'tax_query'      => [
+                            [
+                                'taxonomy' => 'foundation-of-towns-category',
+                                'field'    => 'term_id',
+                                'terms'    => $term_ids,
+                            ],
+                        ],
+                    ];
 
-                $foundation = new WP_Query($args);
+                    $foundation = new WP_Query($args);
 
+                    // If no posts found in same category, fallback to random
+                    if (!$foundation->have_posts()) {
+                        $args = [
+                            'post_type'      => 'foundation-of-towns',
+                            'posts_per_page' => 6,
+                            'post_status'    => 'publish',
+                            'post__not_in'   => [$current_id],
+                            'orderby'        => 'rand',
+                        ];
+                        $foundation = new WP_Query($args);
+                    }
+                } else {
+                    // If current post has no terms, just show random posts
+                    $args = [
+                        'post_type'      => 'foundation-of-towns',
+                        'posts_per_page' => 6,
+                        'post_status'    => 'publish',
+                        'post__not_in'   => [$current_id],
+                        'orderby'        => 'rand',
+                    ];
+                    $foundation = new WP_Query($args);
+                }
+
+                // Always show posts, either related or random
                 if ($foundation->have_posts()) :
                     while ($foundation->have_posts()) : $foundation->the_post(); ?>
                         <div class="col-md-12">
                             <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark d-block">
-                                <div class="h-100 d-flex bg-body-tertiary rounded p-5 hover-card">
+                                <div class="h-100 d-flex bg-white rounded p-5 hover-card">
 
                                     <div class="col-3 text-center">
                                         <?php if (has_post_thumbnail()) : ?>
@@ -174,36 +215,27 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                                                 class="img-fluid d-block books-default-image"
                                                 alt="Default Image">
                                         <?php endif; ?>
-
                                     </div>
 
                                     <div class="col-8">
                                         <div class="card-body p-0">
-                                            <!-- BADGES -->
-
                                             <h3 class="mb-2 mt-4"><?php the_title(); ?></h3>
 
                                             <?php
                                             $content = get_the_content();
-
-                                            if (! empty($content)) {
+                                            if (!empty($content)) {
                                                 echo wp_trim_words($content, 45);
                                             } else {
                                                 echo 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.';
                                             }
                                             ?>
 
-
-                                            <!-- BOTTOM META -->
                                             <div class="d-flex justify-content-between text-muted small mt-5">
                                                 <?php if ($location = get_field('location')) : ?>
                                                     <span>Location: <?php echo esc_html($location); ?></span>
                                                 <?php endif; ?>
 
-                                                <span>Category: Book</span>
                                             </div>
-
-
                                         </div>
                                     </div>
 
@@ -211,11 +243,10 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                             </a>
                         </div>
 
-                    <?php endwhile;
+                <?php endwhile;
                     wp_reset_postdata();
-                else : ?>
-                    <p>No artifacts found.</p>
-                <?php endif; ?>
+                endif; // No "No artifacts found" message
+                ?>
 
             </div>
 
@@ -296,41 +327,22 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
 
                         <div class="container p-3 text-light">
 
-                            <!-- Era -->
-                            <select name="era" class="form-select">
-                                <!-- Unang placeholder option -->
-                                <option value="">Period</option>
+                            <!-- Period -->
+                            <select name="period" class="form-select">
+
 
                                 <?php
-                                global $wpdb;
+                                $field = get_field_object('field_698bd6091d1a1'); // palitan mo ng field key
 
-                                $results = $wpdb->get_col(
-                                    "SELECT meta_value
-                            FROM $wpdb->postmeta
-                            WHERE meta_key = 'era'"
-                                );
+                                if ($field && !empty($field['choices'])) :
+                                    foreach ($field['choices'] as $value => $label) :
+                                ?>
+                                        <option value="<?php echo esc_attr($value); ?>">
+                                            <?php echo esc_html($label); ?>
+                                        </option>
+                                <?php endforeach;
+                                endif; ?>
 
-                                $eras = [];
-
-                                foreach ($results as $row) {
-                                    $values = maybe_unserialize($row);
-                                    if (is_array($values)) {
-                                        foreach ($values as $val) {
-                                            $eras[] = $val;
-                                        }
-                                    } else {
-                                        $eras[] = $values;
-                                    }
-                                }
-
-                                $eras = array_unique($eras);
-                                sort($eras);
-
-                                foreach ($eras as $era) : ?>
-                                    <option value="<?php echo esc_attr($era); ?>">
-                                        <?php echo esc_html($era); ?>
-                                    </option>
-                                <?php endforeach; ?>
                             </select>
 
 

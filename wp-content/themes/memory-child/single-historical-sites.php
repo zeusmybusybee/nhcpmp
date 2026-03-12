@@ -24,6 +24,23 @@
         position: relative;
     }
 
+    p#nrhss-main-caption {
+        color: #7a7a7a !important;
+    }
+
+    .fancybox__caption {
+        color: #fff !important;
+    }
+
+    p#nrhss-main-caption,
+    .fancybox__caption {
+        text-align: center;
+        font-size: 20px;
+        font-style: italic !important;
+        text-align: center !important;
+        font-family: "Franklin Gothic Book" !important;
+    }
+
     .historic-link-item span.access-badge {
         padding: initial;
         padding: 6px 45px;
@@ -307,12 +324,14 @@
                                 }
 
                                 $main_image_url = $all_images[0]['url'] ?? '';
+                                $main_caption = $main_image_url ? wp_get_attachment_caption(attachment_url_to_postid($main_image_url)) : '';
                                 ?>
 
                                 <?php if ($main_image_url) : ?>
                                     <a href="<?php echo esc_url($main_image_url); ?>" id="nrhss-main-link">
                                         <img src="<?php echo esc_url($main_image_url); ?>" class="nrhss-featured-img" id="nrhss-main-image">
                                     </a>
+                                    <p id="nrhss-main-caption" class="nrhss-caption"><?php echo esc_html($main_caption); ?></p>
                                 <?php endif; ?>
                             </div>
 
@@ -322,10 +341,14 @@
                                     <button class="thumb-prev">▲</button>
 
                                     <div class="nrhss-gallery" style="display: flex; overflow-x: auto; gap: 8px;">
-                                        <?php foreach ($all_images as $index => $image) : ?>
+                                        <?php foreach ($all_images as $index => $image) :
+                                            $attachment_id = attachment_url_to_postid($image['url']);
+                                            $caption = $attachment_id ? wp_get_attachment_caption($attachment_id) : '';
+                                        ?>
                                             <img
                                                 src="<?php echo esc_url($image['sizes']['medium']); ?>"
                                                 data-full="<?php echo esc_url($image['url']); ?>"
+                                                data-caption="<?php echo esc_attr($caption); ?>"
                                                 class="nrhss-thumb <?php echo ($image['url'] === $main_image_url) ? 'active' : ''; ?>">
                                         <?php endforeach; ?>
                                     </div>
@@ -333,7 +356,6 @@
                                     <button class="thumb-next">▼</button>
                                 </div>
                             <?php endif; ?>
-
                         </div>
 
 
@@ -566,3 +588,72 @@
     });
 </script>
 <?php get_footer(); ?>
+<!-- JS -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const mainImage = document.getElementById("nrhss-main-image");
+        const mainCaption = document.getElementById("nrhss-main-caption");
+        const mainLink = document.getElementById("nrhss-main-link");
+        const thumbs = document.querySelectorAll(".nrhss-thumb");
+
+        // Deduplicate images bago gumawa ng gallery array
+        const uniqueUrls = new Set();
+        const gallery = [];
+
+        thumbs.forEach((thumb) => {
+            const src = thumb.dataset.full;
+            const caption = thumb.dataset.caption || '';
+            if (!uniqueUrls.has(src)) {
+                uniqueUrls.add(src);
+                gallery.push({
+                    src: src,
+                    type: "image",
+                    caption: caption
+                });
+            }
+        });
+
+        // Helper: Hanapin index ng current active image sa gallery array
+        function getCurrentIndex() {
+            const currentSrc = mainImage.src;
+            return gallery.findIndex((item) => item.src === currentSrc);
+        }
+
+        // Open Fancybox gallery sa tamang index base sa current preview
+        mainLink.addEventListener("click", function(e) {
+            e.preventDefault();
+            const startIndex = getCurrentIndex();
+            Fancybox.show(gallery, {
+                startIndex: startIndex >= 0 ? startIndex : 0
+            });
+        });
+
+        // Thumbnail click: swap main image + update caption
+        thumbs.forEach((thumb) => {
+            thumb.addEventListener("click", function() {
+                mainImage.src = this.dataset.full;
+                mainCaption.textContent = this.dataset.caption || '';
+                thumbs.forEach((t) => t.classList.remove("active"));
+                this.classList.add("active");
+            });
+        });
+
+        // Scroll buttons para sa thumbnails
+        const galleryWrapper = document.querySelector(".nrhss-gallery");
+        const prev = document.querySelector(".thumb-prev");
+        const next = document.querySelector(".thumb-next");
+
+        prev.addEventListener("click", () => {
+            galleryWrapper.scrollBy({
+                left: -120,
+                behavior: "smooth"
+            });
+        });
+        next.addEventListener("click", () => {
+            galleryWrapper.scrollBy({
+                left: 120,
+                behavior: "smooth"
+            });
+        });
+    });
+</script>

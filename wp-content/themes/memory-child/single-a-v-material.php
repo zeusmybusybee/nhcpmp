@@ -1,6 +1,55 @@
 <style>
-    .single-a-v-material .site-content {
+    .single-a-v-material .site-content,
+    .single.single-a-v-material {
         background: #000 !important;
+    }
+
+    .type-a-v-material {
+        width: 50%;
+        margin: auto;
+        text-align: center;
+    }
+
+    /* av materials */
+    .object-fit-cover {
+        object-fit: cover;
+    }
+
+    .card {
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+        transform: scale(1.03);
+    }
+
+    .card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .card:hover::after {
+        opacity: 1;
+    }
+
+    .bg-darken {
+        background: #000;
+    }
+
+    .texting_title {
+        font-size: 18px;
+        font-style: italic;
+        font-weight: 500;
+    }
+
+    .card:hover {
+        border: none !important;
     }
 </style>
 <?php get_header(); ?>
@@ -50,6 +99,7 @@
                         </div>
 
                         <div class="content mb-5">
+                            <?php the_content(); ?>
                             <h1 class="mb-3 mt-3" style="color:#fff;"><?php the_title(); ?></h1>
                         </div>
 
@@ -59,47 +109,4 @@
             endif; ?>
         </div>
     </div>
-    <style>
-        /* av materials */
-        .object-fit-cover {
-            object-fit: cover;
-        }
-
-        .card {
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: scale(1.03);
-        }
-
-        .card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .card:hover::after {
-            opacity: 1;
-        }
-
-        .bg-darken {
-            background: #000;
-        }
-
-        .texting_title {
-            font-size: 18px;
-            font-style: italic;
-            font-weight: 500;
-        }
-
-        .card:hover {
-            border: none !important;
-        }
-    </style>
     <?php get_footer(); ?>

@@ -4,8 +4,9 @@
         min-width: 300px;
     }
 
+    .ph-heraldry-registry-template-default,
     div#content {
-        background: #fff;
+        background: #FAFAFA;
     }
 
     .details>div {
@@ -35,6 +36,7 @@
         z-index: 100;
         margin-top: 0;
     }
+
     .historic-content-single {
         padding: 0 0 30px;
         font-size: 18px;
@@ -51,10 +53,10 @@
                         <?php $gallery = get_field('nrhss_gallery'); ?>
 
                         <!-- TOP SECTION -->
-                        <div class="row mb-5 align-items-start p-5">
+                        <div class="row mb-5 align-items-start gap-5">
 
                             <!-- LEFT : IMAGE + GALLERY -->
-                            <div class="col-lg-6">
+                            <div class="col-lg-5">
 
                                 <div class="nrhss-media-wrapper">
 
@@ -70,59 +72,63 @@
                             </div>
 
 
-                            <!-- RIGHT : DETAILS CARD -->
-                            <div class="col-lg-6">
-                                <div class="card shadow-sm border-0 p-4">
+                            <?php
+                            // Get all the relevant ACF fields
+                            $region = get_field('region');
+                            $province = get_field('province_text');
+                            $city = get_field('city_text');
+                            $marker = get_field('seals_logos');
+                            $year_approved = get_field('year_approved');
+                            $pdf = get_field('pdf');
 
-                                    <div class="details">
+                            // Only show the details card if at least one field has value
+                            if ($region || $province || $city || $marker || $year_approved || !empty($pdf['url'])) :
+                            ?>
+                                <!-- RIGHT : DETAILS CARD -->
+                                <div class="col-lg-6">
+                                    <div class="card shadow-sm border-0 p-4">
 
-                                        <?php
-                                        $region = get_field('region');
-                                        $province = get_field('province_text');
-                                        $city = get_field('city_text');
+                                        <div class="details">
 
-                                        if ($region):
+                                            <?php if ($region):
+                                                $region_field = get_field_object('region'); ?>
+                                                <div><strong>Region:</strong> <?php echo esc_html($region_field['choices'][$region] ?? $region); ?></div>
+                                            <?php endif; ?>
 
-                                            $region_field = get_field_object('region');
-                                        ?>
-                                            <div><strong>Region:</strong> <?php echo esc_html($region_field['choices'][$region] ?? $region); ?></div>
-                                            <div><strong>Province:</strong> <?php echo esc_html($province); ?></div>
-                                            <div><strong>City/Municipality:</strong> <?php echo esc_html($city); ?></div>
-                                        <?php endif; ?>
+                                            <?php if ($province): ?>
+                                                <div><strong>Province:</strong> <?php echo esc_html($province); ?></div>
+                                            <?php endif; ?>
 
-                                        <?php
-                                        $marker = get_field('seals_logos');
-                                        if ($marker):
-                                            $field = get_field_object('seals_logos');
-                                            $labels = [];
-                                            foreach ($marker as $value) {
-                                                $labels[] = $field['choices'][$value];
-                                            }
-                                        ?>
-                                            <div><strong>Category:</strong> <?php echo esc_html(implode(', ', $labels)); ?></div>
-                                        <?php endif; ?>
+                                            <?php if ($city): ?>
+                                                <div><strong>City/Municipality:</strong> <?php echo esc_html($city); ?></div>
+                                            <?php endif; ?>
 
+                                            <?php if ($marker):
+                                                $field = get_field_object('seals_logos');
+                                                $labels = [];
+                                                foreach ($marker as $value) {
+                                                    $labels[] = $field['choices'][$value];
+                                                }
+                                            ?>
+                                                <div><strong>Category:</strong> <?php echo esc_html(implode(', ', $labels)); ?></div>
+                                            <?php endif; ?>
 
-                                        <?php if (get_field('year_approved')): ?>
-                                            <div><strong>Year Approved:</strong> <?php echo esc_html(get_field('year_approved')); ?></div>
-                                        <?php endif; ?>
-                                    </div>
-
-                                    <!-- BUTTON -->
-
-                                    <?php $pdf = get_field('pdf'); ?>
-                                    <?php if (!empty($pdf['url'])) : ?>
-                                        <div class="my-flipbook-button remove_inline">
-                                            <?php echo do_shortcode('[real3dflipbook pdf="' . $pdf['url'] . '" mode="lightbox" thumb="View PDF"]'); ?>
+                                            <?php if ($year_approved): ?>
+                                                <div><strong>Year Approved:</strong> <?php echo esc_html($year_approved); ?></div>
+                                            <?php endif; ?>
 
                                         </div>
 
-                                    <?php endif; ?>
+                                        <!-- BUTTON -->
+                                        <?php if (!empty($pdf['url'])) : ?>
+                                            <div class="my-flipbook-button remove_inline">
+                                                <?php echo do_shortcode('[real3dflipbook pdf="' . $pdf['url'] . '" mode="lightbox" thumb="View PDF"]'); ?>
+                                            </div>
+                                        <?php endif; ?>
 
-
+                                    </div>
                                 </div>
-                            </div>
-
+                            <?php endif; ?>
                         </div>
 
 
@@ -157,106 +163,115 @@
 
 
 
-
-            <!-- OTHER POSTS (SAME CPT, EXCLUDE CURRENT) -->
             <?php
             $current_id = get_the_ID();
-            // echo $current_id;
 
-            $current_id = get_the_ID();
-            $current_title = get_the_title();
+            // 1️⃣ Get terms of current post for the custom taxonomy
+            $terms = wp_get_post_terms($current_id, 'other-related-tags', ['fields' => 'ids']);
 
-            // kunin first word lang (example: "How")
-            $title_words = explode(' ', $current_title);
-            $keyword = $title_words[0];
-
+            // 2️⃣ Query posts with same taxonomy terms
             $args = [
                 'post_type'      => 'ph-heraldry-registry',
                 'posts_per_page' => 6,
                 'post_status'    => 'publish',
                 'post__not_in'   => [$current_id],
-                'title_like'     => $keyword,
             ];
 
+            if (!empty($terms)) {
+                $args['tax_query'] = [
+                    [
+                        'taxonomy' => 'other-related-tags',
+                        'field'    => 'term_id',
+                        'terms'    => $terms,
+                    ]
+                ];
+            }
 
             $other_posts = new WP_Query($args);
-            ?>
 
-            <?php if ($other_posts->have_posts()) : ?>
+            // 3️⃣ If no posts found, fallback to random posts
+            if (!$other_posts->have_posts()) {
+                $args = [
+                    'post_type'      => 'ph-heraldry-registry',
+                    'posts_per_page' => 6,
+                    'post_status'    => 'publish',
+                    'post__not_in'   => [$current_id],
+                    'orderby'        => 'rand',
+                ];
+                $other_posts = new WP_Query($args);
+            }
+
+            // ✅ Now we always have posts, no "no historical site" message
+            if ($other_posts->have_posts()) : ?>
                 <section class="other-posts mt-5">
-
-                    <h3 class="mb-4">Other related resources</h3>
-
+                    <h2 class="mb-5">Other related resources</h2>
                     <div class="row g-4">
                         <?php while ($other_posts->have_posts()) : $other_posts->the_post(); ?>
-                            <div class="d-flex gap-3 mb-4 p-5 bg-body-secondary rounded">
-                                .
-                                <!-- Thumbnail -->
-                                <?php if (has_post_thumbnail()) : ?>
-                                    <div class="flex-shrink-0" style="width:200px; height:140px; overflow:hidden;">
-                                        <?php the_post_thumbnail('thumbnail', ['class' => 'img-fluid h-100 w-200 object-fit-cover']); ?>
-                                    </div>
-                                <?php endif; ?>
-
-                                <!-- Content -->
-                                <div class="flex-grow-1">
-                                    <h6 class="size_title">
-                                        <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
-                                            <?php the_title(); ?>
-                                        </a>
-                                    </h6>
-                                    <p class="mb-0 text-muted article-excerpt">
-                                        <?php echo wp_trim_words(get_the_excerpt(), 100); ?>
-                                    </p>
-                                    <div class="d-flex justify-content-between mt-5">
-                                        <div class="location">
-
-                                            <?php
-                                            $region = get_field('region');
-                                            $province = get_field('province_text');
-                                            $city = get_field('city_text');
-
-                                            if ($region):
-                                                echo '<strong>Location:</strong> ';
-                                                $region_field = get_field_object('region');
-                                                echo esc_html($region_field['choices'][$region] ?? $region);
-                                            endif;
-
-                                            if ($province):
-                                                echo ', ' . esc_html($province) . ',';
-                                            endif;
-
-                                            if ($city):
-                                                echo esc_html($city);
-                                            endif;
-                                            ?>
+                            <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
+                                <div class="d-flex gap-3 mb-4 p-5 bg-white border rounded hover-shadow" style="transition: 0.3s;">
+                                    <!-- Thumbnail -->
+                                    <?php if (has_post_thumbnail()) : ?>
+                                        <div class="flex-shrink-0" style="width:200px; height:140px; overflow:hidden;">
+                                            <?php the_post_thumbnail('thumbnail', ['class' => 'img-fluid h-100 w-200 object-fit-cover']); ?>
                                         </div>
-                                        <div class="category">
-                                            <?php
-                                            $marker = get_field('seals_logos');
-                                            if ($marker):
-                                                $field = get_field_object('seals_logos');
-                                                $labels = [];
-                                                foreach ($marker as $value) {
-                                                    $labels[] = $field['choices'][$value];
-                                                }
-                                                echo '<strong>Category:</strong> ' . esc_html(implode(', ', $labels));
-                                            endif;
-                                            ?>
+                                    <?php endif; ?>
+
+                                    <!-- Content -->
+                                    <div class="flex-grow-1">
+                                        <h6 class="size_title">
+                                            <?php the_title(); ?>
+                                        </h6>
+                                        <p class="mb-0 text-muted article-excerpt">
+                                            <?php echo wp_trim_words(get_the_excerpt(), 100); ?>
+                                        </p>
+                                        <div class="d-flex justify-content-between mt-5">
+                                            <div class="location">
+                                                <?php
+                                                $region = get_field('region');
+                                                $province = get_field('province_text');
+                                                $city = get_field('city_text');
+
+                                                if ($region):
+                                                    echo '<strong>Location:</strong> ';
+                                                    $region_field = get_field_object('region');
+                                                    echo esc_html($region_field['choices'][$region] ?? $region);
+                                                endif;
+
+                                                if ($province):
+                                                    echo ', ' . esc_html($province) . ',';
+                                                endif;
+
+                                                if ($city):
+                                                    echo esc_html($city);
+                                                endif;
+                                                ?>
+                                            </div>
+                                            <div class="category">
+                                                <?php
+                                                $marker = get_field('seals_logos');
+                                                if ($marker):
+                                                    $field = get_field_object('seals_logos');
+                                                    $labels = [];
+                                                    foreach ($marker as $value) {
+                                                        $labels[] = $field['choices'][$value];
+                                                    }
+                                                    echo '<strong>Category:</strong> ' . esc_html(implode(', ', $labels));
+                                                endif;
+                                                ?>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-
-                            </div>
-
+                            </a>
                         <?php endwhile; ?>
                     </div>
                 </section>
-            <?php else : ?>
-                <p>No historical site found.</p>
             <?php endif; ?>
 
             <?php wp_reset_postdata(); ?>
+
+
+
         </div>
         <div class="col-lg-4 archive-right-col">
 

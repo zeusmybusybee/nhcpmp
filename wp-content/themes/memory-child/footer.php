@@ -27,9 +27,16 @@
                             $logos = get_sub_field('logo');
                             $photo_url = $logos ? $logos['url'] : $default_image;
                             $name = get_sub_field('alt_name');
+                            $link = get_sub_field('logo_link'); // Your new subfield for the link
                         ?>
                             <li class="ph_logo_item">
-                                <img src="<?php echo esc_url($photo_url); ?>" alt="<?php echo esc_attr($name); ?>">
+                                <?php if ($link) : ?>
+                                    <a href="<?php echo esc_url($link); ?>" target="_blank" rel="noopener noreferrer">
+                                        <img src="<?php echo esc_url($photo_url); ?>" alt="<?php echo esc_attr($name); ?>">
+                                    </a>
+                                <?php else : ?>
+                                    <img src="<?php echo esc_url($photo_url); ?>" alt="<?php echo esc_attr($name); ?>">
+                                <?php endif; ?>
                             </li>
                         <?php endwhile; ?>
                     </ul>

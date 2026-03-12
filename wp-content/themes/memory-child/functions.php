@@ -1126,22 +1126,24 @@ function town_foundation_registry_filters($query)
             $meta_query[] = $personages_query;
         }
 
-        // ERA (ACF checkbox field)
-        if (!empty($_GET['era'])) {
-            $eras = array_map('sanitize_text_field', (array) $_GET['era']);
+        // ERA (ACF select field)
+        if (!empty($_GET['period'])) {
+
+            $eras = array_map('sanitize_text_field', (array) $_GET['period']);
 
             $eras_query = ['relation' => 'OR'];
 
             foreach ($eras as $e) {
                 $eras_query[] = [
-                    'key'     => 'era', // exact ACF field name
-                    'value'   => '"' . $e . '"',
-                    'compare' => 'LIKE',
+                    'key'     => 'period',
+                    'value'   => $e,
+                    'compare' => '='
                 ];
             }
 
             $meta_query[] = $eras_query;
         }
+        
         // REGION FILTER
         if (!empty($_GET['region'])) {
             $meta_query[] = [
