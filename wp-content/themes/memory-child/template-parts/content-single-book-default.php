@@ -151,6 +151,20 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
         margin: 0 0 15px;
     }
 </style>
+<?php
+$user = wp_get_current_user();
+
+if (
+    !is_user_logged_in() ||
+    !in_array('administrator', $user->roles) &&
+    !in_array('level_4_user', $user->roles)
+) { ?>
+    <style>
+        span[data-name="btnDownloadPages"] {
+            display: none;
+        }
+    </style>
+<?php } ?>
 <div class="container single-books">
     <div class="row justify-content-between">
         <!-- left column -->
@@ -178,14 +192,14 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                 <div class="col-7">
                     <div class="d-flex gap-2 mb-2 flex-wrap">
                         <?php
-                        $access = get_field('level_of_access');
+                        $access = get_field('level');
                         $availability = get_field('availability');
 
                         $access_map = [
-                            'open'      => ['label' => 'Open Access',    'class' => 'badge-open'],
-                            'viewing'   => ['label' => 'Viewing',        'class' => 'badge-viewing'],
-                            'limited'   => ['label' => 'Limited',        'class' => 'badge-limited'],
-                            'exclusive' => ['label' => 'Exclusive',     'class' => 'badge-exclusive'],
+                            'level_1'      => ['label' => 'Level 1',    'class' => 'badge-open'],
+                            'level_2'   => ['label' => 'Level 2',        'class' => 'badge-viewing'],
+                            'level_3'   => ['label' => 'Level 3',        'class' => 'badge-limited'],
+                            'level_4' => ['label' => 'Level 4',     'class' => 'badge-exclusive'],
                         ];
 
                         $availability_map = [
@@ -210,11 +224,43 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                     <div class="post-content text-dark">
                         <?php $pdf = get_field('file_content');
                         $cover_image = get_field('cover_image'); ?>
-                        <?php if (!empty($pdf['url'])) : ?>
-                            <div class="my-flipbook-button">
-                                <?php echo do_shortcode('[real3dflipbook pdf="' . $pdf['url'] . '" mode="lightbox" thumb="View PDF"]'); ?>
-                            </div>
+                        <?php
+                        $access = get_field('level');
 
+                        $can_view = false;
+
+                        // Level 1 → public
+                        if ($access === 'level_1'  || $access === 'level_2' || $access === 'level_3') {
+                            $can_view = true;
+                        }
+                        // Level 4 → administrators only
+                        elseif (
+                            in_array($access, ['level_4']) &&
+                            (current_user_can('level_4_user') || current_user_can('administrator'))
+                        ) {
+                            $can_view = true;
+                        }
+                        ?>
+
+                        <?php if ($can_view) : ?>
+                            <?php if (!empty($pdf['url'])) : ?>
+                                <div class="my-flipbook-button">
+                                    <?php echo do_shortcode('[real3dflipbook pdf="' . $pdf['url'] . '" mode="lightbox" thumb="View PDF"]'); ?>
+                                </div>
+
+                            <?php endif; ?>
+                        <?php else : ?>
+                            <div class="d-flex gap-4 mb-4 book-post-item bg-body-tertiary rounded p-4">
+                                <div class="flex-grow-1">
+                                    <h2 class="books-title fw-semibold">
+                                        <?php the_title(); ?>
+                                    </h2>
+                                    <p class="text-muted mb-0">
+                                        Please Login to view the content of this book.
+                                    </p>
+                                    <a class="btn btn-primary" href="<?php echo home_url(); ?>/login">Login</a>
+                                </div>
+                            </div>
                         <?php endif; ?>
 
                     </div>

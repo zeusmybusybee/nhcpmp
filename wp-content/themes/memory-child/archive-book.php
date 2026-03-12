@@ -49,133 +49,98 @@
             </div>
             <?php if (have_posts()) : ?>
                 <?php while (have_posts()) : the_post(); ?>
-                    <?php
-                    $access = get_field('level');
 
-                    $can_view = false;
+                    <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
+                        <div class="d-flex gap-4 mb-4 book-post-item bg-body-tertiary rounded">
 
-                    // Level 1 → public
-                    if ($access === 'level_1') {
-                        $can_view = true;
-                    }
+                            <!-- Thumbnail -->
+                            <?php if (has_post_thumbnail()) : ?>
+                                <div class="flex-shrink-0 col-3 text-center">
+                                    <?php the_post_thumbnail(
+                                        'medium',
+                                        ['class' => 'img-fluid rounded']
+                                    ); ?>
+                                </div>
+                            <?php else : ?>
+                                <img
+                                    src=" <?php echo get_stylesheet_directory_uri(); ?>/assets/images/books-default.png"
+                                    class="img-fluid d-block books-default-image"
+                                    alt="Default Image">
+                            <?php endif; ?>
 
-                    // Level 2 → logged in users
-                    elseif ($access === 'level_2' && is_user_logged_in()) {
-                        $can_view = true;
-                    }
+                            <!-- DETAILS COLUMN -->
+                            <div class="flex-grow-1 d-flex flex-column col-8">
 
-                    // Level 3 & 4 → administrators only
-                    elseif (
-                        in_array($access, ['level_3', 'level_4']) &&
-                        (current_user_can('level_3_user') || current_user_can('level_4_user'))
-                    ) {
-                        $can_view = true;
-                    }
-                    ?>
+                                <!-- BADGES -->
+                                <div class="d-flex gap-2 mb-2 flex-wrap">
+                                    <?php
+                                    $access = get_field('level');
+                                    $availability = get_field('availability');
 
-                    <?php if ($can_view) : ?>
-                        <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark">
-                            <div class="d-flex gap-4 mb-4 book-post-item bg-body-tertiary rounded">
+                                    $access_map = [
+                                        'level_1'      => ['label' => 'Level 1',    'class' => 'badge-open'],
+                                        'level_2'   => ['label' => 'Level 2',        'class' => 'badge-viewing'],
+                                        'level_3'   => ['label' => 'Level 3',        'class' => 'badge-limited'],
+                                        'level_4' => ['label' => 'Level 4',      'class' => 'badge-exclusive'],
+                                    ];
 
-                                <!-- Thumbnail -->
-                                <?php if (has_post_thumbnail()) : ?>
-                                    <div class="flex-shrink-0 col-3 text-center">
-                                        <?php the_post_thumbnail(
-                                            'medium',
-                                            ['class' => 'img-fluid rounded']
-                                        ); ?>
-                                    </div>
-                                <?php else : ?>
-                                    <img
-                                        src=" <?php echo get_stylesheet_directory_uri(); ?>/assets/images/books-default.png"
-                                        class="img-fluid d-block books-default-image"
-                                        alt="Default Image">
-                                <?php endif; ?>
+                                    $availability_map = [
+                                        'digital' => ['label' => 'Available in Digital File', 'class' => 'badge-digital'],
+                                        'library' => ['label' => 'Available in NHCP',         'class' => 'badge-library'],
+                                    ];
+                                    ?>
 
-                                <!-- DETAILS COLUMN -->
-                                <div class="flex-grow-1 d-flex flex-column col-8">
-
-                                    <!-- BADGES -->
-                                    <div class="d-flex gap-2 mb-2 flex-wrap">
-                                        <?php
-                                        $access = get_field('level');
-                                        $availability = get_field('availability');
-
-                                        $access_map = [
-                                            'level_1'      => ['label' => 'Level 1',    'class' => 'badge-open'],
-                                            'level_2'   => ['label' => 'Level 2',        'class' => 'badge-viewing'],
-                                            'level_3'   => ['label' => 'Level 3',        'class' => 'badge-limited'],
-                                            'level_4' => ['label' => 'Level 4',      'class' => 'badge-exclusive'],
-                                        ];
-
-                                        $availability_map = [
-                                            'digital' => ['label' => 'Available in Digital File', 'class' => 'badge-digital'],
-                                            'library' => ['label' => 'Available in NHCP',         'class' => 'badge-library'],
-                                        ];
-                                        ?>
-
-                                        <?php if ($access && isset($access_map[$access])) : ?>
-                                            <span class="access-badge <?php echo esc_attr($access_map[$access]['class']); ?>">
-                                                <?php echo esc_html($access_map[$access]['label']); ?>
-                                            </span>
-                                        <?php endif; ?>
-
-                                        <?php if ($availability && isset($availability_map[$availability])) : ?>
-                                            <span class="availability-badge <?php echo esc_attr($availability_map[$availability]['class']); ?>">
-                                                <?php echo esc_html($availability_map[$availability]['label']); ?>
-                                            </span>
-                                        <?php endif; ?>
-                                    </div>
-
-                                    <!-- TITLE -->
-                                    <h2 class="books-title fw-semibold ">
-                                        <?php the_title(); ?>
-                                    </h2>
-
-                                    <!-- CALL NUMBER -->
-                                    <?php if ($call_number = get_field('call_number')) : ?>
-                                        <small class="text-muted fst-italic mb-2 d-block">
-                                            Call Number: <?php echo esc_html($call_number); ?>
-                                        </small>
+                                    <?php if ($access && isset($access_map[$access])) : ?>
+                                        <span class="access-badge <?php echo esc_attr($access_map[$access]['class']); ?>">
+                                            <?php echo esc_html($access_map[$access]['label']); ?>
+                                        </span>
                                     <?php endif; ?>
 
-                                    <!-- DESCRIPTION -->
-                                    <p class="text-muted mb-3 books-content">
-                                        <?php
-                                        $excerpt = get_the_excerpt();
-
-                                        if (! empty($excerpt)) {
-                                            echo wp_trim_words($excerpt, 45);
-                                        } else {
-                                            echo 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.';
-                                        }
-                                        ?>
-                                    </p>
-
-                                    <!-- BOTTOM META -->
-                                    <div class="d-flex justify-content-between mt-auto text-muted small">
-                                        <?php if ($location = get_field('location')) : ?>
-                                            <span>Location: <?php echo esc_html($location); ?></span>
-                                        <?php endif; ?>
-
-                                        <span>Category: Book</span>
-                                    </div>
-
+                                    <?php if ($availability && isset($availability_map[$availability])) : ?>
+                                        <span class="availability-badge <?php echo esc_attr($availability_map[$availability]['class']); ?>">
+                                            <?php echo esc_html($availability_map[$availability]['label']); ?>
+                                        </span>
+                                    <?php endif; ?>
                                 </div>
-                            </div>
-                        </a>
-                    <?php else : ?>
-                        <div class="d-flex gap-4 mb-4 book-post-item bg-body-tertiary rounded p-4">
-                            <div class="flex-grow-1">
-                                <h2 class="books-title fw-semibold">
+
+                                <!-- TITLE -->
+                                <h2 class="books-title fw-semibold ">
                                     <?php the_title(); ?>
                                 </h2>
-                                <p class="text-muted mb-0">
-                                    You do not have permission to view this book.
+
+                                <!-- CALL NUMBER -->
+                                <?php if ($call_number = get_field('call_number')) : ?>
+                                    <small class="text-muted fst-italic mb-2 d-block">
+                                        Call Number: <?php echo esc_html($call_number); ?>
+                                    </small>
+                                <?php endif; ?>
+
+                                <!-- DESCRIPTION -->
+                                <p class="text-muted mb-3 books-content">
+                                    <?php
+                                    $excerpt = get_the_excerpt();
+
+                                    if (! empty($excerpt)) {
+                                        echo wp_trim_words($excerpt, 45);
+                                    } else {
+                                        echo 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.';
+                                    }
+                                    ?>
                                 </p>
+
+                                <!-- BOTTOM META -->
+                                <div class="d-flex justify-content-between mt-auto text-muted small">
+                                    <?php if ($location = get_field('location')) : ?>
+                                        <span>Location: <?php echo esc_html($location); ?></span>
+                                    <?php endif; ?>
+
+                                    <span>Category: Book</span>
+                                </div>
+
                             </div>
                         </div>
-                    <?php endif; ?>
+                    </a>
+
                 <?php endwhile; ?>
             <?php else : ?>
 
@@ -222,26 +187,29 @@
         <!-- RIGHT: SIDEBAR -->
         <div class="col-lg-4 archive-right-col archive-right">
 
+            <?php
+            $search_action = is_post_type_archive('book') ? get_post_type_archive_link('book') : home_url('/');
+            ?>
+
             <form method="get"
-                action="<?php echo esc_url(get_post_type_archive_link('book')); ?>"
+                action="<?php echo esc_url($search_action); ?>"
                 class="p-4">
 
                 <div class="row g-4 border rounded mb-5">
-                    <!-- Always target book -->
-                    <input type="hidden" name="post_type" value="book">
 
-                    <!-- SEARCH (only one) -->
                     <div class="input-group" style="margin-top:0;">
                         <input
                             type="search"
                             class="form-control border-0"
                             name="s"
                             placeholder="Search books..."
-                            value="<?php echo esc_attr($_GET['s'] ?? ''); ?>">
+                            value="<?php echo esc_attr(get_search_query()); ?>">
+
                         <button class="button" type="submit">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
+
                 </div>
 
 
