@@ -24,6 +24,36 @@
         background: #000;
     }
 
+    .v-materails div label,
+    .v-materails label {
+        font-size: 18px;
+        font-family: 'Ysabeau', sans-serif;
+    }
+
+    .v-materails input {
+        font-size: 19px;
+    }
+
+    h2.nm-sidebar-title,
+    .nm-sidebar-content,
+    .nm-sidebar-card p,
+    .nm-sidebar-card a {
+        color: #fff;
+    }
+
+    .nm-sidebar-card {
+        background: #3f3f3f !important;
+        border: none !important;
+    }
+
+    .nm-sidebar-icon {
+        background: #fff !important;
+    }
+
+    .nm-sidebar-icon i {
+        color: #000 !important;
+    }
+
     .visual-materials-img {
         margin: 0;
         border-radius: 15px;
@@ -87,10 +117,16 @@
                                             <?php the_post_thumbnail('medium_large', [
                                                 'class' => 'card-img-top object-fit-cover visual-materials-img'
                                             ]); ?>
+                                        <?php else : ?>
+                                            <img
+                                                src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/single-book-img.png"
+                                                class="img-fluid d-block books-default-image"
+                                                alt="Default Image">
                                         <?php endif; ?>
                                         <div class="card-body bg-darken p-2 visual-materials-item">
                                             <h2 class="card-title text-white mb-0">
                                                 <?php the_title(); ?>
+                                                
                                             </h2>
                                         </div>
                                     </div>
@@ -163,6 +199,11 @@
                                                 <?php the_post_thumbnail('medium_large', [
                                                     'class' => 'card-img-top object-fit-cover visual-materials-img'
                                                 ]); ?>
+                                            <?php else : ?>
+                                                <img
+                                                    src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/single-book-img.png"
+                                                    class="img-fluid d-block books-default-image"
+                                                    alt="Default Image">
                                             <?php endif; ?>
 
                                             <div class="card-body bg-darken p-2 visual-materials-item">
@@ -299,36 +340,5 @@
     </div>
 </div>
 
-<style>
-    .v-materails div label,
-    .v-materails label {
-        font-size: 18px;
-        font-family: 'Ysabeau', sans-serif;
-    }
-
-    .v-materails input {
-        font-size: 19px;
-    }
-
-    h2.nm-sidebar-title,
-    .nm-sidebar-content,
-    .nm-sidebar-card p,
-    .nm-sidebar-card a {
-        color: #fff;
-    }
-
-    .nm-sidebar-card {
-        background: #3f3f3f !important;
-        border: none !important;
-    }
-
-    .nm-sidebar-icon {
-        background: #fff !important;
-    }
-
-    .nm-sidebar-icon i {
-        color: #000 !important;
-    }
-</style>
 
 <?php get_footer(); ?>

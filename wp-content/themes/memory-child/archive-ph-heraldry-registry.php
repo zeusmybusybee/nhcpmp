@@ -1,7 +1,5 @@
 <?php get_header(); ?>
 <style>
-
-
     .post-type-archive-ph-heraldry-registry div#content {
         background: #fff;
     }
@@ -27,6 +25,12 @@
         width: 100%;
         object-fit: cover;
         height: clamp(185px, 25vw, 270px);
+    }
+
+    h3.ph-heraldy-title {
+        font-size: 25px;
+        line-height: 30px;
+        font-weight: 800 !important;
     }
 </style>
 <div class="container ">

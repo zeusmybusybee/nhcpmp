@@ -27,6 +27,11 @@
         height: clamp(185px, 25vw, 366px);
     }
 
+    .full-content {
+        /* font-size: 20px; */
+        font-size: 18px;
+    }
+
     .view-btn-search {
         display: flex;
         font-family: 'Poppins';
@@ -159,7 +164,7 @@
                             $content = get_the_content();
 
                             if (preg_match('/(.*?Marker date:\s*[^\n<]+)/is', $content, $matches)) {
-                                echo '<p>' . $matches[1] . '</p>';
+                                echo nl2br($matches[1]);
                             } else {
                                 echo '<p>' . wp_trim_words($content, 100, '...') . '</p>';
                             }
