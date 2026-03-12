@@ -23,8 +23,8 @@
         border-radius: 10px;
     }
 
-    .archive-no-results-icon img{
-        height: auto  !important;
+    .archive-no-results-icon img {
+        height: auto !important;
     }
 </style>
 <div class="container ">
@@ -225,44 +225,23 @@
 
                         <div class="container p-3 text-light">
 
-                            <!-- Era -->
-                            <select name="era" class="form-select">
-                                <!-- Unang placeholder option -->
-                                <option value="">Period</option>
+                            <!-- Period -->
+                            <select name="period" class="form-select">
+                            
 
                                 <?php
-                                global $wpdb;
+                                $field = get_field_object('field_698bd6091d1a1'); // palitan mo ng field key
 
-                                $results = $wpdb->get_col(
-                                    "SELECT meta_value
-                            FROM $wpdb->postmeta
-                            WHERE meta_key = 'era'"
-                                );
+                                if ($field && !empty($field['choices'])) :
+                                    foreach ($field['choices'] as $value => $label) :
+                                ?>
+                                        <option value="<?php echo esc_attr($value); ?>">
+                                            <?php echo esc_html($label); ?>
+                                        </option>
+                                <?php endforeach;
+                                endif; ?>
 
-                                $eras = [];
-
-                                foreach ($results as $row) {
-                                    $values = maybe_unserialize($row);
-                                    if (is_array($values)) {
-                                        foreach ($values as $val) {
-                                            $eras[] = $val;
-                                        }
-                                    } else {
-                                        $eras[] = $values;
-                                    }
-                                }
-
-                                $eras = array_unique($eras);
-                                sort($eras);
-
-                                foreach ($eras as $era) : ?>
-                                    <option value="<?php echo esc_attr($era); ?>">
-                                        <?php echo esc_html($era); ?>
-                                    </option>
-                                <?php endforeach; ?>
                             </select>
-
-
                             <!-- Year -->
                             <select name="year" class="form-select mt-2">
                                 <option value="">Select Year</option>
