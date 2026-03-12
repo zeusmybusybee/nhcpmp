@@ -56,10 +56,6 @@ function custom_admin_css()
 {
     echo '<style>
         .d-none { display: none !important; }
-        #menu-posts,#menu-pages,#menu-comments,#menu-tools,
-        #toplevel_page_footer-settings,#toplevel_page_sidebar-settings,
-        #toplevel_page_real3d_flipbook_admin
-        { display:none!important; }
     </style>';
 }
 add_action('admin_head', 'custom_admin_css');
@@ -120,13 +116,13 @@ function memory_enqueue_role_styles()
             );
 
             // JavaScript
-             wp_enqueue_script(
-            'script', // Handle
-            get_stylesheet_directory_uri() . '/assets/js/script-library.js', // Path to your JS file
-            array(), // Dependencies (like 'jquery')
-            '1.0', // Version
-            true // Load in footer
-        );
+            wp_enqueue_script(
+                'script', // Handle
+                get_stylesheet_directory_uri() . '/assets/js/script-library.js', // Path to your JS file
+                array(), // Dependencies (like 'jquery')
+                '1.0', // Version
+                true // Load in footer
+            );
         }
     }
 }
@@ -624,65 +620,82 @@ add_action('pre_get_posts', function ($query) {
     }
 });
 
-// search by meta fields 
+add_action('pre_get_posts', function ($query) {
+
+    if (!is_admin() && $query->is_main_query() && $query->is_search()) {
+
+        // All library post types
+        $library_post_types = [
+            'serial',
+            'video-recording',
+            'a-v-material',
+            'audio-visual',
+            'books-manuscript',
+            'academic-courseworks',
+            'audio-recordings',
+            'e-resources',
+            'website'
+        ];
+
+        $post_type = $query->get('post_type');
+
+        if ($post_type === 'book') {
+            // Books archive search → only books
+            $query->set('post_type', 'book');
+        } elseif (empty($post_type)) {
+            // Global search → all library post types
+            $query->set('post_type', $library_post_types);
+        }
+        // Else → keep other post types as is
+    }
+
+});
 add_filter('posts_search', function ($search, $query) {
     global $wpdb;
-    $meta_query = [];
-    $tax_query  = [];
 
-    if (
-        is_admin() ||
-        !$query->is_main_query() ||
-        !$query->is_search() ||
-        !is_post_type_archive('book')
-    ) {
+    if (is_admin() || !$query->is_main_query() || !$query->is_search()) {
+        return $search;
+    }
+
+    $post_types = (array) $query->get('post_type');
+    if (empty($post_types)) {
         return $search;
     }
 
     $search_term = $query->get('s');
-
     if (empty($search_term)) {
         return $search;
     }
 
     $like = '%' . $wpdb->esc_like($search_term) . '%';
 
-    // Meta fields to search
     $meta_keys = [
         'call_number',
         'location',
         'level',
         'availability',
         'book_type',
-        'year', // only if you store year as ACF
+        'year'
     ];
 
-    $meta_search_sql = [];
-
+    $meta_conditions = [];
     foreach ($meta_keys as $key) {
-        $meta_search_sql[] = $wpdb->prepare(
+        $meta_conditions[] = $wpdb->prepare(
             "(pm.meta_key = %s AND pm.meta_value LIKE %s)",
             $key,
             $like
         );
     }
 
-    $meta_search_sql = implode(' OR ', $meta_search_sql);
+    $meta_sql = implode(' OR ', $meta_conditions);
 
-    // Extend default search (title/content) with meta search
-    $search = "
-        AND (
-            {$wpdb->posts}.post_title LIKE %s
-            OR {$wpdb->posts}.post_content LIKE %s
-            OR {$wpdb->posts}.ID IN (
-                SELECT pm.post_id
-                FROM {$wpdb->postmeta} pm
-                WHERE {$meta_search_sql}
-            )
-        )
-    ";
+    $search .= " OR {$wpdb->posts}.ID IN (
+        SELECT pm.post_id
+        FROM {$wpdb->postmeta} pm
+        WHERE {$meta_sql}
+    )";
 
-    return $wpdb->prepare($search, $like, $like);
+    return $search;
 }, 10, 2);
 
 // Filtering ph-heraldry-registry CPT
@@ -929,7 +942,7 @@ function ph_historical_sites_filters($query)
             $query->set('s', sanitize_text_field($_GET['s']));
         }
         // SORTING
-  
+
         if (!empty($_GET['orderby'])) {
 
             switch ($_GET['orderby']) {
@@ -1447,3 +1460,14 @@ function wpse66094_no_admin_access()
     }
 }
 add_action('admin_init', 'wpse66094_no_admin_access', 100);
+
+// hide buttons for downloads 
+add_filter('body_class', function($classes) {
+    if (is_user_logged_in()) {
+        $user = wp_get_current_user();
+        if (in_array('administrator', $user->roles) || in_array('level_4_user', $user->roles)) {
+            $classes[] = 'hide-download-span';
+        }
+    }
+    return $classes;
+});
