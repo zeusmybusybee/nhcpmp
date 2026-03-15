@@ -24,6 +24,11 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
         padding: 35px 20px;
     }
 
+    .single-foundation-of-towns .my-flipbook-button {
+        padding: 10px 55px !important;
+        font-size: 20px !important;
+    }
+
     .single-top-content button {
         padding: 9px 60px;
         font-size: 14px;
@@ -92,9 +97,17 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                                 <div>Year Approved</div>
                             </div>
                             <div class="col-7 p-0 single-foundation-info">
-                                <div>
-                                    NCR
-                                </div>
+                                <?php
+                                $field = get_field_object('region');
+
+                                if ($field) {
+                                    $value = $field['value'];
+                                    $label = $field['choices'][$value];
+                                ?>
+                                    <div>
+                                        <?php echo esc_html($label); ?>
+                                    </div>
+                                <?php } ?>
                                 <div>
                                     <?php echo  get_field('province_text'); ?>
                                 </div>
@@ -128,6 +141,7 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                             </div>
 
                         <?php endif; ?>
+
                     </div>
                 </div>
                 <div class="container my-5">

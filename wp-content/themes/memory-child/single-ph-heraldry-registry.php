@@ -64,7 +64,7 @@
                                     <?php if (has_post_thumbnail()) : ?>
                                         <div class="nrhss-featured mb-3">
                                             <img src="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'large')); ?>"
-                                                class="img-fluid rounded shadow-sm"
+                                                class="img-fluid rounded"
                                                 id="nrhss-main-image">
                                         </div>
                                     <?php endif; ?>

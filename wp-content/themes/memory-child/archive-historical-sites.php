@@ -75,18 +75,30 @@
                                     <!-- META -->
                                     <div class="text-muted small text-start mt-5 historic-metadata">
                                         <?php
-                                        $location = get_field('location');
-                                        if ($location) :
-                                            if (is_array($location)) {
-                                                $location = array_map(function ($item) {
-                                                    return is_object($item) ? $item->name : $item;
-                                                }, $location);
-                                                $location = implode(', ', $location);
+                                        $international = get_field('international_for_historic');
+                                        $province = get_field('province_for_historic');
+                                        $city = get_field('city_and_municipality_for_historic');
+
+                                        $location_parts = [];
+
+                                        // priority sa international
+                                        if ($international) {
+                                            $location_parts[] = $international;
+                                        } else {
+                                            if ($city) {
+                                                $location_parts[] = $city;
                                             }
+
+                                            if ($province) {
+                                                $location_parts[] = $province;
+                                            }
+                                        }
+
+                                        if (!empty($location_parts)) :
                                         ?>
                                             <div>
                                                 <strong class="meta-label">Location:</strong>
-                                                <span><?php echo esc_html($location); ?></span>
+                                                <span><?php echo esc_html(implode(', ', $location_parts)); ?></span>
                                             </div>
                                         <?php endif; ?>
 
@@ -231,7 +243,9 @@
                             <?php if ($orderby) :
 
                                 $sort_labels = [
-                                    'date-desc' => 'Newest to Oldest',
+                                    'title' => 'A - Z',
+                                    'title-desc' => 'Z - A ',
+                                    'date' => 'Newest to Oldest',
                                     'date-asc'  => 'Oldest to Newest',
                                 ];
 
@@ -401,71 +415,122 @@
                     <div class="col-12 mb-3">
                         <h6 class="mb-3 fw-bold">Filter by Place</h6>
 
-                        <select name="region" class="form-select mb-2">
+                        <!-- REGION -->
+                        <select name="region_for_historic" class="form-select mb-2">
                             <option value="">Region</option>
 
                             <?php
-                            $regions = get_terms([
-                                'taxonomy' => 'regions',
-                                'hide_empty' => false
-                            ]);
+                            global $wpdb;
 
-                            $current_region = $_GET['region'] ?? '';
+                            $regions = $wpdb->get_col("
+                            SELECT DISTINCT meta_value 
+                            FROM $wpdb->postmeta 
+                            WHERE meta_key = 'region_for_historic'
+                              AND meta_value != ''
+                            ORDER BY meta_value ASC
+                        ");
 
-                            if (!empty($regions) && !is_wp_error($regions)) {
-                                foreach ($regions as $region) {
+                            $current_region = $_GET['region_for_historic'] ?? '';
 
-                                    echo '<option value="' . esc_attr($region->slug) . '" ' . selected($current_region, $region->slug, false) . '>';
-                                    echo esc_html($region->name) . ' (' . $region->count . ')';
-                                    echo '</option>';
-                                }
+                            foreach ($regions as $region) {
+                                // Count how many posts have this region
+                                $count = $wpdb->get_var($wpdb->prepare("
+                                SELECT COUNT(*) 
+                                FROM $wpdb->postmeta 
+                                WHERE meta_key = 'region_for_historic' 
+                                  AND meta_value = %s
+                            ", $region));
+
+                                echo '<option value="' . esc_attr($region) . '" ' . selected($current_region, $region, false) . '>';
+                                echo esc_html($region . " ($count)");
+                                echo '</option>';
                             }
                             ?>
-
                         </select>
 
-                        <select name="province" class="form-select mb-2 d-none">
-                            <option value="">Province</option>
-
+                        <!-- PROVINCE -->
+                        <select name="province_for_historic" class="form-select mb-2">
+                            <option value="">Select Province</option>
                             <?php
-                            $provinces = get_terms([
-                                'taxonomy' => 'provinces',
-                                'hide_empty' => false
-                            ]);
+                            $provinces = $wpdb->get_col("
+                            SELECT DISTINCT meta_value
+                            FROM $wpdb->postmeta
+                            WHERE meta_key = 'province_for_historic'
+                              AND meta_value != ''
+                            ORDER BY meta_value ASC
+                        ");
 
-                            $current_province = $_GET['province'] ?? '';
+                            $current_province = $_GET['province_for_historic'] ?? '';
 
-                            if (!empty($provinces) && !is_wp_error($provinces)) {
-                                foreach ($provinces as $province) {
+                            foreach ($provinces as $province) {
+                                $count = $wpdb->get_var($wpdb->prepare("
+                                SELECT COUNT(*) 
+                                FROM $wpdb->postmeta 
+                                WHERE meta_key = 'province_for_historic' 
+                                  AND meta_value = %s
+                            ", $province));
 
-                                    echo '<option value="' . esc_attr($province->slug) . '" ' . selected($current_province, $province->slug, false) . '>';
-                                    echo esc_html($province->name) . ' (' . $province->count . ')';
-                                    echo '</option>';
-                                }
+                                echo '<option value="' . esc_attr($province) . '" ' . selected($current_province, $province, false) . '>';
+                                echo esc_html($province . " ($count)");
+                                echo '</option>';
                             }
                             ?>
-
                         </select>
+
                         <!-- CITY -->
-
-                        <select name="city" class="form-select mb-2 d-none">
-                            <option value="">City / Municipality</option>
-
+                        <select name="city_and_municipality_for_historic" class="form-select mb-2">
+                            <option value="">Select City / Municipality</option>
                             <?php
-                            $cities = get_terms([
-                                'taxonomy' => 'citymunicipality',
-                                'hide_empty' => false
-                            ]);
+                            $cities = $wpdb->get_col("
+                            SELECT DISTINCT meta_value
+                            FROM $wpdb->postmeta
+                            WHERE meta_key = 'city_and_municipality_for_historic'
+                              AND meta_value != ''
+                            ORDER BY meta_value ASC
+                        ");
 
-                            $current_city = $_GET['city'] ?? '';
+                            $current_city = $_GET['city_and_municipality_for_historic'] ?? '';
 
-                            if (!empty($cities) && !is_wp_error($cities)) {
-                                foreach ($cities as $city) {
+                            foreach ($cities as $city) {
+                                $count = $wpdb->get_var($wpdb->prepare("
+                                SELECT COUNT(*) 
+                                FROM $wpdb->postmeta 
+                                WHERE meta_key = 'city_and_municipality_for_historic' 
+                                  AND meta_value = %s
+                            ", $city));
 
-                                    echo '<option value="' . esc_attr($city->slug) . '" ' . selected($current_city, $city->slug, false) . '>';
-                                    echo esc_html($city->name) . ' (' . $city->count . ')';
-                                    echo '</option>';
-                                }
+                                echo '<option value="' . esc_attr($city) . '" ' . selected($current_city, $city, false) . '>';
+                                echo esc_html($city . " ($count)");
+                                echo '</option>';
+                            }
+                            ?>
+                        </select>
+
+                        <!-- INTERNATIONAL -->
+                        <select name="international_for_historic" class="form-select mb-2">
+                            <option value="">Select International</option>
+                            <?php
+                            $internationals = $wpdb->get_col("
+                            SELECT DISTINCT meta_value
+                            FROM $wpdb->postmeta
+                            WHERE meta_key = 'international_for_historic'
+                              AND meta_value != ''
+                            ORDER BY meta_value ASC
+                        ");
+
+                            $current_international = $_GET['international_for_historic'] ?? '';
+
+                            foreach ($internationals as $international) {
+                                $count = $wpdb->get_var($wpdb->prepare("
+                                SELECT COUNT(*) 
+                                FROM $wpdb->postmeta 
+                                WHERE meta_key = 'international_for_historic' 
+                                  AND meta_value = %s
+                            ", $international));
+
+                                echo '<option value="' . esc_attr($international) . '" ' . selected($current_international, $international, false) . '>';
+                                echo esc_html($international . " ($count)");
+                                echo '</option>';
                             }
                             ?>
                         </select>
@@ -487,9 +552,11 @@
                     <div class="col-12">
                         <h6 class="mb-3 fw-bold">Filter by Time</h6>
 
+
                         <?php
                         // YEAR FILTER
                         $field = get_field_object('m_dates');
+
                         if ($field && isset($field['choices']) && is_array($field['choices'])) :
                             $choices = $field['choices'];
                             krsort($choices);
@@ -530,12 +597,12 @@
                         <?php endif; ?>
 
 
+
                         <?php
                         $updates_field = acf_get_field('updates');
 
                         if ($updates_field && !empty($updates_field['choices'])) :
 
-                            // Get all posts
                             $all_posts = get_posts([
                                 'post_type'      => 'historical-sites',
                                 'posts_per_page' => -1,
@@ -543,16 +610,18 @@
                                 'fields'         => 'ids',
                             ]);
 
-                            // Count posts per update
                             $updates_counts = [];
+
+                            // initialize choices except Select Status
+                            foreach ($updates_field['choices'] as $value => $label) {
+                                if ($value === 'Select Status') continue;
+                                $updates_counts[$value] = 0;
+                            }
 
                             foreach ($all_posts as $post_id) {
                                 $update_value = get_field('updates', $post_id);
 
-                                if ($update_value) {
-                                    if (!isset($updates_counts[$update_value])) {
-                                        $updates_counts[$update_value] = 0;
-                                    }
+                                if ($update_value && isset($updates_counts[$update_value])) {
                                     $updates_counts[$update_value]++;
                                 }
                             }
@@ -564,9 +633,13 @@
                                 <option value="">Updates</option>
 
                                 <?php foreach ($updates_field['choices'] as $value => $label): ?>
+
+                                    <?php if ($value === 'Select Status') continue; ?>
+
                                     <option value="<?php echo esc_attr($value); ?>" <?php selected($current_update, $value); ?>>
                                         <?php echo esc_html($label); ?> (<?php echo $updates_counts[$value] ?? 0; ?>)
                                     </option>
+
                                 <?php endforeach; ?>
 
                             </select>
@@ -584,7 +657,6 @@
 
                         if ($series_field && !empty($series_field['choices'])) :
 
-                            // Get all posts
                             $all_posts = get_posts([
                                 'post_type'      => 'historical-sites',
                                 'posts_per_page' => -1,
@@ -592,40 +664,55 @@
                                 'fields'         => 'ids',
                             ]);
 
-                            // Count posts per marker series
                             $series_counts = [];
+
+                            // initialize choices except Select Status
+                            foreach ($series_field['choices'] as $value => $label) {
+                                if ($label === 'Select Status') continue;
+                                $series_counts[$value] = 0;
+                            }
 
                             foreach ($all_posts as $post_id) {
                                 $series = get_field('marker_series', $post_id);
 
-                                if ($series) {
-                                    if (!isset($series_counts[$series])) {
-                                        $series_counts[$series] = 0;
-                                    }
+                                if ($series && isset($series_counts[$series])) {
                                     $series_counts[$series]++;
                                 }
                             }
 
-                            $current_series = $_GET['marker_filter'] ?? '';
+                            $current_series = $_GET['marker_series'] ?? '';
                         ?>
 
                             <select name="marker_series" class="form-select mb-2">
                                 <option value="">Marker Series</option>
 
                                 <?php foreach ($series_field['choices'] as $value => $label): ?>
+
+                                    <?php if ($label === 'Select Status') continue; ?>
+
                                     <option value="<?php echo esc_attr($value); ?>" <?php selected($current_series, $value); ?>>
                                         <?php echo esc_html($label); ?> (<?php echo $series_counts[$value] ?? 0; ?>)
                                     </option>
+
                                 <?php endforeach; ?>
 
                             </select>
 
                         <?php endif; ?>
-
                         <?php
+                        // Get ACF field
                         $updates_field = acf_get_field('marker_updates');
 
                         if ($updates_field && !empty($updates_field['choices'])) :
+
+                            // Find the placeholder key by label match (e.g. label contains 'Select Status')
+                            $placeholder_key = '';
+                            foreach ($updates_field['choices'] as $value => $label) {
+                                if (stripos($label, 'select status') !== false) {
+                                    $placeholder_key = $value;
+                                    break;
+                                }
+                            }
 
                             // Get all posts
                             $all_posts = get_posts([
@@ -635,41 +722,54 @@
                                 'fields'         => 'ids',
                             ]);
 
-                            // Count posts per marker update
+                            // Initialize counts skipping placeholder key
                             $updates_counts = [];
+                            foreach ($updates_field['choices'] as $value => $label) {
+                                if (trim($value) === $placeholder_key) continue;
+                                $updates_counts[$value] = 0;
+                            }
 
+                            // Count posts by update value, skipping placeholder
                             foreach ($all_posts as $post_id) {
                                 $update = get_field('marker_updates', $post_id);
 
-                                if ($update) {
-                                    if (!isset($updates_counts[$update])) {
-                                        $updates_counts[$update] = 0;
-                                    }
+                                if (!$update || trim($update) === $placeholder_key) continue;
+
+                                if (isset($updates_counts[$update])) {
                                     $updates_counts[$update]++;
                                 }
                             }
 
-                            $current_update = $_GET['marker_filter'] ?? '';
+                            $current_update = $_GET['marker_updates'] ?? '';
+
                         ?>
 
                             <select name="marker_updates" class="form-select mb-2">
                                 <option value="">Marker Updates</option>
 
                                 <?php foreach ($updates_field['choices'] as $value => $label): ?>
+                                    <?php if (trim($value) === $placeholder_key) continue; ?>
                                     <option value="<?php echo esc_attr($value); ?>" <?php selected($current_update, $value); ?>>
                                         <?php echo esc_html($label); ?> (<?php echo $updates_counts[$value] ?? 0; ?>)
                                     </option>
                                 <?php endforeach; ?>
-
                             </select>
 
                         <?php endif; ?>
-
 
                         <?php
                         $declarations_field = acf_get_field('group_declarations');
 
                         if ($declarations_field && !empty($declarations_field['choices'])) :
+
+                            // Detect placeholder key (if any), e.g. label contains 'Select'
+                            $placeholder_key = '';
+                            foreach ($declarations_field['choices'] as $value => $label) {
+                                if (stripos($label, 'select') !== false) {
+                                    $placeholder_key = $value;
+                                    break;
+                                }
+                            }
 
                             // Get all posts
                             $all_posts = get_posts([
@@ -679,16 +779,20 @@
                                 'fields'         => 'ids',
                             ]);
 
-                            // Count posts per group declaration
+                            // Initialize counts skipping placeholder
                             $declarations_counts = [];
+                            foreach ($declarations_field['choices'] as $value => $label) {
+                                if (trim($value) === $placeholder_key) continue;
+                                $declarations_counts[$value] = 0;
+                            }
 
+                            // Count posts by declaration value, skipping placeholder
                             foreach ($all_posts as $post_id) {
                                 $declaration = get_field('group_declarations', $post_id);
 
-                                if ($declaration) {
-                                    if (!isset($declarations_counts[$declaration])) {
-                                        $declarations_counts[$declaration] = 0;
-                                    }
+                                if (!$declaration || trim($declaration) === $placeholder_key) continue;
+
+                                if (isset($declarations_counts[$declaration])) {
                                     $declarations_counts[$declaration]++;
                                 }
                             }
@@ -700,11 +804,11 @@
                                 <option value="">Group Declarations</option>
 
                                 <?php foreach ($declarations_field['choices'] as $value => $label): ?>
+                                    <?php if (trim($value) === $placeholder_key) continue; ?>
                                     <option value="<?php echo esc_attr($value); ?>" <?php selected($current_declaration, $value); ?>>
                                         <?php echo esc_html($label); ?> (<?php echo $declarations_counts[$value] ?? 0; ?>)
                                     </option>
                                 <?php endforeach; ?>
-
                             </select>
 
                         <?php endif; ?>
@@ -725,35 +829,62 @@
 
 
 
-                <div class="sidebar_article archive-hide">
+                <div class="sidebar_article archive-hide show-mobile-only">
                     <?php
-                    $terms = get_terms([
+                    // Define your custom order
+                    $custom_order = ['level-i', 'level-ii', 'presumption-removed', 'delisted'];
+
+                    // Fetch all terms
+                    $all_terms = get_terms([
                         'taxonomy'   => 'level_status',
                         'hide_empty' => false,
                     ]);
+
+                    // Create a map of slug => term
+                    $terms_map = [];
+                    foreach ($all_terms as $term) {
+                        $terms_map[$term->slug] = $term;
+                    }
+
+                    // Build the final ordered array
+                    $terms_in_order = [];
+
+                    // First, add terms in custom order if they exist
+                    foreach ($custom_order as $slug) {
+                        if (isset($terms_map[$slug])) {
+                            $terms_in_order[] = $terms_map[$slug];
+                            unset($terms_map[$slug]); // remove so remaining terms can be sorted later
+                        }
+                    }
+
+                    // Add remaining terms alphabetically
+                    if (!empty($terms_map)) {
+                        usort($terms_map, function ($a, $b) {
+                            return strcasecmp($a->name, $b->name);
+                        });
+                        $terms_in_order = array_merge($terms_in_order, $terms_map);
+                    }
+
+                    // Colors per term slug
+                    $colors = [
+                        'level-i'             => 'bg-success success-hover',
+                        'level-ii'            => 'bg-warning warning-hover',
+                        'delisted'            => 'bg-brown brown-hover',
+                        'removed'             => 'bg-danger danger-hover',
+                        'presumption-removed' => 'bg-danger danger-hover',
+                    ];
                     ?>
+
                     <div class="my-5">
                         <div class="registry-box text-center border">
                             <h3 class="fw-bold mb-4">REGISTRY IN NUMBERS</h3>
 
                             <div class="row g-4 justify-content-center">
 
-                                <?php foreach ($terms as $term) : ?>
-
-                                    <?php
-                                    // Custom colors per term slug
-                                    $colors = [
-                                        'level-i'  => 'bg-success success-hover',
-                                        'level-ii' => 'bg-warning warning-hover',
-                                        'delisted' => 'bg-brown  brown-hover',
-                                        'removed'  => 'bg-danger danger-hover',
-                                    ];
-
-                                    $bg_class = isset($colors[$term->slug]) ? $colors[$term->slug] : 'bg-primary  primary-hover';
-
-                                    // Custom filter link
+                                <?php foreach ($terms_in_order as $term) :
+                                    $bg_class = isset($colors[$term->slug]) ? $colors[$term->slug] : 'bg-primary primary-hover';
                                     $filter_link = home_url('/historical-sites/?s=&level_status=' . $term->slug . '&registry_category=&region=&province=&city=&location=&year_filter=&orderby=date-desc');
-                                    ?>
+                                ?>
 
                                     <div class="col-md-5 col-6">
                                         <a href="<?php echo esc_url($filter_link); ?>" class="text-decoration-none">
@@ -773,12 +904,11 @@
                             </div>
                         </div>
                     </div>
+
                     <?php get_template_part('partials/sidebar-welcome'); ?>
-
-
                     <?php get_template_part('partials/sidebar-location-info'); ?>
-
                 </div>
+
 
             </form>
 
@@ -786,7 +916,9 @@
 
 
 
+
     </div>
+    <div id="show-mobile-only"></div>
 </div>
 
 <?php get_footer(); ?>
