@@ -176,10 +176,26 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
                 <div class="label-item col-10">
 
                     <ul class="artifact-metadata">
-                        <li><strong>Title:</strong> <span class="artifact-value"><?php the_title(); ?></span></li>
-                        <li><strong>Description:</strong> <span class="artifact-value"><?php the_excerpt(); ?></span></li>
-                        <li><strong>Author/Creator/Proponent/Artist:</strong> <span class="artifact-value"><?php the_author(); ?></span></li>
-                        <li><strong>Date Created/Published:</strong> <span class="artifact-value"><?php the_date(); ?></span></li>
+
+                        <?php if (get_field('authorcreatorproponentartist')): ?>
+                            <li>
+                                <strong>Author/Creator/Proponent/Artist:</strong>
+                                <span class="artifact-value"><?php the_field('authorcreatorproponentartist'); ?></span>
+                            </li>
+                        <?php endif; ?>
+
+                        <?php
+                        $date = get_field('date_createdpublished');
+                        if ($date):
+                            $dateObj = DateTime::createFromFormat('d/m/Y', $date);
+                        ?>
+                            <li>
+                                <strong>Date Created/Published:</strong>
+                                <span class="artifact-value">
+                                    <?php echo $dateObj->format('F j, Y'); ?>
+                                </span>
+                            </li>
+                        <?php endif; ?>
                         <li><strong>Type of Artifact:</strong>
                             <span class="artifact-value">
                                 <?php
