@@ -12,6 +12,13 @@
         color: #fff !important;
     }
 
+    .container.visual-materials img {
+        margin: 0;
+        width: 100%;
+        object-fit: cover;
+        height: clamp(185px, 25vw, 268px);
+    }
+
     input.form-control.border-0 {
         color: #fff;
     }
@@ -126,7 +133,7 @@
                                         <div class="card-body bg-darken p-2 visual-materials-item">
                                             <h2 class="card-title text-white mb-0">
                                                 <?php the_title(); ?>
-                                                
+
                                             </h2>
                                         </div>
                                     </div>

@@ -1,13 +1,10 @@
 // Auto-update copyright year
-document.addEventListener("DOMContentLoaded", function() {
-    var yearElem = document.getElementById("year");
-    if(yearElem) {
-        yearElem.textContent = new Date().getFullYear();
-    }
+document.addEventListener("DOMContentLoaded", function () {
+  var yearElem = document.getElementById("year");
+  if (yearElem) {
+    yearElem.textContent = new Date().getFullYear();
+  }
 });
-
-
-
 
 jQuery(document).ready(function ($) {
   let currentIndex = 0;
@@ -41,17 +38,15 @@ jQuery(document).ready(function ($) {
   });
 });
 
-  jQuery(document).ready(function ($) {
-    $(".collections-dropdown").on("change", function () {
-      var url = $(this).val();
-      if (url) {
-        window.location.href = url;
-      }
-    });
+jQuery(document).ready(function ($) {
+  $(".collections-dropdown").on("change", function () {
+    var url = $(this).val();
+    if (url) {
+      window.location.href = url;
+    }
   });
+});
 
-
-  
 jQuery(document).ready(function ($) {
   $(".scroll-next").click(function (e) {
     e.preventDefault();
@@ -65,53 +60,55 @@ jQuery(document).ready(function ($) {
   });
 });
 
+jQuery(document).ready(function ($) {
+  var filters = $(".applied-filters");
 
-  jQuery(document).ready(function ($) {
-    var filters = $(".applied-filters");
+  if (filters.length) {
+    filters.prependTo("#applied-filters-container");
+  }
+});
 
-    if (filters.length) {
-      filters.prependTo("#applied-filters-container");
+jQuery(document).ready(function ($) {
+  // hide all options except first
+  $("#registry_category option:not(:first)").hide();
+
+  $("#level_status").change(function () {
+    let level = $(this).val();
+
+    let levelI = [
+      "national-historical-landmark",
+      "national-historical-site",
+      "national-monument",
+      "national-shrine",
+      "unesco-world-heritage-site",
+    ];
+
+    let levelII = [
+      "association-institution-organization",
+      "buildings-structures",
+      "heritage-house",
+      "heritage-zone-historic-center",
+      "personages",
+      "sites-events",
+    ];
+
+    // hide all first
+    $("#registry_category option:not(:first)").hide();
+
+    if (level === "level-i") {
+      levelI.forEach(function (slug) {
+        $('#registry_category option[value="' + slug + '"]').show();
+      });
+    }
+
+    if (level === "level-ii") {
+      levelII.forEach(function (slug) {
+        $('#registry_category option[value="' + slug + '"]').show();
+      });
     }
   });
+});
 
-
-     jQuery(document).ready(function ($) {
-       // hide all options except first
-       $("#registry_category option:not(:first)").hide();
-
-       $("#level_status").change(function () {
-         let level = $(this).val();
-
-         let levelI = [
-           "national-historical-landmark",
-           "national-historical-site",
-           "national-monument",
-           "national-shrine",
-           "unesco-world-heritage-site",
-         ];
-
-         let levelII = [
-           "association-institution-organization",
-           "buildings-structures",
-           "heritage-house",
-           "heritage-zone-historic-center",
-           "personages",
-           "sites-events",
-         ];
-
-         // hide all first
-         $("#registry_category option:not(:first)").hide();
-
-         if (level === "level-i") {
-           levelI.forEach(function (slug) {
-             $('#registry_category option[value="' + slug + '"]').show();
-           });
-         }
-
-         if (level === "level-ii") {
-           levelII.forEach(function (slug) {
-             $('#registry_category option[value="' + slug + '"]').show();
-           });
-         }
-       });
-     });
+jQuery(document).ready(function ($) {
+  $("#show-mobile-only").html($(".show-mobile-only").html());
+});

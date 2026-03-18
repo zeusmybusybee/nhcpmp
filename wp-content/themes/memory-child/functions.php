@@ -70,10 +70,36 @@ function hide_menu_for_level_users()
         #menu-posts-ph-heraldry-registry,#menu-posts-serial,#menu-posts-video-recording,#menu-dashboard
         { display:none !important; }
         </style>';
+    } else if (current_user_can('bookmark_manager') && current_user_can('library')) {
+        echo '<style>
+        #menu-posts-articles,#menu-posts-artifacts,#menu-posts-foundation-of-towns,#menu-posts-contact-us,
+        #menu-posts-featured-collections,#menu-posts-a-v-material,#menu-posts-local-history,#menu-posts-historical-sites,
+        #toplevel_page_archiving,#menu-posts-ph-heraldry-registry,#toplevel_page_real3d_flipbook_admin,#menu-posts-collection,#toplevel_page_footer-settings,
+        #toplevel_page_sidebar-settings,#menu-posts-book,#menu-comments,#menu-posts,#menu-posts-ip_addresses
+        { display:none !important; }
+        </style>';
+    } else if (current_user_can('bookmark_manager') && current_user_can('archiving')) {
+        echo '<style>
+        #menu-posts-articles,#menu-posts-artifacts,#menu-posts-foundation-of-towns,#menu-posts-contact-us,
+        #menu-posts-featured-collections,#menu-posts-a-v-material,#menu-posts-local-history,#menu-posts-historical-sites,
+        #toplevel_page_cataloging,#toplevel_page_cataloging,#toplevel_page_rare-materials,#toplevel_page_indexing,
+        #menu-posts-ph-heraldry-registry,#toplevel_page_real3d_flipbook_admin,#menu-posts-collection,#toplevel_page_footer-settings,
+        #toplevel_page_sidebar-settings,#menu-posts-book,#menu-comments,#menu-posts,#menu-posts-ip_addresses
+        { display:none !important; }
+        </style>';
+    } else if (current_user_can('bookmark_manager')) {
+        echo '<style>
+        #menu-posts-articles,#menu-posts-artifacts,#menu-posts-foundation-of-towns,#menu-posts-contact-us,
+        #menu-posts-featured-collections,#menu-posts-a-v-material,#menu-posts-local-history,#menu-posts-historical-sites,
+        #toplevel_page_archiving,
+        #toplevel_page_cataloging,#toplevel_page_cataloging,#toplevel_page_rare-materials,#toplevel_page_indexing,
+        #menu-posts-ph-heraldry-registry,#toplevel_page_real3d_flipbook_admin,#menu-posts-collection,#toplevel_page_footer-settings,
+        #toplevel_page_sidebar-settings,#menu-posts-book,#menu-comments,#menu-posts,#menu-posts-ip_addresses
+        { display:none !important; }
+        </style>';
     }
 }
 add_action('admin_head', 'hide_menu_for_level_users');
-
 
 // Enable shortcode sa menu items
 add_filter('wp_nav_menu_items', 'do_shortcode');
@@ -238,14 +264,18 @@ add_action('wp_enqueue_scripts', 'enqueue_place_api_for_foundation');
 
 
 
-add_action('acf/input/admin_enqueue_scripts', function () {
-    $post_types = array('foundation-of-towns', 'ph-heraldry-registry');
-    if (is_post_type_archive($post_types) || is_singular($post_types)) {
+add_action('admin_enqueue_scripts', function () {
+
+    $screen = get_current_screen();
+    $post_types = ['foundation-of-towns', 'ph-heraldry-registry', 'historical-sites'];
+
+    if ($screen && in_array($screen->post_type, $post_types)) {
+
         wp_enqueue_script(
             'acf-location-script',
             get_stylesheet_directory_uri() . '/assets/js/acf-location.js',
             ['jquery'],
-            '1.0',
+            time(),
             true
         );
 
@@ -255,6 +285,7 @@ add_action('acf/input/admin_enqueue_scripts', function () {
         ]);
     }
 });
+
 
 // Populate province choices dynamically
 add_filter('acf/load_field/name=province', function ($field) {
@@ -554,15 +585,63 @@ add_action('pre_get_posts', function ($query) {
         }
     }
 });
+// 
+// add_action('pre_get_posts', function ($query) {
+
+//     if (is_admin() || !$query->is_main_query() || !$query->is_search()) {
+//         return;
+//     }
+
+//     // Remove search_type from query vars
+//     if (isset($_GET['search_type'])) {
+//         unset($_GET['search_type']);
+//     }
+
+//     $post_types = [
+//         'item', 'item_type', 'sub_collection', 'serial', 'audio-visual',
+//         'book-manuscripts', 'academic-courseworks', 'audio-recordings',
+//         'e-resources', 'website'
+//     ];
+
+//     $query->set('post_type', $post_types);
+// });
+// folder function for archive and single 
+$post_types = [
+    'item', 'item_type', 'sub-collection', 'serial', 'audio-visual',
+    'books-manuscript', 'academic-courseworks', 'audio-recordings',
+    'e-resources', 'website'
+];
+
+// Archive templates
+add_filter('archive_template', function($archive) use ($post_types) {
+    foreach ($post_types as $pt) {
+        if (is_post_type_archive($pt)) {
+            $template = locate_template(["archive/archive-{$pt}.php"]);
+            if ($template) return $template;
+        }
+    }
+    return $archive;
+});
+
+// Single templates
+add_filter('single_template', function($single) use ($post_types) {
+    global $post;
+    if (in_array($post->post_type, $post_types)) {
+        $template = locate_template(["single/single-{$post->post_type}.php"]);
+        if ($template) return $template;
+    }
+    return $single;
+});
 // for filtering access in books
-add_action('pre_get_posts', function ($query) {
+
+add_action('pre_get_posts', function ($query) use ($post_types) {
 
     if (is_admin() || !$query->is_main_query()) {
         return;
     }
 
-    // Only Book archive
-    if (!is_post_type_archive('book')) {
+    // Apply to multiple post type archives
+    if (!is_post_type_archive($post_types)) {
         return;
     }
 
@@ -585,6 +664,7 @@ add_action('pre_get_posts', function ($query) {
     if (!empty($meta_query)) {
         $query->set('meta_query', $meta_query);
     }
+
     if (!empty($_GET['orderby'])) {
 
         switch ($_GET['orderby']) {
@@ -611,7 +691,6 @@ add_action('pre_get_posts', function ($query) {
 
             case 'relevance':
             default:
-                // WordPress default relevance (only applies when searching)
                 if ($query->is_search()) {
                     $query->set('orderby', 'relevance');
                 }
@@ -620,36 +699,35 @@ add_action('pre_get_posts', function ($query) {
     }
 });
 
-add_action('pre_get_posts', function ($query) {
+// add_action('pre_get_posts', function ($query) {
 
-    if (!is_admin() && $query->is_main_query() && $query->is_search()) {
+//     if (!is_admin() && $query->is_main_query() && $query->is_search()) {
 
-        // All library post types
-        $library_post_types = [
-            'serial',
-            'video-recording',
-            'a-v-material',
-            'audio-visual',
-            'books-manuscript',
-            'academic-courseworks',
-            'audio-recordings',
-            'e-resources',
-            'website'
-        ];
+//         // All library post types
+//         $library_post_types = [
+//             'serial',
+//             'video-recording',
+//             'a-v-material',
+//             'audio-visual',
+//             'books-manuscript',
+//             'academic-courseworks',
+//             'audio-recordings',
+//             'e-resources',
+//             'website'
+//         ];
 
-        $post_type = $query->get('post_type');
+//         $post_type = $query->get('post_type');
 
-        if ($post_type === 'book') {
-            // Books archive search → only books
-            $query->set('post_type', 'book');
-        } elseif (empty($post_type)) {
-            // Global search → all library post types
-            $query->set('post_type', $library_post_types);
-        }
-        // Else → keep other post types as is
-    }
-
-});
+//         if ($post_type === 'book') {
+//             // Books archive search → only books
+//             $query->set('post_type', 'book');
+//         } elseif (empty($post_type)) {
+//             // Global search → all library post types
+//             $query->set('post_type', $library_post_types);
+//         }
+//         // Else → keep other post types as is
+//     }
+// });
 add_filter('posts_search', function ($search, $query) {
     global $wpdb;
 
@@ -801,6 +879,8 @@ function ph_heraldry_registry_filters($query)
 }
 add_action('pre_get_posts', 'ph_heraldry_registry_filters');
 
+add_action('pre_get_posts', 'ph_heraldry_registry_filters');
+
 // filter function historical sites
 function ph_historical_sites_filters($query)
 {
@@ -832,27 +912,27 @@ function ph_historical_sites_filters($query)
                 'terms'    => $marker_category,
             ];
         }
-        // REGION (taxonomy)
-        if (!empty($_GET['region'])) {
-            $region = sanitize_text_field($_GET['region']);
 
-            $tax_query[] = [
-                'taxonomy' => 'regions',
-                'field'    => 'slug',
-                'terms'    => $region,
+        // REGION FOR HISTORIC (meta)
+        if (!empty($_GET['region_for_historic'])) {
+            $region_historic = sanitize_text_field($_GET['region_for_historic']);
+            $meta_query[] = [
+                'key'     => 'region_for_historic',
+                'value'   => $region_historic,
+                'compare' => '=', // exact match
             ];
         }
 
-        // PROVINCE (taxonomy)
-        if (!empty($_GET['province'])) {
-            $province = sanitize_text_field($_GET['province']);
-
-            $tax_query[] = [
-                'taxonomy' => 'provinces',
-                'field'    => 'slug',
-                'terms'    => $province,
+        // PROVINCE FOR HISTORIC (meta)
+        if (!empty($_GET['province_for_historic'])) {
+            $province_historic = sanitize_text_field($_GET['province_for_historic']);
+            $meta_query[] = [
+                'key'     => 'province_for_historic',
+                'value'   => $province_historic,
+                'compare' => '=', // exact match
             ];
         }
+
         // TYPE (meta)
         if (!empty($_GET['type'])) {
             $type = sanitize_text_field($_GET['type']);
@@ -862,14 +942,22 @@ function ph_historical_sites_filters($query)
                 'compare' => '=',
             ];
         }
-        // CITY / MUNICIPALITY (taxonomy)
-        if (!empty($_GET['city'])) {
-            $city = sanitize_text_field($_GET['city']);
+        // CITY / MUNICIPALITY FOR HISTORIC (meta)
+        if (!empty($_GET['city_and_municipality_for_historic'])) {
+            $city_historic = sanitize_text_field($_GET['city_and_municipality_for_historic']);
+            $meta_query[] = [
+                'key'     => 'city_and_municipality_for_historic',
+                'value'   => $city_historic,
+                'compare' => '=', // exact match
+            ];
+        }
 
-            $tax_query[] = [
-                'taxonomy' => 'citymunicipality',
-                'field'    => 'slug',
-                'terms'    => $city,
+        if (!empty($_GET['international_for_historic'])) {
+            $international_historic = sanitize_text_field($_GET['international_for_historic']);
+            $meta_query[] = [
+                'key'     => 'international_for_historic',
+                'value'   => $international_historic,
+                'compare' => '=', // exact match
             ];
         }
 
@@ -883,6 +971,7 @@ function ph_historical_sites_filters($query)
                 'compare' => 'LIKE'
             ];
         }
+
         // MARKER SERIES
         if (!empty($_GET['marker_series'])) {
             $meta_query[] = [
@@ -943,35 +1032,54 @@ function ph_historical_sites_filters($query)
         }
         // SORTING
 
+
         if (!empty($_GET['orderby'])) {
 
+            // Exclude posts with empty or unchecked m_dates (empty serialized array)
+            $query->set('meta_query', array(
+                array(
+                    'key'     => 'm_dates',
+                    'value'   => '',
+                    'compare' => '!=',  // value is not empty string
+                ),
+                array(
+                    'key'     => 'm_dates',
+                    'compare' => 'EXISTS'  // must exist
+                )
+            ));
+
             switch ($_GET['orderby']) {
+
                 case 'title':
                     $query->set('orderby', 'title');
-                    $query->set('order', 'ASC');  // A-Z
+                    $query->set('order', 'ASC');
                     break;
 
                 case 'title-desc':
                     $query->set('orderby', 'title');
-                    $query->set('order', 'DESC'); // Z-A
+                    $query->set('order', 'DESC');
                     break;
 
                 case 'date':
                     $query->set('orderby', 'date');
-                    $query->set('order', 'DESC'); // newest
+                    $query->set('order', 'DESC'); // newest break;
                     break;
 
                 case 'date-asc':
-                    $query->set('orderby', 'date');
-                    $query->set('order', 'ASC');  // oldest
+                    $query->set('meta_key', 'm_dates');
+                    $query->set('orderby', 'meta_value');
+                    $query->set('order', 'ASC'); // oldest
                     break;
 
                 default:
-                    $query->set('orderby', 'date');
+                    $query->set('meta_key', 'm_dates');
+                    $query->set('orderby', 'meta_value');
                     $query->set('order', 'DESC');
                     break;
             }
         }
+
+
         // Apply taxonomy queries if any
         if (!empty($tax_query)) {
             $query->set('tax_query', $tax_query);
@@ -992,6 +1100,7 @@ function ph_historical_sites_filters($query)
     }
 }
 add_action('pre_get_posts', 'ph_historical_sites_filters');
+
 
 
 
@@ -1143,7 +1252,7 @@ function town_foundation_registry_filters($query)
 
             $meta_query[] = $eras_query;
         }
-        
+
         // REGION FILTER
         if (!empty($_GET['region'])) {
             $meta_query[] = [
@@ -1287,7 +1396,7 @@ function custom_pagination_shortcode()
 
             <div class="pagination-prev" id="pagination-prev"
                 style="display:inline-block;margin-right:10px;cursor:pointer;opacity: <?php echo $current <= 1 ? '0.5' : '1'; ?>;">
-                ‹ prev
+                <i class="fa-solid fa-angles-left"></i> prev
             </div>
 
             <div class="pagination-info" style="display:inline-block;">
@@ -1304,7 +1413,7 @@ function custom_pagination_shortcode()
 
             <div class="pagination-next" id="pagination-next"
                 style="display:inline-block;margin-left:10px;cursor:pointer;opacity: <?php echo $current >= $total ? '0.5' : '1'; ?>;">
-                next ›
+                next <i class="fa-solid fa-angles-right"></i>
             </div>
 
         </div>
@@ -1464,7 +1573,7 @@ function wpse66094_no_admin_access()
 add_action('admin_init', 'wpse66094_no_admin_access', 100);
 
 // hide buttons for downloads 
-add_filter('body_class', function($classes) {
+add_filter('body_class', function ($classes) {
     if (is_user_logged_in()) {
         $user = wp_get_current_user();
         if (in_array('administrator', $user->roles) || in_array('level_4_user', $user->roles)) {
@@ -1473,3 +1582,22 @@ add_filter('body_class', function($classes) {
     }
     return $classes;
 });
+
+
+
+function migrate_region_hidden_to_select_hardcoded()
+{
+    $posts = get_posts([
+        'post_type' => 'historical-sites',
+        'posts_per_page' => -1,
+        'post_status' => 'any',
+    ]);
+
+    foreach ($posts as $post) {
+        $region_hidden = get_post_meta($post->ID, 'region_hidden_text', true);
+        if ($region_hidden) {
+            update_post_meta($post->ID, 'region_for_historic', $region_hidden);
+        }
+    }
+}
+add_action('admin_init', 'migrate_region_hidden_to_select_hardcoded');
