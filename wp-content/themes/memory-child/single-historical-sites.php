@@ -234,6 +234,10 @@
         transition: all 0.2s ease;
     }
 
+    .details div {
+        font-size: 18px;
+    }
+
     button.thumb-prev,
     button.thumb-next {
         background: transparent;
@@ -247,6 +251,8 @@
         width: 100%;
         object-fit: cover;
         height: clamp(185px, 25vw, 198px);
+        height: clamp(185px, 25vw, 198px);
+
     }
 
     @media (max-width:768px) {
@@ -255,6 +261,11 @@
             width: 100%;
             flex-direction: row;
             justify-content: center;
+        }
+
+        button.thumb-prev,
+        button.thumb-next {
+            transform: rotate(26deg);
         }
 
         .nrhss-gallery {
@@ -284,7 +295,7 @@
 </style>
 <div class="container my-5">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-8 archive-left">
 
 
 
@@ -360,27 +371,25 @@
 
 
                         <div class="content mb-5">
-                            <h1 class="mb-3"><?php the_title(); ?></h1>
-                            <!-- <div class="details">
-                                <?php if ($regions = get_field('region_text')) : ?>
-                                    <div><strong>Location:</strong> <?php echo esc_html($regions); ?>, <?php echo esc_html(get_field('province_text')); ?>, <?php echo esc_html(get_field('municipality_text')); ?></div>
-                                <?php endif; ?>
-                                <?php
-                                $status_field = get_field_object('status');
-                                $status_value = get_field('status');
-                                if ($status_value):
-                                    $status_label = $status_field['choices'][$status_value] ?? $status_value;
-                                ?>
-                                    <div><strong>Status:</strong> <?php echo esc_html($status_label); ?></div>
+
+                            <div class="details">
+
+                                <?php if (get_field('citymunicipality_hidden_text') || get_field('province_hidden_text')) : ?>
+                                    <div>
+                                        <strong>Location:</strong>
+                                        <?php the_field('citymunicipality_hidden_text'); ?>,
+                                        <?php the_field('province_hidden_text'); ?>
+                                    </div>
                                 <?php endif; ?>
 
                                 <?php
-                                $marker_category_field = get_field_object('marker_category');
-                                $marker_category_value = get_field('marker_category');
-                                if ($marker_category_value):
-                                    $marker_category_label = $marker_category_field['choices'][$marker_category_value] ?? $marker_category_value;
+                                $terms = get_the_terms(get_the_ID(), 'registry_category');
+                                if ($terms && !is_wp_error($terms)) :
                                 ?>
-                                    <div><strong>Marker Category:</strong> <?php echo esc_html($marker_category_label); ?></div>
+                                    <div>
+                                        <strong>Category:</strong>
+                                        <?php echo esc_html($terms[0]->name); ?>
+                                    </div>
                                 <?php endif; ?>
 
                                 <?php
@@ -392,6 +401,15 @@
                                     <div><strong>Type:</strong> <?php echo esc_html($type_label); ?></div>
                                 <?php endif; ?>
 
+                                <?php
+                                $status_field = get_field_object('status');
+                                $status_value = get_field('status');
+                                if ($status_value):
+                                    $status_label = $status_field['choices'][$status_value] ?? $status_value;
+                                ?>
+                                    <div><strong>Status:</strong> <?php echo esc_html($status_label); ?></div>
+                                <?php endif; ?>
+
                                 <?php if (get_field('year_found')): ?>
                                     <div><strong>Marker Date:</strong> <?php echo esc_html(get_field('year_found')); ?></div>
                                 <?php endif; ?>
@@ -400,9 +418,7 @@
                                     <div><strong>Installed By:</strong> <?php echo esc_html(get_field('installed_by')); ?></div>
                                 <?php endif; ?>
 
-
-
-                            </div> -->
+                            </div>
                         </div>
 
                         <div class="content mb-5">
@@ -563,37 +579,16 @@
             <?php get_template_part('partials/sidebar-singlepage-historical'); ?>
 
         </div>
+        <div id="show-mobile-only"></div>
 
     </div>
 </div>
-<script>
-    document.querySelectorAll('.nrhss-thumb').forEach(function(thumb) {
-
-        thumb.addEventListener('click', function() {
-
-            let fullImage = this.getAttribute('data-full');
-
-            // change main image
-            document.getElementById('nrhss-main-image').src = fullImage;
-
-            // change fancybox link
-            document.getElementById('nrhss-main-link').href = fullImage;
-
-            // active state
-            document.querySelectorAll('.nrhss-thumb').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-
-        });
-
-    });
-</script>
 <?php get_footer(); ?>
-<!-- JS -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const mainImage = document.getElementById("nrhss-main-image");
-        const mainCaption = document.getElementById("nrhss-main-caption");
         const mainLink = document.getElementById("nrhss-main-link");
+        const mainCaption = document.getElementById("nrhss-main-caption");
         const thumbs = document.querySelectorAll(".nrhss-thumb");
 
         // Deduplicate images bago gumawa ng gallery array
@@ -602,13 +597,14 @@
 
         thumbs.forEach((thumb) => {
             const src = thumb.dataset.full;
-            const caption = thumb.dataset.caption || '';
+            const caption = thumb.dataset.caption || "";
+
             if (!uniqueUrls.has(src)) {
                 uniqueUrls.add(src);
                 gallery.push({
                     src: src,
-                    type: "image",
-                    caption: caption
+                    caption: caption,
+                    type: "image"
                 });
             }
         });
@@ -628,11 +624,21 @@
             });
         });
 
-        // Thumbnail click: swap main image + update caption
+        // Thumbnail click mag swap ng preview + caption
         thumbs.forEach((thumb) => {
             thumb.addEventListener("click", function() {
-                mainImage.src = this.dataset.full;
-                mainCaption.textContent = this.dataset.caption || '';
+
+                const fullImage = this.dataset.full;
+                const caption = this.dataset.caption || "";
+
+                mainImage.src = fullImage;
+                mainLink.href = fullImage;
+
+                // UPDATE CAPTION
+                if (mainCaption) {
+                    mainCaption.textContent = caption;
+                }
+
                 thumbs.forEach((t) => t.classList.remove("active"));
                 this.classList.add("active");
             });
@@ -649,11 +655,32 @@
                 behavior: "smooth"
             });
         });
+
         next.addEventListener("click", () => {
             galleryWrapper.scrollBy({
                 left: 120,
                 behavior: "smooth"
             });
         });
+    });
+
+    document.querySelectorAll('.nrhss-thumb').forEach(function(thumb) {
+
+        thumb.addEventListener('click', function() {
+
+            let fullImage = this.getAttribute('data-full');
+
+            // change main image
+            document.getElementById('nrhss-main-image').src = fullImage;
+
+            // change fancybox link
+            document.getElementById('nrhss-main-link').href = fullImage;
+
+            // active state
+            document.querySelectorAll('.nrhss-thumb').forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+
+        });
+
     });
 </script>
