@@ -153,14 +153,29 @@ $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
 </style>
 <?php
 $user = wp_get_current_user();
-
+$level = get_field('level');
 if (
     !is_user_logged_in() ||
     !in_array('administrator', $user->roles) &&
     !in_array('level_4_user', $user->roles)
 ) { ?>
     <style>
-        span[data-name="btnDownloadPages"] {
+        span[data-name="btnDownloadPages"],
+        span[data-name="btnDownloadPdf"] {
+            display: none;
+        }
+    </style>
+<?php } else if ($level == 'level_2') { ?>
+    <style>
+        span[data-name="btnDownloadPages"],
+        span[data-name="btnDownloadPdf"] {
+            display: none;
+        }
+    </style>
+<?php } else if ($level == 'level_3') { ?>
+    <style>
+        span[data-name="btnDownloadPages"],
+        span[data-name="btnDownloadPdf"] {
             display: none;
         }
     </style>
@@ -171,23 +186,26 @@ if (
         <div class="col-md-8 left-column  ">
             <div class="d-flex gap-4 c_bg-lightgray pt-5 pl-4 pr-4 pb-5 single-item rounded flex-wrap">
                 <div class="col-4">
+                    <?php $cover_image = get_field('cover_image'); ?>
                     <?php
-                    if ('show-ft' === $memory_hide_featured_image) {
-
-                        if (has_post_thumbnail()) {
-                            echo '<div class="entry-media rounded">';
-                            the_post_thumbnail('memory-thumbnails-2');
-                            echo '</div>';
-                        } else {
-                    ?>
-                            <img
-                                src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/single-book-img.png"
-                                class="img-fluid d-block books-default-image"
-                                alt="Default Image">
+                    if (has_post_thumbnail()) {
+                        echo '<div class="entry-media rounded">';
+                        the_post_thumbnail('memory-thumbnails-2');
+                        echo '</div>';
+                    } else if ($cover_image) { ?>
+                        <img
+                            src="<?php echo esc_url($cover_image['url']); ?>"
+                            class="img-fluid d-block books-default-image"
+                            
+                            alt="Cover Image">
                     <?php
-                        }
-                    }
+                    } else {
                     ?>
+                        <img
+                            src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/single-book-img.png"
+                            class="img-fluid d-block books-default-image"
+                            alt="Default Image">
+                    <?php } ?>
                 </div>
                 <div class="col-7">
                     <div class="d-flex gap-2 mb-2 flex-wrap">
@@ -226,11 +244,11 @@ if (
                         $cover_image = get_field('cover_image'); ?>
                         <?php
                         $access = get_field('level');
-
+                        $file_limit = get_field('file_content_limit');
                         $can_view = false;
 
                         // Level 1 → public
-                        if ($access === 'level_1'  || $access === 'level_2' || $access === 'level_3') {
+                        if ($access === 'level_1'  || $access === 'level_2') {
                             $can_view = true;
                         }
                         // Level 4 → administrators only
@@ -248,6 +266,12 @@ if (
                                     <?php echo do_shortcode('[real3dflipbook pdf="' . $pdf['url'] . '" mode="lightbox" thumb="View PDF"]'); ?>
                                 </div>
 
+                            <?php endif; ?>
+                        <?php elseif (in_array($access, ['level_3']) && $level == 'level_3') : ?>
+                            <?php if (!empty($file_limit['url'])) : ?>
+                                <div class="my-flipbook-button mt-3">
+                                    <?php echo do_shortcode('[real3dflipbook pdf="' . $file_limit['url'] . '" mode="lightbox" thumb="View Limited PDF"]'); ?>
+                                </div>
                             <?php endif; ?>
                         <?php else : ?>
                             <div class="d-flex gap-4 mb-4 book-post-item bg-body-tertiary rounded p-4">

@@ -70,10 +70,36 @@ function hide_menu_for_level_users()
         #menu-posts-ph-heraldry-registry,#menu-posts-serial,#menu-posts-video-recording,#menu-dashboard
         { display:none !important; }
         </style>';
+    } else if (current_user_can('bookmark_manager') && current_user_can('library')) {
+        echo '<style>
+        #menu-posts-articles,#menu-posts-artifacts,#menu-posts-foundation-of-towns,#menu-posts-contact-us,
+        #menu-posts-featured-collections,#menu-posts-a-v-material,#menu-posts-local-history,#menu-posts-historical-sites,
+        #toplevel_page_archiving,#menu-posts-ph-heraldry-registry,#toplevel_page_real3d_flipbook_admin,#menu-posts-collection,#toplevel_page_footer-settings,
+        #toplevel_page_sidebar-settings,#menu-posts-book,#menu-comments,#menu-posts,#menu-posts-ip_addresses
+        { display:none !important; }
+        </style>';
+    } else if (current_user_can('bookmark_manager') && current_user_can('archiving')) {
+        echo '<style>
+        #menu-posts-articles,#menu-posts-artifacts,#menu-posts-foundation-of-towns,#menu-posts-contact-us,
+        #menu-posts-featured-collections,#menu-posts-a-v-material,#menu-posts-local-history,#menu-posts-historical-sites,
+        #toplevel_page_cataloging,#toplevel_page_cataloging,#toplevel_page_rare-materials,#toplevel_page_indexing,
+        #menu-posts-ph-heraldry-registry,#toplevel_page_real3d_flipbook_admin,#menu-posts-collection,#toplevel_page_footer-settings,
+        #toplevel_page_sidebar-settings,#menu-posts-book,#menu-comments,#menu-posts,#menu-posts-ip_addresses
+        { display:none !important; }
+        </style>';
+    } else if (current_user_can('bookmark_manager')) {
+        echo '<style>
+        #menu-posts-articles,#menu-posts-artifacts,#menu-posts-foundation-of-towns,#menu-posts-contact-us,
+        #menu-posts-featured-collections,#menu-posts-a-v-material,#menu-posts-local-history,#menu-posts-historical-sites,
+        #toplevel_page_archiving,
+        #toplevel_page_cataloging,#toplevel_page_cataloging,#toplevel_page_rare-materials,#toplevel_page_indexing,
+        #menu-posts-ph-heraldry-registry,#toplevel_page_real3d_flipbook_admin,#menu-posts-collection,#toplevel_page_footer-settings,
+        #toplevel_page_sidebar-settings,#menu-posts-book,#menu-comments,#menu-posts,#menu-posts-ip_addresses
+        { display:none !important; }
+        </style>';
     }
 }
 add_action('admin_head', 'hide_menu_for_level_users');
-
 
 // Enable shortcode sa menu items
 add_filter('wp_nav_menu_items', 'do_shortcode');
@@ -559,15 +585,63 @@ add_action('pre_get_posts', function ($query) {
         }
     }
 });
+// 
+// add_action('pre_get_posts', function ($query) {
+
+//     if (is_admin() || !$query->is_main_query() || !$query->is_search()) {
+//         return;
+//     }
+
+//     // Remove search_type from query vars
+//     if (isset($_GET['search_type'])) {
+//         unset($_GET['search_type']);
+//     }
+
+//     $post_types = [
+//         'item', 'item_type', 'sub_collection', 'serial', 'audio-visual',
+//         'book-manuscripts', 'academic-courseworks', 'audio-recordings',
+//         'e-resources', 'website'
+//     ];
+
+//     $query->set('post_type', $post_types);
+// });
+// folder function for archive and single 
+$post_types = [
+    'item', 'item_type', 'sub-collection', 'serial', 'audio-visual',
+    'books-manuscript', 'academic-courseworks', 'audio-recordings',
+    'e-resources', 'website'
+];
+
+// Archive templates
+add_filter('archive_template', function($archive) use ($post_types) {
+    foreach ($post_types as $pt) {
+        if (is_post_type_archive($pt)) {
+            $template = locate_template(["archive/archive-{$pt}.php"]);
+            if ($template) return $template;
+        }
+    }
+    return $archive;
+});
+
+// Single templates
+add_filter('single_template', function($single) use ($post_types) {
+    global $post;
+    if (in_array($post->post_type, $post_types)) {
+        $template = locate_template(["single/single-{$post->post_type}.php"]);
+        if ($template) return $template;
+    }
+    return $single;
+});
 // for filtering access in books
-add_action('pre_get_posts', function ($query) {
+
+add_action('pre_get_posts', function ($query) use ($post_types) {
 
     if (is_admin() || !$query->is_main_query()) {
         return;
     }
 
-    // Only Book archive
-    if (!is_post_type_archive('book')) {
+    // Apply to multiple post type archives
+    if (!is_post_type_archive($post_types)) {
         return;
     }
 
@@ -590,6 +664,7 @@ add_action('pre_get_posts', function ($query) {
     if (!empty($meta_query)) {
         $query->set('meta_query', $meta_query);
     }
+
     if (!empty($_GET['orderby'])) {
 
         switch ($_GET['orderby']) {
@@ -616,7 +691,6 @@ add_action('pre_get_posts', function ($query) {
 
             case 'relevance':
             default:
-                // WordPress default relevance (only applies when searching)
                 if ($query->is_search()) {
                     $query->set('orderby', 'relevance');
                 }
@@ -625,35 +699,35 @@ add_action('pre_get_posts', function ($query) {
     }
 });
 
-add_action('pre_get_posts', function ($query) {
+// add_action('pre_get_posts', function ($query) {
 
-    if (!is_admin() && $query->is_main_query() && $query->is_search()) {
+//     if (!is_admin() && $query->is_main_query() && $query->is_search()) {
 
-        // All library post types
-        $library_post_types = [
-            'serial',
-            'video-recording',
-            'a-v-material',
-            'audio-visual',
-            'books-manuscript',
-            'academic-courseworks',
-            'audio-recordings',
-            'e-resources',
-            'website'
-        ];
+//         // All library post types
+//         $library_post_types = [
+//             'serial',
+//             'video-recording',
+//             'a-v-material',
+//             'audio-visual',
+//             'books-manuscript',
+//             'academic-courseworks',
+//             'audio-recordings',
+//             'e-resources',
+//             'website'
+//         ];
 
-        $post_type = $query->get('post_type');
+//         $post_type = $query->get('post_type');
 
-        if ($post_type === 'book') {
-            // Books archive search → only books
-            $query->set('post_type', 'book');
-        } elseif (empty($post_type)) {
-            // Global search → all library post types
-            $query->set('post_type', $library_post_types);
-        }
-        // Else → keep other post types as is
-    }
-});
+//         if ($post_type === 'book') {
+//             // Books archive search → only books
+//             $query->set('post_type', 'book');
+//         } elseif (empty($post_type)) {
+//             // Global search → all library post types
+//             $query->set('post_type', $library_post_types);
+//         }
+//         // Else → keep other post types as is
+//     }
+// });
 add_filter('posts_search', function ($search, $query) {
     global $wpdb;
 
