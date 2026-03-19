@@ -86,3 +86,25 @@ $i++;
         </table>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.js"></script>
+
+<script>
+    $(document).ready(function() {
+
+        $('#table_website').DataTable({
+
+            language: {
+                searchPlaceholder: "Search Website",
+                search: "",
+                paginate: {
+                    previous: "<",
+                    next: ">"
+                }
+            }
+
+        });
+
+    });
+</script>
