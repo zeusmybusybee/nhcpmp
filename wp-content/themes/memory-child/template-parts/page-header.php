@@ -168,7 +168,7 @@ global $wp;
 
 $post_types = ['book', 'artifacts', 'ph-heraldry-registry', 'historical-sites', 'a-v-material', 'foundation-of-towns'];
 
-if (is_post_type_archive($post_types) || is_singular($post_types)) : ?>
+if (is_post_type_archive($post_types) || is_singular($post_types) || is_page('library')) : ?>
 
   <nav class="collections-nav">
     <div class="container">
@@ -241,7 +241,7 @@ $archive_class = '';
 
 if (is_post_type_archive('historical-sites') || is_singular('historical-sites')) {
   $archive_class = 'historical-archive-header';
-} elseif (is_post_type_archive('book') || is_singular('book')) {
+} elseif (is_post_type_archive('book') || is_singular('book') || is_page('library')) {
   $archive_class = 'books-archive-header';
 } elseif (is_post_type_archive('artifacts') || is_singular('artifacts')) {
   $archive_class = 'artifacts-archive-header';
