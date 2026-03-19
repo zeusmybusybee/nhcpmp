@@ -196,7 +196,7 @@ if (
                         <img
                             src="<?php echo esc_url($cover_image['url']); ?>"
                             class="img-fluid d-block books-default-image"
-                            
+
                             alt="Cover Image">
                     <?php
                     } else {
@@ -265,7 +265,14 @@ if (
                                 <div class="my-flipbook-button">
                                     <?php echo do_shortcode('[real3dflipbook pdf="' . $pdf['url'] . '" mode="lightbox" thumb="View PDF"]'); ?>
                                 </div>
+                            <?php else : ?>
+                                <?php while (have_rows('file_content')) : the_row(); ?>
+                                    <?php $file = get_sub_field('add__new_files'); ?>
+                                    <div class="my-flipbook-button">
+                                        <?php echo do_shortcode('[real3dflipbook pdf="' . $file['url'] . '" mode="lightbox" thumb="View PDF"]'); ?>
+                                    </div>
 
+                                <?php endwhile; ?>
                             <?php endif; ?>
                         <?php elseif (in_array($access, ['level_3']) && $level == 'level_3') : ?>
                             <?php if (!empty($file_limit['url'])) : ?>
