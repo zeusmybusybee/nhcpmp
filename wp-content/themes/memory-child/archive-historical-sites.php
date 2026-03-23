@@ -103,29 +103,27 @@
                                         <?php endif; ?>
 
                                         <?php
-                                        $terms = get_the_terms(get_the_ID(), 'registry_category');
-                                        if ($terms && !is_wp_error($terms)) :
+                                        $category = get_field('category'); // ACF field
+
+                                        if ($category) :
                                         ?>
                                             <div>
                                                 <strong class="meta-label">Category:</strong>
-                                                <span>
-                                                    <?php
-                                                    $term_names = wp_list_pluck($terms, 'name');
-                                                    echo esc_html(implode(', ', $term_names));
-                                                    ?>
-                                                </span>
+                                                <span><?php echo esc_html($category); ?></span>
                                             </div>
                                         <?php endif; ?>
 
                                         <?php
                                         $years = get_field('m_dates');
 
-                                        if ($years) :
+                                        if ($years && !empty($years)) :
+                                            // Get the first year as default
+                                            $default_year = $years[0];
                                         ?>
                                             <div>
                                                 <strong class="meta-label">Year: </strong>
                                                 <span>
-                                                    <?php echo esc_html(implode(', ', $years)); ?>
+                                                    <?php echo esc_html($default_year); ?>
                                                 </span>
                                             </div>
                                         <?php endif; ?>

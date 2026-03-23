@@ -383,12 +383,13 @@
                                 <?php endif; ?>
 
                                 <?php
-                                $terms = get_the_terms(get_the_ID(), 'registry_category');
-                                if ($terms && !is_wp_error($terms)) :
+                                $category = get_field('category'); // ACF field
+
+                                if ($category) :
                                 ?>
                                     <div>
-                                        <strong>Category:</strong>
-                                        <?php echo esc_html($terms[0]->name); ?>
+                                        <strong class="meta-label">Category:</strong>
+                                        <span><?php echo esc_html($category); ?></span>
                                     </div>
                                 <?php endif; ?>
 
@@ -480,56 +481,63 @@
 
 
 
-            <!-- OTHER POSTS (SAME CPT, EXCLUDE CURRENT) -->
             <?php
-
-
-            $current_id = get_the_ID();
-            // echo $current_id;
-
             $current_id = get_the_ID();
             $current_title = get_the_title();
 
-            // kunin first word lang (example: "How")
+            // Kunin first word
             $title_words = explode(' ', $current_title);
             $keyword = $title_words[0];
 
+            // Optional: i-ignore yung common words
+            $ignore_words = ['The', 'A', 'An', 'How', 'What', 'Where', 'Why', 'When'];
+            if (in_array($keyword, $ignore_words) && isset($title_words[1])) {
+                $keyword = $title_words[1];
+            }
+
+            // STEP 1: Try primary query (by title keyword)
             $args = [
                 'post_type'      => 'historical-sites',
                 'posts_per_page' => 6,
                 'post_status'    => 'publish',
                 'post__not_in'   => [$current_id],
-                'title_like'     => $keyword,
+                's'              => $keyword,
             ];
 
-
             $other_posts = new WP_Query($args);
+
+            // STEP 2: Fallback to random if no posts found
+            if (!$other_posts->have_posts()) {
+                $args = [
+                    'post_type'      => 'historical-sites',
+                    'posts_per_page' => 6,
+                    'post_status'    => 'publish',
+                    'post__not_in'   => [$current_id],
+                    'orderby'        => 'rand',
+                ];
+                $other_posts = new WP_Query($args);
+            }
+
             ?>
 
             <?php if ($other_posts->have_posts()) : ?>
                 <section class="other-posts mt-5">
-
                     <h3 class="mb-4">Explore the Registry</h3>
-
                     <div class="row g-4">
                         <?php while ($other_posts->have_posts()) : $other_posts->the_post(); ?>
                             <div class="col-lg-4 col-md-6">
                                 <a href="<?php the_permalink(); ?>" class="text-decoration-none text-dark registry-item">
                                     <div class="card h-100 border-0 shadow-sm text-center p-4">
-
                                         <div class="d-flex gap-2 mb-2 flex-wrap">
                                             <?php
                                             $status = get_field('status');
-
                                             $status_map = [
-                                                'level_1'      => ['label' => 'Level I',    'class' => 'badge-open'],
-                                                'level_2'   => ['label' => 'Level II',        'class' => 'badge-viewing'],
-                                                'delisted'   => ['label' => 'Delisted',        'class' => 'badge-limited'],
-                                                'removed' => ['label' => 'Removed',     'class' => 'badge-exclusive'],
+                                                'level_1' => ['label' => 'Level I', 'class' => 'badge-open'],
+                                                'level_2' => ['label' => 'Level II', 'class' => 'badge-viewing'],
+                                                'delisted' => ['label' => 'Delisted', 'class' => 'badge-limited'],
+                                                'removed' => ['label' => 'Removed', 'class' => 'badge-exclusive'],
                                             ];
-
                                             ?>
-
                                             <?php if ($status && isset($status_map[$status])) : ?>
                                                 <span class="access-badge <?php echo esc_attr($status_map[$status]['class']); ?>">
                                                     <?php echo esc_html($status_map[$status]['label']); ?>
@@ -540,10 +548,7 @@
                                         <!-- Thumbnail -->
                                         <?php if (has_post_thumbnail()) : ?>
                                             <div class="mb-3">
-                                                <?php the_post_thumbnail(
-                                                    'small',
-                                                    ['class' => 'img-fluid mx-auto d-block']
-                                                ); ?>
+                                                <?php the_post_thumbnail('small', ['class' => 'img-fluid mx-auto d-block']); ?>
                                             </div>
                                         <?php endif; ?>
 
@@ -556,13 +561,41 @@
 
                                         <!-- META -->
                                         <div class="text-muted small mt-auto text-start">
-                                            <?php if ($regions = get_field('regions')) : ?>
-                                                <div>Location: <?php echo esc_html($regions); ?> <?php echo esc_html(get_field('province_municipality')); ?></div>
+                                            <?php if (get_field('citymunicipality_hidden_text') || get_field('province_hidden_text')) : ?>
+                                                <div>
+                                                    <strong>Location:</strong>
+                                                    <?php the_field('citymunicipality_hidden_text'); ?>,
+                                                    <?php the_field('province_hidden_text'); ?>
+                                                </div>
                                             <?php endif; ?>
-                                            <div><?php if (get_field('year_found')): echo 'Year Found:' . get_field('year_found');
-                                                    endif; ?></div>
-                                        </div>
+                                            <?php
 
+                                            $category = get_field('category'); // ACF field
+
+                                            if ($category) :
+                                            ?>
+                                                <div>
+                                                    <strong class="meta-label">Category:</strong>
+                                                    <span><?php echo esc_html($category); ?></span>
+                                                </div>
+                                            <?php endif; ?>
+
+                                            <?php
+                                            $years = get_field('m_dates');
+
+                                            if ($years && !empty($years)) :
+                                                // Get the first year as default
+                                                $default_year = $years[0];
+                                            ?>
+                                                <div>
+                                                    <strong class="meta-label">Year: </strong>
+                                                    <span>
+                                                        <?php echo esc_html($default_year); ?>
+                                                    </span>
+                                                </div>
+                                            <?php endif; ?>
+
+                                        </div>
                                     </div>
                                 </a>
                             </div>
