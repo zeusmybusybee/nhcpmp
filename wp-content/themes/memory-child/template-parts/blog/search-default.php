@@ -160,15 +160,79 @@
 
                     <?php else : ?>
                         <div class="full-content">
-                            <?php
-                            $content = get_the_content();
+                            <div class="details">
 
-                            if (preg_match('/(.*?Marker date:\s*[^\n<]+)/is', $content, $matches)) {
-                                echo nl2br($matches[1]);
-                            } else {
-                                echo '<p>' . wp_trim_words($content, 100, '...') . '</p>';
-                            }
-                            ?>
+                                <?php if (get_field('citymunicipality_hidden_text') || get_field('province_hidden_text')) : ?>
+                                    <div>
+                                        <strong>Location:</strong>
+                                        <?php the_field('citymunicipality_hidden_text'); ?>,
+                                        <?php the_field('province_hidden_text'); ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php
+                                $terms = get_the_terms(get_the_ID(), 'registry_category');
+                                if ($terms && !is_wp_error($terms)) :
+                                ?>
+                                    <div>
+                                        <strong>Category:</strong>
+                                        <?php echo esc_html($terms[0]->name); ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php
+                                $type_field = get_field_object('type');
+                                $type_value = get_field('type');
+                                if ($type_value):
+                                    $type_label = $type_field['choices'][$type_value] ?? $type_value;
+                                ?>
+                                    <div><strong>Type:</strong> <?php echo esc_html($type_label); ?></div>
+                                <?php endif; ?>
+
+                                <?php
+                                $status_field = get_field_object('status');
+                                $status_value = get_field('status');
+                                if ($status_value):
+                                    $status_label = $status_field['choices'][$status_value] ?? $status_value;
+                                ?>
+                                    <div><strong>Status:</strong> <?php echo esc_html($status_label); ?></div>
+                                <?php endif; ?>
+
+                                <?php if (get_field('cultural_property')): ?>
+                                    <div><?php echo esc_html(get_field('cultural_property')); ?></div>
+                                <?php endif; ?>
+
+
+                                <?php if (get_field('legal_basis')): ?>
+                                    <div><strong>Legal basis:</strong> <?php echo esc_html(get_field('legal_basis')); ?></div>
+                                <?php endif; ?>
+
+                                <?php
+                                $year_found = get_field('year_found');
+                                $date_text = get_field('date_text');
+
+                                if ($year_found): ?>
+                                    <div>
+                                        <strong>
+                                            <?php echo $date_text ? esc_html($date_text) : 'Marker Date'; ?>:
+                                        </strong>
+                                        <?php echo esc_html($year_found); ?>
+                                    </div>
+                                <?php endif; ?>
+
+
+                                <?php
+                                $installed_by = get_field('installed_by');
+                                $removed_label = get_field('removed_by_label');
+                                ?>
+
+                                <div>
+                                    <strong>
+                                        <?php echo $removed_label ? esc_html($removed_label) : 'Installed By:'; ?>
+                                    </strong>
+                                    <?php echo esc_html($installed_by); ?>
+                                </div>
+                            </div>
                         </div>
 
                     <?php endif; ?>
