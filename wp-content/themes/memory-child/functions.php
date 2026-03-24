@@ -97,6 +97,17 @@ function hide_menu_for_level_users()
         #toplevel_page_sidebar-settings,#menu-posts-book,#menu-comments,#menu-posts,#menu-posts-ip_addresses
         { display:none !important; }
         </style>';
+    } else if (current_user_can('content_manager_audio_visual')) {
+        echo '<style>
+        #menu-posts-articles,#menu-posts-artifacts,#menu-posts-foundation-of-towns,#menu-posts-contact-us,
+        #menu-posts-featured-collections,#menu-posts-local-history,#menu-posts-historical-sites,
+        #toplevel_page_archiving,
+        #toplevel_page_cataloging,#toplevel_page_cataloging,#toplevel_page_rare-materials,#toplevel_page_indexing,
+        #menu-posts-ph-heraldry-registry,#toplevel_page_real3d_flipbook_admin,#menu-posts-collection,#toplevel_page_footer-settings,
+        #toplevel_page_sidebar-settings,#menu-posts-book,#menu-comments,#menu-posts,#menu-posts-ip_addresses,#toplevel_page_wpseo_workouts,
+        #wp-admin-bar-wpseo-menu,#menu-tools .wp-submenu.wp-submenu-wrap li:last-child 
+        { display:none !important; }
+        </style>';
     }
 }
 add_action('admin_head', 'hide_menu_for_level_users');
@@ -197,6 +208,29 @@ function custom_footer_script()
     }
 }
 add_action('wp_enqueue_scripts', 'custom_footer_script');
+
+// load if archgiving or library
+function memory_child_additional_styles() {
+    // Front-end only
+    if (!is_admin()) {
+
+        // Get current user
+        $user = wp_get_current_user();
+
+        // Check if user has 'library' OR 'archiving' role
+        if (in_array('library', (array) $user->roles) || in_array('archiving', (array) $user->roles)) {
+
+            wp_enqueue_style(
+                'memory-child-additional',
+                get_stylesheet_directory_uri() . '/assets/css/additional/style.css',
+                array(),
+                '1.0'
+            );
+
+        }
+    }
+}
+add_action('wp_enqueue_scripts', 'memory_child_additional_styles');
 
 add_action('wp_enqueue_scripts', 'memory_child_front_page_styles');
 //link front-page css
@@ -607,13 +641,20 @@ add_action('pre_get_posts', function ($query) {
 // });
 // folder function for archive and single 
 $post_types = [
-    'item', 'item_type', 'sub-collection', 'serial', 'audio-visual',
-    'books-manuscript', 'academic-courseworks', 'audio-recordings',
-    'e-resources', 'website'
+    'item',
+    'item_type',
+    'sub-collection',
+    'serial',
+    'audio-visual',
+    'books-manuscript',
+    'academic-courseworks',
+    'audio-recordings',
+    'e-resources',
+    'website'
 ];
 
 // Archive templates
-add_filter('archive_template', function($archive) use ($post_types) {
+add_filter('archive_template', function ($archive) use ($post_types) {
     foreach ($post_types as $pt) {
         if (is_post_type_archive($pt)) {
             $template = locate_template(["archive/archive-{$pt}.php"]);
@@ -624,7 +665,7 @@ add_filter('archive_template', function($archive) use ($post_types) {
 });
 
 // Single templates
-add_filter('single_template', function($single) use ($post_types) {
+add_filter('single_template', function ($single) use ($post_types) {
     global $post;
     if (in_array($post->post_type, $post_types)) {
         $template = locate_template(["single/single-{$post->post_type}.php"]);

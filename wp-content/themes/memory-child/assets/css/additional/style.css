@@ -1,0 +1,31 @@
+
+    .media-frame {
+        overflow: auto;
+    }
+
+    .searchform-modal .search-form button {
+        position: unset;
+        background: #2271b1 !important;
+        border-color: #2271b1;
+        color: #fff!important;
+        text-decoration: none;
+        text-shadow: none;
+    }
+
+    .catalog__add--content .acf-form .acf-form-submit .acf-button {
+        width: 245px;
+        height: 44px;
+        background: #3ec562!important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff!important;
+        font-family: "Poppins-Bold";
+        line-height: 32px;
+        font-size: 20px;
+        border-radius: 5px;
+        padding: 0;
+        border-bottom: 0px solid #b93207!important;
+        transition: all 0.3s ease;
+        text-align:center!important;
+    }
