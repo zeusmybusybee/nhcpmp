@@ -66,37 +66,37 @@
 
 
 
-                        <?php
+                        <!-- <//?php
                         $gallery = get_field('nrhss_gallery');
-                        ?>
+                        ?> -->
 
-                        <div class="nrhss-media-wrapper mb-4">
+                   <!--<div class="nrhss-media-wrapper mb-4">-->
 
                             <!-- MAIN IMAGE -->
-                            <div class="nrhss-featured">
-                                <?php if (has_post_thumbnail()) :
-                                    $featured_url = get_the_post_thumbnail_url(get_the_ID(), 'large');
-                                ?>
-                                    <img
-                                        src="<?php echo esc_url($featured_url); ?>"
-                                        class="nrhss-featured-img"
-                                        id="nrhss-main-image">
-                                <?php endif; ?>
-                            </div>
+                        <!--    <div class="nrhss-featured">-->
+                        <!--        <//?php if (has_post_thumbnail()) :-->
+                        <!--            $featured_url = get_the_post_thumbnail_url(get_the_ID(), 'large');-->
+                        <!--        ?>-->
+                        <!--            <img-->
+                        <!--                src="<//?php echo esc_url($featured_url); ?>"-->
+                        <!--                class="nrhss-featured-img"-->
+                        <!--                id="nrhss-main-image">-->
+                        <!--        <//?php endif; ?>-->
+                        <!--    </div>-->
 
                             <!-- THUMBNAILS -->
-                            <?php if ($gallery) : ?>
-                                <div class="nrhss-gallery">
-                                    <?php foreach ($gallery as $index => $image) : ?>
-                                        <img
-                                            src="<?php echo esc_url($image['sizes']['thumbnail']); ?>"
-                                            data-full="<?php echo esc_url($image['sizes']['large']); ?>"
-                                            class="nrhss-thumb <?php echo $index === 0 ? 'active' : ''; ?>">
-                                    <?php endforeach; ?>
-                                </div>
-                            <?php endif; ?>
+                        <!--    <//?php if ($gallery) : ?>-->
+                        <!--        <div class="nrhss-gallery">-->
+                        <!--            <//?php foreach ($gallery as $index => $image) : ?>-->
+                        <!--                <img-->
+                        <!--                    src="<//?php echo esc_url($image['sizes']['thumbnail']); ?>"-->
+                        <!--                    data-full="<//?php echo esc_url($image['sizes']['large']); ?>"-->
+                        <!--                    class="nrhss-thumb <//?php echo $index === 0 ? 'active' : ''; ?>">-->
+                        <!--            <//?php endforeach; ?>-->
+                        <!--        </div>-->
+                        <!--    <//?php endif; ?>-->
 
-                        </div>
+                        <!--</div>-->
 
                         <div class="content mb-5">
                             <?php the_content(); ?>
