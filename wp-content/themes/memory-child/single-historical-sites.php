@@ -374,13 +374,18 @@
 
                             <div class="details">
 
-                                <?php if (get_field('citymunicipality_hidden_text') || get_field('province_hidden_text')) : ?>
-                                    <div>
-                                        <strong>Location:</strong>
-                                        <?php the_field('citymunicipality_hidden_text'); ?>,
-                                        <?php the_field('province_hidden_text'); ?>
-                                    </div>
-                                <?php endif; ?>
+                                <?php
+                                $city = get_field('citymunicipality_hidden_text');
+                                $province = get_field('province_hidden_text');
+                                ?>
+
+                                <div>
+                                    <strong>Location:</strong>
+                                    <?php
+                                    echo esc_html($city ?: '');
+                                    echo $province ? ', ' . esc_html($province) : '';
+                                    ?>
+                                </div>
 
                                 <?php
                                 $category = get_field('category'); // ACF field
@@ -410,14 +415,41 @@
                                 ?>
                                     <div><strong>Status:</strong> <?php echo esc_html($status_label); ?></div>
                                 <?php endif; ?>
+                                <?php $cultural = get_field('cultural_property'); ?>
 
-                                <?php if (get_field('year_found')): ?>
-                                    <div><strong>Marker Date:</strong> <?php echo esc_html(get_field('year_found')); ?></div>
+                                <div>
+                                    <?php echo esc_html($cultural ?: ''); ?>
+                                </div>
+
+
+                                <?php $legal_basis = get_field('legal_basis'); ?>
+
+                                <?php if (!empty($legal_basis)): ?>
+                                    <div>
+                                        <strong>Legal Basis:</strong>
+                                        <?php echo esc_html($legal_basis); ?>
+                                    </div>
                                 <?php endif; ?>
 
-                                <?php if (get_field('installed_by')): ?>
-                                    <div><strong>Installed By:</strong> <?php echo esc_html(get_field('installed_by')); ?></div>
-                                <?php endif; ?>
+                                <?php
+                                $date_text = get_field('date_text');
+                                $year_found = get_field('year_found');
+                                ?>
+
+                                <div>
+                                    <strong><?php echo esc_html($date_text ?: 'Marker Date:'); ?></strong>
+                                    <?php echo esc_html($year_found ?: ''); ?>
+                                </div>
+
+                                <?php
+                                $label = get_field('removed_by_label');
+                                $value = get_field('installed_by');
+                                ?>
+
+                                <div>
+                                    <strong><?php echo esc_html($label ?: 'Installed By:'); ?></strong>
+                                    <?php echo esc_html($value ?: ''); ?>
+                                </div>
 
                             </div>
                         </div>

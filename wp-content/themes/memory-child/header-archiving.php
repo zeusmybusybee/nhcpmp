@@ -49,6 +49,14 @@ wp_enqueue_style(
     html {
         margin: 0 !important;
     }
+
+    .main-content {
+        margin-top: 0 !important;
+    }
+
+    a.sidebarmain__list {
+        text-decoration: none;
+    }
 </style>
 
 <body <?php body_class(); ?>>

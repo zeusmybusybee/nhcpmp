@@ -1,3 +1,23 @@
+<style>
+    .nav__menu--profile {
+        position: relative;
+    }
+
+    .nav__menu--profile .dropdown-content {
+        display: none;
+        position: absolute;
+        top: 47px;
+        left: 0;
+        min-width: 150px;
+        background: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+    }
+
+    .nav__menu--profile:hover .dropdown-content {
+        display: block;
+    }
+</style>
 <div class="nav">
     <div class="nav__hamburger">
         <div id="menu-icon" class="nav-menu-sp">
@@ -25,7 +45,6 @@
                 <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/ic_profile.png" alt="Profile Icon">
             </div>
             <div class="prof-position">
-                test
                 <?php
                 if (is_user_logged_in()) {
                     $current_user = wp_get_current_user(); ?>
