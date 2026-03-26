@@ -5,7 +5,59 @@
 
 get_header('archiving');
 ?>
+<style>
+    .collection__form--field {
+    display: flex;
+    justify-content: start;
+        margin-top: 20px;
+    align-items: center;
+}
+.collection__form--btn {
+    margin-top: 40px;
+}
+.collection__form--btn input[type="submit"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    border: 1px solid #3ec562;
+    background: #3ec562;
+    font-size: 20px;
+    font-family: "Poppins-SemiBold";
+    transition: 0.3s;
+    padding: 0 20px;
+    border-radius: 5px;
+}
+.collection__form--field label {
+    flex-basis: 50%;
+    margin: 0;
+    color: #000000;
+    font-size: 24px;
+    font-family: "Poppins-Bold";
+}
+.collection__form--field input[type="text"] {
+    border: 1px solid #d9d9d9;
+    width: 100%;
+    height: 55px;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 18px;
+    color: #464e5f;
+    border-radius: 5px;
+}
+.collection__form--field .select2-selection {
+    padding-top: 15px;
+    border: 1px solid #d9d9d9 !important;
+    width: 100% !important;
+    height: 55px !important;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 18px;
+    color: #464e5f;
+    border-radius: 5px;
+}
 
+</style>
 <?php
 class Category_Dropdown_Walker extends Walker_CategoryDropdown
 {

@@ -15,6 +15,14 @@ get_header();
     border-radius: 25px;
   }
 
+  .page-template-page-login-php {
+    background: #F7F7F7 !important;
+  }
+
+  .page-template-page-login-php nav.breadcrumb-nav {
+    display: none;
+  }
+
   .btn-brown:hover {
     background-color: #5a3d15;
     color: #fff;

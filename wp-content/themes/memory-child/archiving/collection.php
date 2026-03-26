@@ -27,7 +27,7 @@ get_header('archiving');
                                     <span>More than 1000+ Browse Items</span>
                                 </div>
                                 <div class="button">
-                                    <a href="<?php echo site_url('/add-collection'); ?>">Add</a>
+                                    <a href="<?php echo site_url('/add-collection'); ?>"><i class="fa-solid fa-circle-plus"></i>Add</a>
                                 </div>
                             </div>
 
@@ -64,12 +64,12 @@ get_header('archiving');
                                             </td>
                                             <td class="actions">
                                                 <div class="table__content--body action">
-                                                    <a href="<?php echo get_term_link($parent_category); ?>" target="_new" class="preview">Preview</a>
+                                                    <a href="<?php echo get_term_link($parent_category); ?>" target="_new" class="preview"><i class="fa-solid fa-magnifying-glass"></i>Preview</a>
                                                     <form action="" method="post">
                                                         <input type="hidden" name="term_id" value="<?php echo $parent_category->term_id; ?>">
                                                         <input class="delete" type="submit" name="delete_term" value="Delete" onclick="return confirm('Are you sure you wanna delete this?')">
                                                     </form>
-                                                    <a href="<?php echo site_url('/edit-collection'); ?>?term=<?php echo $parent_category->term_id; ?>" target="_new" class="edit">Edit</a>
+                                                    <a href="<?php echo site_url('/edit-collection'); ?>?term=<?php echo $parent_category->term_id; ?>" target="_new" class="edit"> <i class="fa-solid fa-pen-to-square"></i> Edit</a>
                                                 </div>
                                             </td>
                                         </tr>
