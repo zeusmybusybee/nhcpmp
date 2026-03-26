@@ -50,11 +50,20 @@ wp_enqueue_style(
         margin: 0 !important;
     }
 
+    body {
+
+        background: #f6f4ff;
+    }
+
     .main-content {
         margin-top: 0 !important;
     }
 
     a.sidebarmain__list {
+        text-decoration: none;
+    }
+
+    .main-body a {
         text-decoration: none;
     }
 </style>

@@ -1,15 +1,72 @@
 <?php
+
 /*** Template Name: Edit Collection Management */
 ob_start();
 get_header('archiving');
 ?>
+<style>
+    .collection__form--field {
+        display: flex;
+        justify-content: start;
+        margin-top: 20px;
+        align-items: center;
+    }
 
+    .collection__form--btn {
+        margin-top: 40px;
+    }
+
+    .collection__form--btn input[type="submit"] {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 44px;
+        border: 1px solid #3ec562;
+        background: #3ec562;
+        font-size: 20px;
+        font-family: "Poppins-SemiBold";
+        transition: 0.3s;
+        padding: 0 20px;
+        border-radius: 5px;
+    }
+
+    .collection__form--field label {
+        flex-basis: 50%;
+        margin: 0;
+        color: #000000;
+        font-size: 24px;
+        font-family: "Poppins-Bold";
+    }
+
+    .collection__form--field input[type="text"] {
+        border: 1px solid #d9d9d9;
+        width: 100%;
+        height: 55px;
+        padding-left: 20px;
+        padding-right: 20px;
+        font-size: 18px;
+        color: #464e5f;
+        border-radius: 5px;
+    }
+
+    .collection__form--field .select2-selection {
+        padding-top: 15px;
+        border: 1px solid #d9d9d9 !important;
+        width: 100% !important;
+        height: 55px !important;
+        padding-left: 20px;
+        padding-right: 20px;
+        font-size: 18px;
+        color: #464e5f;
+        border-radius: 5px;
+    }
+</style>
 <section>
     <div class="main-content">
 
-        <?php include get_theme_file_path('partials/sidebar.php');?>
-        <?php include get_theme_file_path('partials/navbar.php');?>
-        <?php $post_id = $_GET["post"];?>
+        <?php include get_theme_file_path('partials/sidebar.php'); ?>
+        <?php include get_theme_file_path('partials/navbar.php'); ?>
+        <?php $post_id = $_GET["post"]; ?>
         <div class="main-body">
             <div class="main-body__content">
                 <div class="main-body__container">
@@ -29,31 +86,31 @@ get_header('archiving');
                                 </div>
                                 <div class="item-form-area">
                                     <?php
-$term_id = $_GET["term"];
-$term = get_term($term_id, 'collection_management');
+                                    $term_id = $_GET["term"];
+                                    $term = get_term($term_id, 'collection_management');
 
-if (isset($_POST['update_term'])) {
-    $term_name = sanitize_text_field($_POST['term_name']);
-    $term_description = $_POST['term_description'];
-    $term_parent = $_POST['term_parent'];
+                                    if (isset($_POST['update_term'])) {
+                                        $term_name = sanitize_text_field($_POST['term_name']);
+                                        $term_description = $_POST['term_description'];
+                                        $term_parent = $_POST['term_parent'];
 
-    $term_update = wp_update_term($term_id, 'collection_management', array(
-        'name' => $term_name,
-        'description' => $term_description,
-        'parent' => $term_parent
-    ));
+                                        $term_update = wp_update_term($term_id, 'collection_management', array(
+                                            'name' => $term_name,
+                                            'description' => $term_description,
+                                            'parent' => $term_parent
+                                        ));
 
-    if (is_wp_error($term_update)) {
-        // Handle the error.
-    } else {
-        // Update successful.
-        $term = get_term($term_update['term_id'], 'collection_management');
-        wp_redirect(site_url('/edit-collection/?term='.$term_id));
-        exit;
-    }
-}
-ob_end_flush();
-?>
+                                        if (is_wp_error($term_update)) {
+                                            // Handle the error.
+                                        } else {
+                                            // Update successful.
+                                            $term = get_term($term_update['term_id'], 'collection_management');
+                                            wp_redirect(site_url('/edit-collection/?term=' . $term_id));
+                                            exit;
+                                        }
+                                    }
+                                    ob_end_flush();
+                                    ?>
                                     <div class="collection">
                                         <div class="collection__form">
                                             <form action="" method="post">
@@ -71,30 +128,30 @@ ob_end_flush();
                                                     <label for="term_description">Parent </label>
                                                     <?php
                                                     $taxonomyName = "collection_management";
-                                                    $parent_terms = get_terms( $taxonomyName, array( 'parent' => 0, 'orderby' => 'slug', 'hide_empty' => false ) );
+                                                    $parent_terms = get_terms($taxonomyName, array('parent' => 0, 'orderby' => 'slug', 'hide_empty' => false));
                                                     echo '<select id="term_parent" name="term_parent">';
-                                                    echo '<option>-- Please select --</option>';    
-                                                    foreach ( $parent_terms as $pterm ) {
-                                                        if($term->parent == $pterm->term_id){
-                                                            echo '<option value="'.$pterm->term_id.'" selected>' . $pterm->name . '</option>';    
+                                                    echo '<option>-- Please select --</option>';
+                                                    foreach ($parent_terms as $pterm) {
+                                                        if ($term->parent == $pterm->term_id) {
+                                                            echo '<option value="' . $pterm->term_id . '" selected>' . $pterm->name . '</option>';
                                                         } else {
-                                                            echo '<option value="'.$pterm->term_id.'">' . $pterm->name . '</option>';
+                                                            echo '<option value="' . $pterm->term_id . '">' . $pterm->name . '</option>';
                                                         }
-                                                        
-                                                        $subs1 = get_terms( $taxonomyName, array( 'parent' => $pterm->term_id, 'orderby' => 'slug', 'hide_empty' => false ) );
-                                                        foreach ( $subs1 as $term1 ) {
-                                                            if($term->parent == $term1->term_id){
-                                                                echo '<option value="'.$term1->term_id.'" selected>asd' . $term1->name . '</option>';    
+
+                                                        $subs1 = get_terms($taxonomyName, array('parent' => $pterm->term_id, 'orderby' => 'slug', 'hide_empty' => false));
+                                                        foreach ($subs1 as $term1) {
+                                                            if ($term->parent == $term1->term_id) {
+                                                                echo '<option value="' . $term1->term_id . '" selected>asd' . $term1->name . '</option>';
                                                             } else {
-                                                                echo '<option value="'.$term1->term_id.'">&nbsp;&nbsp; - ' . $term1->name . '</option>';
+                                                                echo '<option value="' . $term1->term_id . '">&nbsp;&nbsp; - ' . $term1->name . '</option>';
                                                             }
-                                                               
-                                                            $subs2 = get_terms( $taxonomyName, array( 'parent' => $term1->term_id, 'orderby' => 'slug', 'hide_empty' => false ) );
-                                                            foreach ( $subs2 as $term2 ) {
-                                                                if($term->parent == $term2->term_id){
-                                                                    echo '<option value="'.$term2->term_id.'" selected>' . $term2->name . '</option>';    
+
+                                                            $subs2 = get_terms($taxonomyName, array('parent' => $term1->term_id, 'orderby' => 'slug', 'hide_empty' => false));
+                                                            foreach ($subs2 as $term2) {
+                                                                if ($term->parent == $term2->term_id) {
+                                                                    echo '<option value="' . $term2->term_id . '" selected>' . $term2->name . '</option>';
                                                                 } else {
-                                                                    echo '<option value="'.$term2->term_id.'">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- ' . $term2->name . '</option>--';
+                                                                    echo '<option value="' . $term2->term_id . '">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-- ' . $term2->name . '</option>--';
                                                                 }
                                                             }
                                                         }
@@ -106,10 +163,10 @@ ob_end_flush();
                                                     <input type="submit" name="update_term" value="Update">
                                                 </div>
                                             </form>
-                                            
+
                                             <div class="table__header" style="margin-top: -48px; justify-content: end; padding-bottom: 0;">
                                                 <div class="viewall-area">
-                                                    <a href="<?php echo home_url(add_query_arg(array(), $wp->request)).'/?term='.$_GET["term"]; ?>">Reset</a>
+                                                    <a href="<?php echo home_url(add_query_arg(array(), $wp->request)) . '/?term=' . $_GET["term"]; ?>">Reset</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -120,10 +177,10 @@ ob_end_flush();
                         </div>
                     </div>
                 </div>
-                <?php include get_theme_file_path('partials/footer.php');?>
+                <?php include get_theme_file_path('partials/footer.php'); ?>
             </div>
         </div>
     </div>
 </section>
 
-<?php get_footer('archiving');?>
+<?php get_footer('archiving'); ?>
