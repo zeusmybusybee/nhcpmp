@@ -262,15 +262,20 @@ if (in_array('library', (array) $user->roles)) : ?>
     <?php get_footer('archiving'); ?>
 
 <?php else : ?>
+
     <?php get_header(); ?>
-        <div class="main-content">
-            <?php
+    <style>
+        body.single-item {
+            background-color: #F7F7F7;
+        }
+    </style>
+    <div class="main-content">
+        <?php
 
-            get_template_part('template-parts/content-single-book-default');
+        get_template_part('template-parts/content-single-book-default');
 
-            // get_sidebar();
-            ?>
-        </div>
+        ?>
+    </div>
     <?php get_footer(); ?>
 
 <?php endif; ?>

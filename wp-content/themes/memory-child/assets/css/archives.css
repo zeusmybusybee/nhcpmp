@@ -587,7 +587,13 @@ ul.page-numbers {
     margin-top: 20px !important;
         background-color: #6b4a1f8f !important;
 }
+#show-mobile-only {
+    display: none;
+}
 @media (max-width: 991px) {
+#show-mobile-only {
+    display: block;
+}
 .archive-left {
     order: 2;
 }
