@@ -298,21 +298,8 @@ button#closeBtn {
         background: #09d57780;
          color: #fff;
     }
-        .single-item {
-        background: #FAFAFA !important;
-        width: 100% !important;
-        position: relative;
-    }
 
-    .single-item::before {
-        content: '';
-        background: #FAFAFA !important;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        left: -255px;
-        top: 0;
-    }
+
 @media (max-width: 1024px) {
    button#toggleBtn {
     display: block;
