@@ -108,7 +108,90 @@ jQuery(document).ready(function ($) {
     }
   });
 });
+ jQuery(document).ready(function ($) {
+   // TYPES per level
+   let levelI_types = [
+     "Battle Site",
+     "Fortification",
+     "Historic Center",
+     "Monument",
+     "NHCP Museum",
+     "Site of an Important Event",
+     "Site",
+     "Belfry",
+     "Buildings/Structures",
+     "Capitol Building",
+     "Cemetery",
+     "Clubhouse",
+     "Convent",
+     "Declaration marker",
+     "Garden",
+     "Hotel",
+     "House of Worship",
+     "House",
+     "Kampanaryo ng Jaro",
+     "Lighthouse",
+     "Memorial",
+     "Penitentiary",
+     "Plaza",
+     "Prison Cell",
+     "School",
+     "University",
+     "Watchtower",
+   ];
 
+   let levelII_types = [
+     "Battle Site",
+     "Fortification",
+     "Historic Center",
+     "Monument",
+     "NHCP Museum",
+     "Site of an Important Event",
+     "Site",
+     "Belfry",
+     "Buildings/Structures",
+     "Capitol Building",
+     "Cemetery",
+     "Clubhouse",
+     "Convent",
+     "Declaration marker",
+     "Garden",
+     "Hotel",
+     "House of Worship",
+     "House",
+     "Kampanaryo ng Jaro",
+     "Lighthouse",
+     "Memorial",
+     "Penitentiary",
+     "Plaza",
+     "Prison Cell",
+     "School",
+     "University",
+     "Watchtower",
+   ];
+
+   // initially hide all except first
+   $("#type option:not(:first)").hide();
+
+   $("#level_status").change(function () {
+     let level = $(this).val();
+
+     // hide all first
+     $("#type option:not(:first)").hide();
+
+     if (level === "level-i") {
+       levelI_types.forEach(function (val) {
+         $('#type option[value="' + val + '"]').show();
+       });
+     }
+
+     if (level === "level-ii") {
+       levelII_types.forEach(function (val) {
+         $('#type option[value="' + val + '"]').show();
+       });
+     }
+   });
+ });
 jQuery(document).ready(function ($) {
   $("#show-mobile-only").html($(".show-mobile-only").html());
 });

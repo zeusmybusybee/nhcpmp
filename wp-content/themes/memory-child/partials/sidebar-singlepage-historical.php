@@ -474,40 +474,58 @@
 
                     if ($series_field && !empty($series_field['choices'])) :
 
-                        // Get all posts
+                        // ✅ ALWAYS get ALL posts (not affected by filters)
                         $all_posts = get_posts([
-                            'post_type'      => 'historical-sites',
-                            'posts_per_page' => -1,
-                            'post_status'    => 'publish',
-                            'fields'         => 'ids',
+                            'post_type'        => 'historical-sites',
+                            'posts_per_page'   => -1,
+                            'post_status'      => 'publish',
+                            'fields'           => 'ids',
+                            'suppress_filters' => true // 🔥 important fix
                         ]);
 
-                        // Count posts per marker series
                         $series_counts = [];
 
+                        // Initialize choices
+                        foreach ($series_field['choices'] as $value => $label) {
+                            if ($label === 'Select Status') continue;
+                            $series_counts[$value] = 0;
+                        }
+
+                        // ✅ CORRECT counting for multiple ACF field
                         foreach ($all_posts as $post_id) {
                             $series = get_field('marker_series', $post_id);
 
                             if ($series) {
-                                if (!isset($series_counts[$series])) {
-                                    $series_counts[$series] = 0;
+                                if (is_array($series)) {
+                                    foreach ($series as $s) {
+                                        if (isset($series_counts[$s])) {
+                                            $series_counts[$s]++;
+                                        }
+                                    }
+                                } else {
+                                    if (isset($series_counts[$series])) {
+                                        $series_counts[$series]++;
+                                    }
                                 }
-                                $series_counts[$series]++;
                             }
                         }
 
-                        $current_series = $_GET['marker_filter'] ?? '';
+                        // Frontend = SINGLE select only
+                        $current_series = $_GET['marker_series'] ?? '';
                     ?>
 
                      <select name="marker_series" class="form-select mb-2">
                          <option value="">Marker Series</option>
 
                          <?php foreach ($series_field['choices'] as $value => $label): ?>
-                             <option value="<?php echo esc_attr($value); ?>" <?php selected($current_series, $value); ?>>
+                             <?php if ($label === 'Select Status') continue; ?>
+
+                             <option value="<?php echo esc_attr($value); ?>"
+                                 <?php selected($current_series, $value); ?>>
                                  <?php echo esc_html($label); ?> (<?php echo $series_counts[$value] ?? 0; ?>)
                              </option>
-                         <?php endforeach; ?>
 
+                         <?php endforeach; ?>
                      </select>
 
                  <?php endif; ?>
