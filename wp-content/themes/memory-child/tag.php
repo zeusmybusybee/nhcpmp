@@ -60,26 +60,32 @@
 
                             <div class="card h-100 border-0 shadow-sm text-center p-4">
 
-                                <a href="<?php echo site_url('/collection-view/?id=' . get_the_ID()); ?>" class="text-decoration-none text-dark">
+                                <a href="<?php echo esc_url(site_url('/collection-view/?id=' . get_the_ID())); ?>" class="text-decoration-none text-dark">
 
-                                    <!-- IMAGE -->
-                                    <?php if (has_post_thumbnail()) : ?>
+                                    <?php
+                                    $cover_image = get_field('cover_image', get_the_ID());
 
-                                        <div class="mb-3">
-                                            <?php the_post_thumbnail(
-                                                'small',
-                                                ['class' => 'img-fluid mx-auto d-block']
-                                            ); ?>
-                                        </div>
+                                    // Default to featured image
+                                    $img_src = get_stylesheet_directory_uri() . '/assets/images/featured-img.png';
+                                    $img_alt = 'Default Image';
 
-                                    <?php else : ?>
+                                    // If ACF image exists
+                                    if (!empty($cover_image)) {
+                                        // If 'small' size exists, use it; otherwise use the main image
+                                        if (isset($cover_image['sizes']['small'])) {
+                                            $img_src = $cover_image['sizes']['small'];
+                                        } elseif (isset($cover_image['url'])) {
+                                            $img_src = $cover_image['url'];
+                                        }
 
-                                        <img
-                                            src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/featured-img.png"
-                                            class="img-fluid d-block books-default-image"
-                                            alt="Default Image">
+                                        // Set alt text
+                                        $img_alt = $cover_image['alt'] ?? get_the_title();
+                                    }
+                                    ?>
 
-                                    <?php endif; ?>
+                                    <img src="<?php echo esc_url($img_src); ?>"
+                                        alt="<?php echo esc_attr($img_alt); ?>"
+                                        class="img-fluid mx-auto d-block mb-3">
 
                                 </a>
 
