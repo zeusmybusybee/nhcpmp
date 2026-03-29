@@ -598,4 +598,4 @@ $query = new WP_Query($args);
 
     })(jQuery);
 </script>
-<?php get_footer(); ?>
+<?php get_footer(); ?> 
