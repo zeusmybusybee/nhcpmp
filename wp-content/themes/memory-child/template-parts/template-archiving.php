@@ -8,6 +8,10 @@ get_header();
         margin: 15px 0;
     }
 
+    .page-template-template-archiving {
+        background-color: #F7F7F7;
+    }
+
     .books-filter h5 {
         color: #704B10;
     }
@@ -116,7 +120,40 @@ $query = new WP_Query($args);
 
                 <!-- RIGHT -->
                 <div class="pagination-nav">
-                    <?php echo do_shortcode('[custom_pagination]'); ?>
+                    <?php if ($query->max_num_pages > 1) :
+                        $current = max(1, get_query_var('paged'));
+                        $total = $query->max_num_pages;
+                    ?>
+                        <nav class="custom-pagination">
+                            <div class="pagination-inner">
+
+                                <!-- PREV -->
+                                <div class="pagination-prev"
+                                    style="display:inline-block;margin-right:10px;cursor:pointer;opacity: <?php echo $current <= 1 ? '0.5' : '1'; ?>;">
+                                    <i class="fa-solid fa-angles-left"></i> prev
+                                </div>
+
+                                <!-- INPUT -->
+                                <div class="pagination-info" style="display:inline-block;">
+                                    Page
+                                    <input type="number"
+                                        class="custom-page-input"
+                                        min="1"
+                                        max="<?php echo $total; ?>"
+                                        value="<?php echo $current; ?>"
+                                        style="width:60px;text-align:center;">
+                                    of <?php echo $total; ?>
+                                </div>
+
+                                <!-- NEXT -->
+                                <div class="pagination-next"
+                                    style="display:inline-block;margin-left:10px;cursor:pointer;opacity: <?php echo $current >= $total ? '0.5' : '1'; ?>;">
+                                    next <i class="fa-solid fa-angles-right"></i>
+                                </div>
+
+                            </div>
+                        </nav>
+                    <?php endif; ?>
                 </div>
 
             </div>
@@ -251,9 +288,41 @@ $query = new WP_Query($args);
 
                 <!-- RIGHT -->
                 <div class="pagination-nav">
-                    <?php echo do_shortcode('[custom_pagination]'); ?>
-                </div>
+                    <?php if ($query->max_num_pages > 1) :
+                        $current = max(1, get_query_var('paged'));
+                        $total = $query->max_num_pages;
+                    ?>
+                        <nav class="custom-pagination">
+                            <div class="pagination-inner">
 
+                                <!-- PREV -->
+                                <div class="pagination-prev"
+                                    style="display:inline-block;margin-right:10px;cursor:pointer;opacity: <?php echo $current <= 1 ? '0.5' : '1'; ?>;">
+                                    <i class="fa-solid fa-angles-left"></i> prev
+                                </div>
+
+                                <!-- INPUT -->
+                                <div class="pagination-info" style="display:inline-block;">
+                                    Page
+                                    <input type="number"
+                                        class="custom-page-input"
+                                        min="1"
+                                        max="<?php echo $total; ?>"
+                                        value="<?php echo $current; ?>"
+                                        style="width:60px;text-align:center;">
+                                    of <?php echo $total; ?>
+                                </div>
+
+                                <!-- NEXT -->
+                                <div class="pagination-next"
+                                    style="display:inline-block;margin-left:10px;cursor:pointer;opacity: <?php echo $current >= $total ? '0.5' : '1'; ?>;">
+                                    next <i class="fa-solid fa-angles-right"></i>
+                                </div>
+
+                            </div>
+                        </nav>
+                    <?php endif; ?>
+                </div>
             </div>
 
         </div>
@@ -494,5 +563,39 @@ $query = new WP_Query($args);
         }
 
     });
+</script>
+<script>
+    (function($) {
+
+        function goToPage(page, maxPages) {
+            if (page < 1) page = 1;
+            if (page > maxPages) page = maxPages;
+
+            var url = new URL(window.location.href);
+            url.searchParams.set('paged', page);
+            window.location.href = url.toString();
+        }
+
+        $(document).on('click', '.pagination-prev', function() {
+            var input = $(this).closest('.pagination-inner').find('.custom-page-input');
+            var currentPage = parseInt(input.val()) || 1;
+            var maxPages = parseInt(input.attr('max'));
+            if (currentPage > 1) goToPage(currentPage - 1, maxPages);
+        });
+
+        $(document).on('click', '.pagination-next', function() {
+            var input = $(this).closest('.pagination-inner').find('.custom-page-input');
+            var currentPage = parseInt(input.val()) || 1;
+            var maxPages = parseInt(input.attr('max'));
+            if (currentPage < maxPages) goToPage(currentPage + 1, maxPages);
+        });
+
+        $(document).on('change', '.custom-page-input', function() {
+            var page = parseInt($(this).val());
+            var maxPages = parseInt($(this).attr('max'));
+            if (!isNaN(page)) goToPage(page, maxPages);
+        });
+
+    })(jQuery);
 </script>
 <?php get_footer(); ?>
