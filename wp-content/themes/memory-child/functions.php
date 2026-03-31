@@ -1642,3 +1642,176 @@ function migrate_region_hidden_to_select_hardcoded()
     }
 }
 add_action('admin_init', 'migrate_region_hidden_to_select_hardcoded');
+
+
+function auto_update_historical_bulletin_terms()
+{
+    $taxonomy = 'collection_management';
+    $parent_name = 'Historical Bulletin';
+
+    // Get or create parent term
+    $parent_term = term_exists($parent_name, $taxonomy);
+    if (!$parent_term) {
+        $parent_term_result = wp_insert_term($parent_name, $taxonomy);
+        if (is_wp_error($parent_term_result)) {
+            error_log('Error creating parent term: ' . $parent_term_result->get_error_message());
+            return;
+        }
+        $parent_term_id = $parent_term_result['term_id'];
+    } else {
+        $parent_term_id = is_array($parent_term) ? $parent_term['term_id'] : $parent_term;
+    }
+
+    // List of Historical Bulletin entries
+    $entries = [
+        "10 no 4 Historical Bulletin December 1966",
+        "11 no 2 Historical Bulletin June 1967",
+        "11 no 3 Historical Bulletin September 1967",
+        "11 no 4 Historical Bulletin December 1967",
+        "12 no 1-4 Historical Bulletin January-December 1968",
+        // add the rest of your entries here...
+    ];
+
+    foreach ($entries as $entry) {
+        $entry = trim($entry);
+
+        if (!term_exists($entry, $taxonomy)) {
+            $insert_result = wp_insert_term(
+                $entry,
+                $taxonomy,
+                [
+                    'parent' => $parent_term_id,
+                ]
+            );
+
+            if (is_wp_error($insert_result)) {
+                error_log('Error inserting term "' . $entry . '": ' . $insert_result->get_error_message());
+            }
+        }
+    }
+}
+
+// Hook to run once (for example, on admin_init or manually call it)
+add_action('admin_init', function () {
+    // Only run for admins to avoid overhead
+    if (current_user_can('manage_options')) {
+        auto_update_historical_bulletin_terms();
+    }
+});
+
+function remove_dash_prefix_in_terms() {
+
+    $taxonomy = 'collection_management';
+
+    $terms = get_terms([
+        'taxonomy'   => $taxonomy,
+        'hide_empty' => false,
+    ]);
+
+    if (empty($terms) || is_wp_error($terms)) {
+        return;
+    }
+
+    foreach ($terms as $term) {
+
+        // check kung may "- " sa unahan
+        if (strpos($term->name, '- ') === 0) {
+
+            // tanggalin yung dash + space
+            $new_name = substr($term->name, 2);
+
+            wp_update_term($term->term_id, $taxonomy, [
+                'name' => $new_name
+            ]);
+        }
+    }
+}
+
+add_action('init', 'remove_dash_prefix_in_terms');
+
+function set_ambeth_collection_parent_slug()
+{
+
+    $taxonomy = 'collection_management';
+
+    $parent = get_term_by('slug', 'ambeth-r-ocampo-collection', $taxonomy);
+
+    if (!$parent || is_wp_error($parent)) {
+        return;
+    }
+
+    // list ng target SLUGS
+    $target_slugs = [
+        'compilation-of-narratives-poem-story-letter-statistics',
+        'constabulary-and-military-records',
+        'general-rules-of-santo-tomas-internment-camp',
+        'internees-memorandum-notice-1942',
+        'la-vanguardia-periodico-de-enero-30-1943-ano-xxxiii-num-310',
+        'letter-from-the-congress-of-the-united-states-january-29-1944',
+        'letter-from-the-department-of-state-washington-january-28-1944-to-charles-r-clason',
+        'letter-to-the-commandant-consul-r-tsurumi-santo-tomas-internment-camp-june-5-1942',
+        'letters-form-standard-vacuum-oil-c-december-1941-january-1942',
+        'letters-from-the-department-of-state-january-12-1944-no-10',
+        'manila-free-philippines-vol-i-february-to-march-1945',
+        'manila-free-philippines-vol-ii-march-to-april-1945',
+        'manila-new-day-april-8-1945',
+        'mr-and-mrs-richards-clippings',
+        'mr-and-mrs-richards-mails-letters-and-other-items',
+        'mr-and-mrs-richards-personal-records',
+        'mr-and-mrs-richards-photos',
+        'nos-de-manila-periodico-vol-1-no-1-marso-5-1945-page-1-2',
+        'prensa-libre-newspaper-vol-1-no-1-abril-8-1945-page-1-2',
+        'procedure-to-be-followed-in-extending-financial-assistance-to-american-nationals',
+        'proceedings-of-the-first-international-conference-of-historians',
+        'relief-for-americans-in-the-philippines-newsletters-no-28-june-1-1945',
+        'santo-tomas-internment-camp-internews-campus-health',
+        'sixth-army-news-1st-cavalry-edition',
+        'the-internitis-manila-july-1942',
+        'the-internitis-manila-october-1942',
+        'the-liberator-march-vol-ii-march-3-8-1945-nos-6-7',
+        'the-manila-post-march-1945-to-apri-1945',
+        'the-philippine-liberty-news-march-1945-to-april-1945',
+        'the-saturday-evening-post-i-saw-manila-die-by-charles-van-landingham-september-26-1942',
+        'the-tribune-the-sunday-tribune-news-paper-vol-xix-may-1943-to-february-1944',
+        'the-tribune-the-sunday-tribune-news-paper-vol-xviii-april-1942-to-january-1943',
+        'the-tribune-manila-april-29-1942-special-supplement-on-the-birthday-of-his-imperial-majesty',
+        'the-tribune-news-paper-vol-xvii-february-27-1942-no-291',
+        'the-tribune-news-paper-vol-xx-may-24-1944-no-44',
+        'vocabulario-delengua-tagala-el-romance-castellano-puesto',
+        'world-war-ii-clippings'
+    ];
+
+    $offset = (int) get_option('ambeth_offset', 0);
+    $limit  = 100;
+
+    $terms = get_terms([
+        'taxonomy'   => $taxonomy,
+        'hide_empty' => false,
+        'number'     => $limit,
+        'offset'     => $offset,
+    ]);
+
+    if (empty($terms) || is_wp_error($terms)) {
+        delete_option('ambeth_offset');
+        return;
+    }
+
+    foreach ($terms as $term) {
+
+        if ($term->term_id == $parent->term_id) {
+            continue;
+        }
+
+        // match slug
+        if (in_array($term->slug, $target_slugs)) {
+
+            wp_update_term($term->term_id, $taxonomy, [
+                'parent' => $parent->term_id
+            ]);
+        }
+    }
+
+    update_option('ambeth_offset', $offset + $limit);
+}
+
+add_action('init', 'set_ambeth_collection_parent_slug');
