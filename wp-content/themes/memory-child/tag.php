@@ -49,6 +49,9 @@
                 <h4 class="mb-0 mt-0" style="color:#704b10">
                     Top <?php echo $query->found_posts; ?> results for <?php single_tag_title(); ?>
                 </h4>
+                <div class="pagination-nav">
+                    <?php echo do_shortcode('[custom_pagination]'); ?>
+                </div>
             </div>
 
             <div class="row g-4">
