@@ -906,6 +906,7 @@ $ctermid = isset($_GET['ctermid']) ? $_GET['ctermid'] : null;
     </div>
 
     <div class="col-lg-4">
+        
     </div>
 
 </div>
