@@ -54,7 +54,7 @@ get_header('archiving'); ?>
                                                     <?php echo $rowcount; ?>
                                                 </div>
                                                 <div class="dashboard__item--watermark">
-                                                    <img src="" alt="Watermark Item">
+                                                    <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/dashboard_frame.png" alt="Watermark Item">
                                                 </div>
                                             </div>
                                         <?php }
@@ -112,7 +112,7 @@ get_header('archiving'); ?>
                                                     ?>
                                                 </div>
                                                 <div class="dashboard__item--watermark">
-                                                    <img src="" alt="Watermark Item">
+                                                    <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/dashboard_frame.png" alt="Watermark Item">
                                                 </div>
                                             </div>
 
@@ -167,7 +167,7 @@ get_header('archiving'); ?>
                                                     <?php echo $rowcount; ?>
                                                 </div>
                                                 <div class="dashboard__item--watermark">
-                                                    <img src="" alt="Watermark Item">
+                                                    <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/dashboard_frame.png" alt="Watermark Item">
                                                 </div>
                                             </div>
                                         <?php }

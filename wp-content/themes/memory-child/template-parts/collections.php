@@ -11,6 +11,10 @@ get_header();
         text-align: center;
     }
 
+    span.page-numbers.current {
+        color: #fff !important;
+    }
+
     .collections__banner--title h2 {
         color: #fff;
         margin-top: 10px;
@@ -36,6 +40,10 @@ get_header();
         -moz-transition: all 0.35s ease;
         -o-transition: all 0.35s ease;
         transition: all 0.35s ease;
+    }
+
+    .page-template-collections {
+        background-color: #F7F7F7;
     }
 
     .searchresults .page-numbers:hover {
@@ -88,6 +96,22 @@ get_header();
 
     .post-content {
         text-align: center;
+    }
+
+    .collection-title {
+        font-size: 16px;
+        font-weight: 800;
+    }
+
+    .collection-container a {
+        font-size: 16px;
+        font-weight: 800;
+        text-decoration: none !important;
+        color: #fff !important;
+    }
+
+    ul#collection-lists .dot-fix {
+        padding: 10px;
     }
 </style>
 
@@ -155,6 +179,7 @@ $ctermid = isset($_GET['ctermid']) ? $_GET['ctermid'] : null;
                             }
                         </style>
                         <div class="collection-container">
+
                             <?php
                             $term_id = $_GET['ptermid'];
                             function display_subcategories($parent_id)
@@ -171,7 +196,7 @@ $ctermid = isset($_GET['ctermid']) ? $_GET['ctermid'] : null;
                                         <?php foreach ($subcategories as $subcategory) { ?>
                                             <li class="gap-4 mb-4 rounded" style="background: #A7A7A7;">
                                                 <div class="list">
-                                                    <p class="dot-fix"><i class="fa-solid fa-circle dot"></i> <a href="<?php echo site_url() . '/contributed-collections/?ptermid=' . $subcategory->term_id; ?>"><?php echo $subcategory->name; ?></a></p>
+                                                    <p class="dot-fix"><a href="<?php echo site_url() . '/contributed-collections/?ptermid=' . $subcategory->term_id; ?>"><?php echo $subcategory->name; ?></a></p>
                                                     <?php display_subcategories($subcategory->term_id); ?>
                                                 </div>
                                             </li>
@@ -183,6 +208,178 @@ $ctermid = isset($_GET['ctermid']) ? $_GET['ctermid'] : null;
                             display_subcategories($term_id); ?>
                         </div>
                     </div>
+        </div>
+
+        <!-- RIGHT: RESULTS -->
+        <div class="col-lg-4 archive-right-col">
+
+            <form method="get"
+                action="<?php echo esc_url(get_post_type_archive_link('articles')); ?>"
+                class="p-4">
+
+                <div class="row g-4 border rounded mb-5">
+                    <!-- Always target Articles -->
+                    <input type="hidden" name="post_type" value="articles">
+
+                    <!-- SEARCH (only one) -->
+                    <div class="input-group" style="margin-top:0;">
+                        <input
+                            type="search"
+                            class="form-control border-0"
+                            name="s"
+                            placeholder="Search articles..."
+                            value="<?php echo esc_attr($_GET['s'] ?? ''); ?>">
+                        <button class="button" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+
+                <div class="row g-4 border rounded p-4 bg-body-tertiary">
+                    <!-- FILTER BY -->
+                    <div class="col-6 archive-right-col">
+                        <h6 class="mb-3 fw-bold">Filter by:</h6>
+
+                        <?php
+                        $current_filter = $_GET['filter'] ?? '';
+                        ?>
+
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="filter" value="title"
+                                <?php checked($current_filter, 'title'); ?>>
+                            <label class="form-check-label">Title</label>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="filter" value="author"
+                                <?php checked($current_filter, 'author'); ?>>
+                            <label class="form-check-label">Author</label>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="filter" value="publisher"
+                                <?php checked($current_filter, 'publisher'); ?>>
+                            <label class="form-check-label">Publisher</label>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="filter" value="keyword"
+                                <?php checked($current_filter, 'keyword'); ?>>
+                            <label class="form-check-label">Subject / Keyword</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="filter" value="year"
+                                <?php checked($current_filter, 'year'); ?>>
+                            <label class="form-check-label">Year</label>
+                        </div>
+                    </div>
+
+                    <!-- SORT BY -->
+                    <div class="col-6 archive-right-col">
+                        <h6 class="mb-3 fw-bold">Sort by:</h6>
+
+                        <?php
+                        $current_order = $_GET['orderby'] ?? 'relevance';
+                        ?>
+
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="orderby" value="relevance"
+                                <?php checked($current_order, 'relevance'); ?>>
+                            <label class="form-check-label">Most relevant</label>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="orderby" value="title"
+                                <?php checked($current_order, 'title'); ?>>
+                            <label class="form-check-label">A–Z</label>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="orderby" value="date"
+                                <?php checked($current_order, 'date'); ?>>
+                            <label class="form-check-label">Newest</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="orderby" value="date-asc"
+                                <?php checked($current_order, 'date-asc'); ?>>
+                            <label class="form-check-label">Oldest</label>
+                        </div>
+                    </div>
+
+                    <!-- LEVEL OF ACCESS -->
+                    <div class="col-6 archive-right-col mt-4">
+                        <h6 class="mb-3 fw-bold">Level of Access:</h6>
+
+                        <?php
+                        $current_access = $_GET['access'] ?? '';
+                        ?>
+
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="access" value="open"
+                                <?php checked($current_access, 'open'); ?>>
+                            <label class="form-check-label">Open Access</label>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="access" value="viewing"
+                                <?php checked($current_access, 'viewing'); ?>>
+                            <label class="form-check-label">Viewing Access</label>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="access" value="limited"
+                                <?php checked($current_access, 'limited'); ?>>
+                            <label class="form-check-label">Limited Access</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="access" value="excluded"
+                                <?php checked($current_access, 'excluded'); ?>>
+                            <label class="form-check-label">Excluded Access</label>
+                        </div>
+                    </div>
+
+                    <!-- AVAILABILITY -->
+                    <div class="col-6 archive-right-col mt-4">
+                        <h6 class="mb-3 fw-bold">Availability:</h6>
+
+                        <?php
+                        $current_availability = $_GET['availability'] ?? '';
+                        ?>
+
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="availability" value="catalogued"
+                                <?php checked($current_availability, 'catalogued'); ?>>
+                            <label class="form-check-label">Catalogued</label>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="availability" value="digital"
+                                <?php checked($current_availability, 'digital'); ?>>
+                            <label class="form-check-label">Digital File</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="availability" value="nhcp"
+                                <?php checked($current_availability, 'nhcp'); ?>>
+                            <label class="form-check-label">NHCP Library</label>
+                        </div>
+                    </div>
+
+                    <div class="button_container col-12">
+                        <button type="submit"
+                            class="btn w-100 mt-4 fw-bold  archive-filter-btn"
+                            style="background-color:#6b4a1f;color:white;">
+                            Search
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+
         </div>
 
         <?php
@@ -519,6 +716,7 @@ $ctermid = isset($_GET['ctermid']) ? $_GET['ctermid'] : null;
 
                 if ($data->have_posts()) : ?>
         <div class="col-wrapper">
+
             <?php while ($data->have_posts()) : $data->the_post(); ?>
                 <?php $cover_image = get_field('cover_image'); ?>
 
@@ -685,7 +883,7 @@ $ctermid = isset($_GET['ctermid']) ? $_GET['ctermid'] : null;
         <?php foreach ($jobs as $job) { ?>
             <div class="col-lg-6">
                 <a class="text-decoration-none text-dark" href="<?php echo site_url() . '/contributed-collections/?ptermid=' . $job->term_id; ?>">
-                    <div class="d-flex gap-4 mb-4 collection-box rounded" style="background: #A7A7A7;">
+                    <div class="d-flex gap-4 mb-4 collection-box rounded text-white collection-title" style="background: #A7A7A7;">
                         <?php echo $job->name; ?>
                     </div>
                 </a>
@@ -708,6 +906,7 @@ $ctermid = isset($_GET['ctermid']) ? $_GET['ctermid'] : null;
     </div>
 
     <div class="col-lg-4">
+        
     </div>
 
 </div>

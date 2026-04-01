@@ -24,6 +24,14 @@
     .meta-ph-heraldy div {
         font-size: 15px;
     }
+
+    .feature-item-list img {
+        margin: 0;
+        border-radius: 15px;
+        width: 100%;
+        object-fit: cover;
+        height: clamp(185px, 25vw, 356px);
+    }
 </style>
 
 <div class="container py-5">
@@ -49,6 +57,9 @@
                 <h4 class="mb-0 mt-0" style="color:#704b10">
                     Top <?php echo $query->found_posts; ?> results for <?php single_tag_title(); ?>
                 </h4>
+                <div class="pagination-nav">
+                    <?php echo do_shortcode('[custom_pagination]'); ?>
+                </div>
             </div>
 
             <div class="row g-4">
@@ -58,7 +69,7 @@
 
                         <div class="col-lg-4 col-md-6">
 
-                            <div class="card h-100 border-0 shadow-sm text-center p-4">
+                            <div class="card h-100 border-0 shadow-sm text-center p-4 feature-item-list">
 
                                 <a href="<?php echo esc_url(site_url('/collection-view/?id=' . get_the_ID())); ?>" class="text-decoration-none text-dark">
 
