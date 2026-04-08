@@ -280,12 +280,12 @@
                             <div class="form-check d-flex  align-items-center">
                                 <input class="form-check-input mb-2" type="radio" name="orderby" value="title"
                                     <?php checked($current_order, 'title'); ?>>
-                                <label class="form-check-label">A–Z</label>
+                                <label class="form-check-label">Aâ€“Z</label>
                             </div>
                             <div class="form-check d-flex align-items-center">
                                 <input class="form-check-input mb-2" type="radio" name="orderby" value="title-desc"
                                     <?php checked($current_order, 'title-desc'); ?>>
-                                <label class="form-check-label">Z–A</label>
+                                <label class="form-check-label">Zâ€“A</label>
                             </div>
                             <div class="form-check d-flex  align-items-center">
                                 <input class="form-check-input mb-2" type="radio" name="orderby" value="date"
@@ -655,13 +655,13 @@
 
                         if ($series_field && !empty($series_field['choices'])) :
 
-                            // ✅ ALWAYS get ALL posts (not affected by filters)
+                            // âœ… ALWAYS get ALL posts (not affected by filters)
                             $all_posts = get_posts([
                                 'post_type'        => 'historical-sites',
                                 'posts_per_page'   => -1,
                                 'post_status'      => 'publish',
                                 'fields'           => 'ids',
-                                'suppress_filters' => true // 🔥 important fix
+                                'suppress_filters' => true // ðŸ”¥ important fix
                             ]);
 
                             $series_counts = [];
@@ -672,7 +672,7 @@
                                 $series_counts[$value] = 0;
                             }
 
-                            // ✅ CORRECT counting for multiple ACF field
+                            // âœ… CORRECT counting for multiple ACF field
                             foreach ($all_posts as $post_id) {
                                 $series = get_field('marker_series', $post_id);
 
@@ -924,7 +924,6 @@
             </form>
 
         </div>
-
 
 
 
