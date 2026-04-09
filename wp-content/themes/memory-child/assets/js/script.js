@@ -69,129 +69,216 @@ jQuery(document).ready(function ($) {
 });
 
 jQuery(document).ready(function ($) {
-  // hide all options except first
-  $("#registry_category option:not(:first)").hide();
+  //  LEVEL I
+  const levelI = {
+    "national-historical-landmark": "National Historical Landmark",
+    "national-historical-site": "National Historical Site",
+    "national-monument": "National Monument",
+    "national-shrine": "National Shrine",
+    "unesco-world-heritage-site": "UNESCO World Heritage Site",
+  };
 
-  $("#level_status").change(function () {
-    let level = $(this).val();
+  //  LEVEL II
+  const levelII = {
+    "association-institution-organization": "Association/Institution/Organization",
+    "buildings-structures": "Buildings/Structures",
+    "heritage-house": "Heritage House",
+    "heritage-zone-historic-center": "Heritage Zone / Historic Center",
+    "personages": "Personages",
+    "sites-events": "Sites/Events",
+  };
 
-    let levelI = [
-      "national-historical-landmark",
-      "national-historical-site",
-      "national-monument",
-      "national-shrine",
-      "unesco-world-heritage-site",
-    ];
+  const $category = $("#registry_category");
 
-    let levelII = [
-      "association-institution-organization",
-      "buildings-structures",
-      "heritage-house",
-      "heritage-zone-historic-center",
-      "personages",
-      "sites-events",
-    ];
+  function filterCategories() {
+    const selectedVal = $category.val();
+    const level = $("#level_status").val();
 
-    // hide all first
-    $("#registry_category option:not(:first)").hide();
+    let activeLevel = null;
+    if (level === "level-i") activeLevel = levelI;
+    else if (level === "level-ii") activeLevel = levelII;
 
-    if (level === "level-i") {
-      levelI.forEach(function (slug) {
-        $('#registry_category option[value="' + slug + '"]').show();
-      });
+
+    $category.find("option").hide();
+    $category.find('option[value=""]').show(); 
+
+    if (!activeLevel) return; 
+
+  
+    $category.find("option").each(function () {
+      const key = $(this).val(); // using value as key
+      if (activeLevel.hasOwnProperty(key)) $(this).show();
+
+      //  keep selected visible
+      if ($(this).val() === selectedVal) $(this).show();
+    });
+  }
+
+  //  SET VALUES FROM URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const selectedCategory = urlParams.get("registry_category");
+  const selectedLevel = urlParams.get("level_status");
+
+  if (selectedCategory) $category.val(selectedCategory);
+  if (selectedLevel) $("#level_status").val(selectedLevel);
+
+
+  filterCategories();
+
+
+  $("#level_status").on("change", filterCategories);
+});
+
+jQuery(document).ready(function ($) {
+  // LEVEL I
+  const levelI = {
+    "bank": "Bank*",
+    "battle-site-2": "Battle Site*",
+    "belfry": "Belfry*",
+    "buildings-structures": "Buildings/Structures*",
+    "capitol-building": "Capitol Building*",
+    "cemetery": "Cemetery*",
+    "clubhouse": "Clubhouse*",
+    "convent": "Convent",
+    "declaration-marker": "Declaration Marker*",
+    "fortification": "Fortification*",
+    "garden": "Garden*",
+    "historic-center": "Historic Center*",
+    "hotel": "Hotel*",
+    "house-of-worship": "House of Worship*",
+    "house": "House*",
+    "kampanaryo-ng-jaro": "Kampanaryo ng Jaro*",
+    "lighthouse": "Lighthouse*",
+    "memorial": "Memorial*",
+    "monument": "Monument*",
+    "nhcp-museum": "NHCP Museum*",
+    "penitentiary": "Penitentiary*",
+    "plaza": "Plaza*",
+    "prison-cell": "Prison Cell*",
+    "school": "School*",
+    "site-of-important-event": "Site of an Important Event*",
+    "site": "Site*",
+    "university": "University*",
+    "watchtower": "Watchtower*"
+  };
+
+  // LEVEL II (EDIT MO BASE SA DATA MO)
+const levelII = {
+  "aquarium": "Aquarium",
+  "battle-site": "Battle Site",
+  "beach": "Beach",
+  "belfry": "Belfry",
+  "biographical-marker": "Biographical Marker",
+  "bridge": "Bridge",
+  "capitol-building": "Capitol Building",
+  "cathedral": "Cathedral",
+  "cemetery": "Cemetery",
+  "convent": "Convent",
+  "dam": "Dam",
+  "fortification": "Fortification",
+  "foundation-site": "Foundation Site",
+  "fountain": "Fountain",
+  "gabaldon-school": "Gabaldon School",
+  "gateway": "Gateway",
+  "golf-course": "Golf Course",
+  "group-of-houses": "Group of Houses",
+  "hospital": "Hospital",
+  "house": "House",
+  "house-of-worship": "House of Worship",
+  "lighthouse": "Lighthouse",
+  "memorare": "Memorare",
+  "memorial": "Memorial",
+  "military-camp": "Military Camp",
+  "military-structure": "Military Structure",
+  "monument": "Monument",
+  "museum": "Museum",
+  "office-building": "Office Building",
+  "plaza": "Plaza",
+  "polvorin": "Polvorin",
+  "post-office": "Post Office",
+  "prison": "Prison",
+  "private-company": "Private Company",
+  "private-institution": "Private Institution",
+  "ranch": "Ranch",
+  "restaurant": "Restaurant",
+  "retreat-house": "Retreat House",
+  "ridge": "Ridge",
+  "rizal-monuments": "Rizal monuments",
+  "room": "Room",
+  "ruins": "Ruins",
+  "school": "School",
+  "seminary": "Seminary",
+  "simbahan-ng-canaman": "Simbahan ng Canaman",
+  "site": "Site",
+  "site-of-an-important-event": "Site of an Important Event",
+  "tomas-pinpin": "Tomas Pinpin",
+  "town-city-hall": "Town/City Hall",
+  "trading-house": "Trading house",
+  "train-station": "Train Station",
+  "university": "University",
+  "watchtower": "Watchtower"
+};
+
+
+function filterOptions() {
+  const $type = $("#type");
+  const selectedVal = $type.val();
+  const level = $("#level_status").val();
+
+  let activeLevel = null;
+
+  if (level === "level-i") {
+    activeLevel = levelI;
+  } else if (level === "level-ii") {
+    activeLevel = levelII;
+  }
+
+  //  STEP 1: hide all muna
+  $type.find("option").hide();
+  $type.find('option[value=""]').show(); // show "-Type-"
+
+  //  kung walang level → wag magpakita ng options
+  if (!activeLevel) {
+    return;
+  }
+
+  //  STEP 2: show only allowed options
+  $type.find("option").each(function () {
+    const key = $(this).data("key");
+
+    if (activeLevel.hasOwnProperty(key)) {
+      $(this).show();
     }
 
-    if (level === "level-ii") {
-      levelII.forEach(function (slug) {
-        $('#registry_category option[value="' + slug + '"]').show();
-      });
+    //  keep selected visible (important)
+    if ($(this).val() === selectedVal) {
+      $(this).show();
     }
   });
+}
+
+  //  SET VALUES FROM URL (IMPORTANT)
+  const urlParams = new URLSearchParams(window.location.search);
+  const selectedType = urlParams.get("labels");
+  const selectedLevel = urlParams.get("level_status");
+
+  if (selectedType) {
+    $("#type").val(selectedType);
+  }
+
+  if (selectedLevel) {
+    $("#level_status").val(selectedLevel);
+  }
+
+  //  INIT
+  filterOptions();
+
+  //  ON CHANGE
+  $("#level_status").on("change", function () {
+    filterOptions();
+  });
 });
- jQuery(document).ready(function ($) {
-   // TYPES per level
-   let levelI_types = [
-     "Battle Site",
-     "Fortification",
-     "Historic Center",
-     "Monument",
-     "NHCP Museum",
-     "Site of an Important Event",
-     "Site",
-     "Belfry",
-     "Buildings/Structures",
-     "Capitol Building",
-     "Cemetery",
-     "Clubhouse",
-     "Convent",
-     "Declaration marker",
-     "Garden",
-     "Hotel",
-     "House of Worship",
-     "House",
-     "Kampanaryo ng Jaro",
-     "Lighthouse",
-     "Memorial",
-     "Penitentiary",
-     "Plaza",
-     "Prison Cell",
-     "School",
-     "University",
-     "Watchtower",
-   ];
 
-   let levelII_types = [
-     "Battle Site",
-     "Fortification",
-     "Historic Center",
-     "Monument",
-     "NHCP Museum",
-     "Site of an Important Event",
-     "Site",
-     "Belfry",
-     "Buildings/Structures",
-     "Capitol Building",
-     "Cemetery",
-     "Clubhouse",
-     "Convent",
-     "Declaration marker",
-     "Garden",
-     "Hotel",
-     "House of Worship",
-     "House",
-     "Kampanaryo ng Jaro",
-     "Lighthouse",
-     "Memorial",
-     "Penitentiary",
-     "Plaza",
-     "Prison Cell",
-     "School",
-     "University",
-     "Watchtower",
-   ];
-
-   // initially hide all except first
-   $("#type option:not(:first)").hide();
-
-   $("#level_status").change(function () {
-     let level = $(this).val();
-
-     // hide all first
-     $("#type option:not(:first)").hide();
-
-     if (level === "level-i") {
-       levelI_types.forEach(function (val) {
-         $('#type option[value="' + val + '"]').show();
-       });
-     }
-
-     if (level === "level-ii") {
-       levelII_types.forEach(function (val) {
-         $('#type option[value="' + val + '"]').show();
-       });
-     }
-   });
- });
 jQuery(document).ready(function ($) {
   $("#show-mobile-only").html($(".show-mobile-only").html());
 });
