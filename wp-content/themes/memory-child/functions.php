@@ -920,7 +920,6 @@ function ph_heraldry_registry_filters($query)
 }
 add_action('pre_get_posts', 'ph_heraldry_registry_filters');
 
-add_action('pre_get_posts', 'ph_heraldry_registry_filters');
 
 // filter function historical sites
 function ph_historical_sites_filters($query)
@@ -954,35 +953,34 @@ function ph_historical_sites_filters($query)
             ];
         }
 
-        // REGION FOR HISTORIC (meta)
-        if (!empty($_GET['region_for_historic'])) {
-            $region_historic = sanitize_text_field($_GET['region_for_historic']);
+        if (!empty($_GET['labels'])) {
+            $type_slug = sanitize_text_field($_GET['labels']); // this is the slug, e.g., 'bank'
+
+            $tax_query[] = [
+                'taxonomy' => 'labels',   // your taxonomy slug
+                'field'    => 'slug',   // we are passing the slug
+                'terms'    => $type_slug,
+            ];
+        }
+
+        // REGION
+        if (!empty($_GET['acf']['region_for_historic'])) {
             $meta_query[] = [
                 'key'     => 'region_for_historic',
-                'value'   => $region_historic,
+                'value'   => sanitize_text_field($_GET['acf']['region_for_historic']),
                 'compare' => '=', // exact match
             ];
         }
 
-        // PROVINCE FOR HISTORIC (meta)
-        if (!empty($_GET['province_for_historic'])) {
-            $province_historic = sanitize_text_field($_GET['province_for_historic']);
+        // PROVINCE (ACF field key)
+        if (!empty($_GET['acf']['field_69b646224193d'])) {
             $meta_query[] = [
                 'key'     => 'province_for_historic',
-                'value'   => $province_historic,
+                'value'   => sanitize_text_field($_GET['acf']['field_69b646224193d']),
                 'compare' => '=', // exact match
             ];
         }
 
-        // TYPE (meta)
-        if (!empty($_GET['type'])) {
-            $type = sanitize_text_field($_GET['type']);
-            $meta_query[] = [
-                'key'     => 'type',
-                'value'   => $type,
-                'compare' => '=',
-            ];
-        }
         // CITY / MUNICIPALITY FOR HISTORIC (meta)
         if (!empty($_GET['city_and_municipality_for_historic'])) {
             $city_historic = sanitize_text_field($_GET['city_and_municipality_for_historic']);
@@ -1015,10 +1013,20 @@ function ph_historical_sites_filters($query)
 
         // MARKER SERIES
         if (!empty($_GET['marker_series'])) {
+            $value = sanitize_text_field($_GET['marker_series']);
+
             $meta_query[] = [
-                'key'   => 'marker_series',
-                'value' => sanitize_text_field($_GET['marker_series']),
-                'compare' => '='
+                'relation' => 'OR',
+                [
+                    'key'     => 'marker_series',
+                    'value'   => '"' . $value . '"',
+                    'compare' => 'LIKE'
+                ],
+                [
+                    'key'     => 'marker_series',
+                    'value'   => $value,
+                    'compare' => '='
+                ]
             ];
         }
 
@@ -1143,7 +1151,26 @@ function ph_historical_sites_filters($query)
 add_action('pre_get_posts', 'ph_historical_sites_filters');
 
 
+function ph_force_content_search($where, $query)
+{
+    global $wpdb;
 
+    if (!is_admin() && $query->is_main_query() && is_post_type_archive('historical-sites')) {
+
+        if (!empty($_GET['s'])) {
+            $term = sanitize_text_field($_GET['s']);
+            $like = '%' . $wpdb->esc_like($term) . '%';
+
+            // Remove title-only search and replace
+            $where .= $wpdb->prepare("
+                OR {$wpdb->posts}.post_content LIKE %s
+            ", $like);
+        }
+    }
+
+    return $where;
+}
+add_filter('posts_where', 'ph_force_content_search', 20, 2);
 
 // Filtering artifacts CPT
 function artifacts_registry_filters($query)
@@ -1626,22 +1653,22 @@ add_filter('body_class', function ($classes) {
 
 
 
-function migrate_region_hidden_to_select_hardcoded()
-{
-    $posts = get_posts([
-        'post_type' => 'historical-sites',
-        'posts_per_page' => -1,
-        'post_status' => 'any',
-    ]);
+// function migrate_region_hidden_to_select_hardcoded()
+// {
+//     $posts = get_posts([
+//         'post_type' => 'historical-sites',
+//         'posts_per_page' => -1,
+//         'post_status' => 'any',
+//     ]);
 
-    foreach ($posts as $post) {
-        $region_hidden = get_post_meta($post->ID, 'region_hidden_text', true);
-        if ($region_hidden) {
-            update_post_meta($post->ID, 'region_for_historic', $region_hidden);
-        }
-    }
-}
-add_action('admin_init', 'migrate_region_hidden_to_select_hardcoded');
+//     foreach ($posts as $post) {
+//         $region_hidden = get_post_meta($post->ID, 'region_hidden_text', true);
+//         if ($region_hidden) {
+//             update_post_meta($post->ID, 'region_for_historic', $region_hidden);
+//         }
+//     }
+// }
+// add_action('admin_init', 'migrate_region_hidden_to_select_hardcoded');
 
 
 function auto_update_historical_bulletin_terms()
@@ -1729,3 +1756,229 @@ function remove_dash_prefix_in_terms() {
 
 add_action('init', 'remove_dash_prefix_in_terms');
 
+
+
+
+// -----------------------------
+// Region → Province mapping
+// -----------------------------
+function get_region_province_map() {
+    return [
+        'BARMM (Bangsamoro Autonomous Region)' => ['Basilan','Lanao del Sur','Maguindanao','Sulu','Tawi-Tawi'],
+        'CAR (Cordillera Administrative Region)' => ['Abra','Apayao','Benguet','Ifugao','Kalinga','Mountain Province'],
+        'NCR (National Capital Region)' => ['NCR'],
+        'Negros Island Region (NIR)' => ['Negros Occidental','Negros Oriental'],
+        'Region I (Ilocos Region)' => ['Ilocos Norte','Ilocos Sur','La Union','Pangasinan'],
+        'Region II (Cagayan Valley)' => ['Batanes','Cagayan','Isabela','Nueva Vizcaya','Quirino'],
+        'Region III (Central Luzon)' => ['Aurora','Bataan','Bulacan','Nueva Ecija','Pampanga','Tarlac','Zambales'],
+        'Region IV-A (CALABARZON)' => ['Batangas','Cavite','Laguna','Quezon','Rizal'],
+        'Region IV-B (MIMAROPA)' => ['Marinduque','Occidental Mindoro','Oriental Mindoro','Palawan','Romblon'],
+        'Region V (Bicol Region)' => ['Albay','Camarines Norte','Camarines Sur','Catanduanes','Masbate','Sorsogon'],
+        'Region VI (Western Visayas)' => ['Aklan','Antique','Capiz','Guimaras','Iloilo','Negros Occidental'],
+        'Region VII (Central Visayas)' => ['Bohol','Cebu','Negros Oriental','Siquijor'],
+        'Region VIII (Eastern Visayas)' => ['Biliran','Eastern Samar','Leyte','Northern Samar','Samar','Southern Leyte'],
+        'Region IX (Zamboanga Peninsula)' => ['Zamboanga del Norte','Zamboanga del Sur','Zamboanga Sibugay'],
+        'Region X (Northern Mindanao)' => ['Bukidnon','Camiguin','Lanao del Norte','Misamis Occidental','Misamis Oriental'],
+        'Region XI (Davao Region)' => ['Davao del Norte','Davao del Sur','Davao Occidental','Davao Oriental','Davao de Oro'],
+        'Region XII (SOCCSKSARGEN)' => ['Cotabato','Sarangani','South Cotabato','Sultan Kudarat','General Santos'],
+        'Region XIII (Caraga)' => ['Agusan del Norte','Agusan del Sur','Dinagat Islands','Surigao del Norte','Surigao del Sur'],
+    ];
+}
+
+// -----------------------------
+// Province → Cities mapping
+// -----------------------------
+function get_province_city_map() {
+    return [
+        'Abra' => ['Barlig','Bangued', 'Danglas', 'Barlig', 'Lubuagan'],
+        'Aklan' => ['Batan','Kalibo', 'Ibajay'],
+        'Albay' => ['Daraga', 'Camalig', 'Guinobatan', 'Juban', 'Legazpi City', 'Daraga', 'Libon', 'Malilipot', 'Tabaco', 'Malinao', 'Oas'],
+        'Antique' => ['Anini-y', 'Bugasong', 'Hamtic'],
+        'Aurora' => ['Baler','Dilasag', 'Dinalungan', 'Dipaculao'],
+        'Basilan' => ['Bataraza','Isabela City'], // actually Palawan
+        'Bataan' => ['Bataan', 'Balanga', 'Limay', 'Orion', 'Morong', 'Dinalupihan'],
+        'Batanes' => ['Basco'],
+        'Batangas' => ['Batangas City', 'Bauan', 'Calatagan', 'Lipa City', 'Ibaan', 'Lemery', 'Lobo', 'Mariveles', 'Nasugbu'],
+        'Biliran' => ['Biliran'],
+        'Bohol' => ['Baclayon', 'Balilihan', 'Inabanga', 'Guindulman','Loay', 'Loboc', 'Inabanga','Maribojoc'],
+        'Bukidnon' => ['Bukidnon', 'Jasaan', 'Malaybalay'], // province-level
+        'Camiguin' => ['Mambajao'],
+        'Cavite' => ['Imus', 'Indang', 'General Trias', 'General Emilio Aguinaldo','Kawit', 'Maragondon', 'Naic', 'Noveleta'],
+        'Bulacan' => ['Bulakan', 'Baliwag', 'Bustos', 'Calumpit', 'Plaridel', 'San Rafael', 'Hagonoy', 'Malolos City', 'Marilao', 'Meycauayan', 'Norzağaray'],
+        'Pampanga' => ['Guagua', 'Lubao', 'Mabalacat', 'Macabebe', 'Magalang'],
+        'Cagayan' => ['Camalaniugan', 'Tuguegarao'],
+        'Camarines Sur' => ['Baao', 'Bato', 'Buhi', 'Canaman'],
+        'Cebu' => ['Malabuyoc', 'Oslob','Cebu City', 'Carcar', 'Dalaguete', 'Boljoon', 'Bantayan','Dumanjug', 'Hilongos', 'Hindang', 'Hinunangan', 'Dumaguete City (technically Negros Oriental)', 'Cebu City', 'Lapu-Lapu City', 'Dalaguete', 'Liloan', 'Loay', 'Badian'],
+        'Cotabato' => ['Cotabato City'],
+        'Davao del Sur' => ['Davao City'],
+        'Eastern Samar' => ['Borongan', 'Balangiga','Dulag', 'Guiuan'],
+        'Guimaras' => ['Buenavista', 'Jaro'],
+        'Ifugao' => ['Banaue', 'Hungduan', 'Kiangan'],
+        'Iloilo' => ['Dingle', 'Dingras (actually Ilocos Norte)'],
+        'Ilocos Norte' => ['Batac', 'Bacarra', 'Badoc', 'Bangar', 'Pagudpud', 'Lal-lo', 'Laoag City', 'Lallo'],
+        'Ilocos Sur' => ['Cervantes', 'Burgos', 'Dingras (actually Ilocos Norte)',  'Magsingal'],
+        'Isabela' => ['Bayombong', 'Ilagan', 'Iguig'], // actually Nueva Vizcaya
+        'Laguna' => ['Biñan', 'Cabuyao City', 'Calamba', 'Cavinti', 'Los Baños', 'Liliw', 'Luisiana', 'Magdalena', 'Majayjay'],
+        'Leyte' => ['Baybay City','Hilongos', 'Hindang', 'Dulag', 'Baybay City', 'Maasin City', 'Burauen', 'Hilongos', 'Hindang', 'Dulag', 'Limasawa', 'Macrohon'],
+        'Maguindanao del Norte' => ['Datu Odin Sinsuat'],
+        'Marinduque' => ['Boac', 'Buenavista'],
+        'Oriental Mindoro' => ['Lubang', 'Looc', 'Calapan'],
+        'Mindoro Occidental' => ['Mamburao','Iba'],
+        'Mindoro Oriental' => ['Calapan'],
+        'Misamis Oriental' => ['Cagayan de Oro', 'Jasaan'],
+        'Negros Occidental' => ['Bago City', 'Binalbagan', 'La Carlota City', 'Binalbagan'],
+        'Negros Oriental' => ['Dauin', 'Bacong','Dumaguete City', 'Dumangas (technically Iloilo)', 'Dumaguete City', 'Bayawan City'],
+        'Nueva Ecija' => ['Cabanatuan City', 'Cabiao', 'Cuyapo', 'Bongabon'],
+        'Nueva Vizcaya' => ['Bayombong'],
+        'Palawan' => ['Bataraza', 'Culion', 'Cuyo', 'Ipil (if listed)', 'Culion', 'Coron', 'Bataraza', 'Roxas', 'Cuyo'],
+        'Pangasinan' => ['Dagupan City', 'Calasiao', 'Bani', 'Balungao', 'Manaoag'],
+        'Quezon' => ['Candelaria', 'Lucban', 'Gumaca', 'General Nakar', 'Lucena City', 'Lucban', 'Luisiana', 'Lopez', 'Lopez'],
+        'Rizal' => ['Cainta', 'Angono', 'Antipolo', 'Jalajala', 'Mabitac', 'Jalajala', 'Cainta'],
+        'Samar (Western)' => ['Calbayog City', 'Catarman', 'Basey', 'Dulug'],
+        'Sarangani' => ['Glan'],
+        'Southern Leyte' => ['Limasawa', 'Macrohon', 'Limasawa', 'Macrohon'],
+        'Sorsogon' => ['Bulusan','Juban'],
+        'Zambales' => ['Castillejos', 'Botolan'],
+        'Zamboanga Sibugay' => ['Ipil'],
+        'Capiz' => ['Cuartero'],
+        'Caraga Region' => ['Caraga', 'Butuan City'],
+        'South Cotabato' => ['Koronadal'],
+        'Bicol Region' => ['Daraga', 'Baao', 'Balatan', 'Baler'],
+        'Camarines Norte' => ['Daet'],
+        'La Union' => ['Agoo', 'Aringay', 'Balaoan'],
+        'Calabarzon' => ['Amadeo', 'Angono', 'Bacoor'],
+        'Visayas' => ['Alimodian', 'Bacolod City', 'Banton'],
+        'Mindanao' => ['Aloran', 'Altavas', 'Balabac', 'Bansalan'],
+        'Cagayan' => ['Lal-lo', 'Tuguegarao'],
+        'Northern Samar' => ['Catarman', 'Catubig'],
+        'Lanao del Sur' => ['Malabang', 'Marawi City'],
+        'Samar' => ['Dulug'],
+        'Zamboanga del Norte' => ['Labason'],
+        'NCR' => ['Caloocan City','Manila','Quezon City','Makati','Pasig','Taguig','Las Piñas','Muntinlupa City','Paco','Muntinlupa','Navotas','Valenzuela','Mandaluyong','Marikina','Parañaque','San Juan','Pateros', 'Caloocan City', 'Quezon City','Intramuros, Manila', 'Las Piñas City', 'Intramuros, Manila', 'Caloocan City', 'Makati City', 'Malabon', 'Mandaluyong'],
+    ];
+}
+
+// -----------------------------
+// AJAX: Region → Province
+// -----------------------------
+add_action('wp_ajax_acf_get_provinces', 'acf_get_provinces');
+add_action('wp_ajax_nopriv_acf_get_provinces', 'acf_get_provinces');
+
+function acf_get_provinces()
+{
+    global $wpdb;
+
+    $region = sanitize_text_field($_POST['region_for_historic'] ?? '');
+    $region_map = get_region_province_map();
+    $provinces = $region_map[$region] ?? [];
+
+    echo '<option value="">Select Province</option>';
+
+    $meta_key = 'province_for_historic'; // ACF field name for province
+
+    // Get counts for all posts in one query
+    $results = $wpdb->get_results(
+        $wpdb->prepare(
+            "
+            SELECT pm.meta_value, COUNT(*) as count
+            FROM {$wpdb->postmeta} pm
+            INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
+            WHERE pm.meta_key = %s
+            AND p.post_status = 'publish'
+            AND p.post_type = 'historical-sites'
+            GROUP BY pm.meta_value
+            ",
+            $meta_key
+        ),
+        OBJECT_K
+    );
+
+    foreach ($provinces as $province) {
+        $count = 0;
+        if ($results) {
+            foreach ($results as $meta_value => $row) {
+                $value = maybe_unserialize($meta_value);
+                if (is_array($value) && in_array($province, $value)) {
+                    $count += $row->count;
+                } elseif ($value === $province) {
+                    $count += $row->count;
+                }
+            }
+        }
+        echo '<option value="' . esc_attr($province) . '">' . esc_html($province . ' (' . $count . ')') . '</option>';
+    }
+
+    wp_die();
+}
+
+// -----------------------------
+// AJAX: Province → City
+// -----------------------------
+add_action('wp_ajax_acf_get_cities', 'acf_get_cities');
+add_action('wp_ajax_nopriv_acf_get_cities', 'acf_get_cities');
+
+function acf_get_cities()
+{
+    global $wpdb;
+
+    $province = sanitize_text_field($_POST['province_for_historic'] ?? '');
+    $province_map = get_province_city_map();
+    $cities = $province_map[$province] ?? [];
+
+    echo '<option value="">Select City / Municipality</option>';
+
+    $meta_key = 'city_and_municipality_for_historic'; // ACF field name for city
+
+    // Get counts for all posts in one query
+    $results = $wpdb->get_results(
+        $wpdb->prepare(
+            "
+            SELECT pm.meta_value, COUNT(*) as count
+            FROM {$wpdb->postmeta} pm
+            INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
+            WHERE pm.meta_key = %s
+            AND p.post_status = 'publish'
+            AND p.post_type = 'historical-sites'
+            GROUP BY pm.meta_value
+            ",
+            $meta_key
+        ),
+        OBJECT_K
+    );
+
+    foreach ($cities as $city) {
+        $count = 0;
+        if ($results) {
+            foreach ($results as $meta_value => $row) {
+                $value = maybe_unserialize($meta_value);
+                if (is_array($value) && in_array($city, $value)) {
+                    $count += $row->count;
+                } elseif ($value === $city) {
+                    $count += $row->count;
+                }
+            }
+        }
+        echo '<option value="' . esc_attr($city) . '">' . esc_html($city . ' (' . $count . ')') . '</option>';
+    }
+
+    wp_die();
+}
+
+function enqueue_acf_cascade_script()
+{
+    wp_enqueue_script(
+        'acf-cascade',
+        get_stylesheet_directory_uri() . '/assets/js/acf-cascade.js', // child theme path
+        ['jquery'], // make sure jQuery is loaded first
+        '1.0',
+        true // load in footer
+    );
+
+    // pass AJAX URL to JS
+    wp_localize_script('acf-cascade', 'acf_ajax', [
+        'ajaxurl' => admin_url('admin-ajax.php'),
+    ]);
+}
+
+// Only enqueue for front-end forms
+add_action('wp_enqueue_scripts', 'enqueue_acf_cascade_script');
