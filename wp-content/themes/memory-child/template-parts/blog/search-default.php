@@ -11,6 +11,35 @@
         font-weight: 300;
     }
 
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 40px 0;
+        list-style: none;
+        padding: 0;
+    }
+
+    .pagination a,
+    .pagination span {
+        display: inline-block;
+        padding: 10px 15px;
+        background-color: #eee;
+        color: #000;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    .pagination a:hover {
+        background-color: #3ec5628a;
+    }
+
+    .pagination .current {
+        background-color: #8b5e3c;
+        font-weight: bold;
+    }
+
     .search-no-results div#content {
         background-color: #fff !important;
     }
@@ -240,7 +269,14 @@
                 </div>
             </div>
         <?php endwhile; ?>
-
+        <?php
+        the_posts_pagination(array(
+            'mid_size'  => 2,
+            'prev_text' => __('« Previous', 'textdomain'),
+            'next_text' => __('Next »', 'textdomain'),
+            'screen_reader_text' => ' ',
+        ));
+        ?>
     <?php else : ?>
 
         <div class="d-flex align-items-center mb-5 mt-4 no-result-section">

@@ -590,6 +590,7 @@ ul.page-numbers {
 #show-mobile-only {
     display: none;
 }
+
 @media (max-width: 991px) {
 #show-mobile-only {
     display: block;

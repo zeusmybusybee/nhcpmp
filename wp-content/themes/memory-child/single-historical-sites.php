@@ -14,6 +14,18 @@
         background-color: #F7F7F7;
     }
 
+    h1.historical-title {
+        font-size: 40px;
+        font-weight: 700;
+        width: 80%;
+    }
+
+    /* Tablet */
+    @media (max-width: 1024px) {
+        h1.historical-title {
+            width: 100%;
+        }
+    }
 
     .historic-content h3 {
         font-size: 20px;
@@ -371,7 +383,7 @@
 
 
                         <div class="content mb-5">
-
+                            <h1 class="historical-title"><?php the_title(); ?></h1>
                             <div class="details">
 
                                 <?php

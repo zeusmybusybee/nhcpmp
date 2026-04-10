@@ -280,12 +280,12 @@
                             <div class="form-check d-flex  align-items-center">
                                 <input class="form-check-input mb-2" type="radio" name="orderby" value="title"
                                     <?php checked($current_order, 'title'); ?>>
-                                <label class="form-check-label">A–Z</label>
+                                <label class="form-check-label">A - Z</label>
                             </div>
                             <div class="form-check d-flex align-items-center">
                                 <input class="form-check-input mb-2" type="radio" name="orderby" value="title-desc"
                                     <?php checked($current_order, 'title-desc'); ?>>
-                                <label class="form-check-label">Z–A</label>
+                                <label class="form-check-label">Z - A</label>
                             </div>
                             <div class="form-check d-flex  align-items-center">
                                 <input class="form-check-input mb-2" type="radio" name="orderby" value="date"
@@ -305,43 +305,40 @@
 
                     <!-- FILTER BY -->
                     <div class="col-12 mb-3">
-                        <h6 class="mb-3 fw-bold">Filter by Status</h6>
 
                         <?php
-                        $current = $_GET['level_status'] ?? '';
+                        // Current selections
+                        $current_status = $_GET['level_status'] ?? '';
+                        $current_category = $_GET['registry_category'] ?? '';
+                        $current_type = $_GET['type'] ?? '';
 
-                        $custom_order = [
-                            'level-i',
-                            'level-ii',
-                            'presumption-removed',
-                            'delisted'
-                        ];
+                        // Custom order for status
+                        $custom_order = ['level-i', 'level-ii', 'presumption-removed', 'delisted'];
 
-                        $terms = get_terms([
-                            'taxonomy'   => 'level_status',
+                        // Get Status terms
+                        $status_terms = get_terms([
+                            'taxonomy' => 'level_status',
                             'hide_empty' => false,
                         ]);
                         ?>
 
+                        <!-- Status Dropdown -->
+                        <h6 class="mb-3 fw-bold">Filter by Status</h6>
                         <select name="level_status" id="level_status" class="form-select mb-2">
                             <option value="">-Status-</option>
-
                             <?php
-                            if (!is_wp_error($terms) && !empty($terms)) {
-
+                            if (!is_wp_error($status_terms) && !empty($status_terms)) {
                                 $terms_by_slug = [];
 
-                                foreach ($terms as $term) {
+                                foreach ($status_terms as $term) {
                                     $terms_by_slug[$term->slug] = $term;
                                 }
 
                                 foreach ($custom_order as $slug) {
-
                                     if (isset($terms_by_slug[$slug])) {
-
                                         $term = $terms_by_slug[$slug];
                             ?>
-                                        <option value="<?php echo esc_attr($term->slug); ?>" <?php selected($current, $term->slug); ?>>
+                                        <option value="<?php echo esc_attr($term->slug); ?>" <?php selected($current_status, $term->slug); ?>>
                                             <?php echo esc_html($term->name); ?> (<?php echo $term->count; ?>)
                                         </option>
                             <?php
@@ -349,63 +346,232 @@
                                 }
                             }
                             ?>
-
                         </select>
 
-
                         <?php
+                        $post_type = 'historical-sites'; // replace with your actual post type
+                        $taxonomy  = 'registry_category';
+
+                        // 🔹 Optional custom labels
+                        $custom_labels = [
+                            // LEVEL I
+                            'national-historical-landmark' => 'National Historical Landmark',
+                            'national-historical-site'      => 'National Historical Site',
+                            'national-monument'             => 'National Monument',
+                            'national-shrine'               => 'National Shrine',
+                            'unesco-world-heritage-site'    => 'UNESCO World Heritage Site',
+
+                            // LEVEL II
+                            'association-institution-organization' => 'Association / Institution / Organization',
+                            'buildings-structures'                 => 'Buildings / Structures',
+                            'heritage-house'                       => 'Heritage House',
+                            'heritage-zone-historic-center'       => 'Heritage Zone / Historic Center',
+                            'personages'                           => 'Personages',
+                            'sites-events'                         => 'Sites / Events',
+                        ];
+
+                        // 🔹 Level I slugs
+                        $levelI_slugs = array_keys(array_slice($custom_labels, 0, 5)); // first 5 are Level I
+
+                        // Get all terms
                         $terms = get_terms([
-                            'taxonomy' => 'registry_category',
-                            'hide_empty' => false,
+                            'taxonomy'   => $taxonomy,
+                            'hide_empty' => false, // get all terms
                         ]);
 
-                        $current = $_GET['registry_category'] ?? '';
+                        $filtered_terms = [];
+                        foreach ($terms as $term) {
+                            $slug = $term->slug;
+
+                            if (in_array($slug, $levelI_slugs)) {
+                                // Level I → only include if has posts
+                                $query = new WP_Query([
+                                    'post_type'      => $post_type,
+                                    'tax_query'      => [
+                                        [
+                                            'taxonomy' => $taxonomy,
+                                            'field'    => 'slug',
+                                            'terms'    => $slug,
+                                        ],
+                                    ],
+                                    'posts_per_page' => 1,
+                                ]);
+                                if ($query->have_posts()) {
+                                    $filtered_terms[] = $term;
+                                }
+                                wp_reset_postdata();
+                            } else {
+                                // Level II → always include
+                                $filtered_terms[] = $term;
+                            }
+                        }
+
+                        // 🔹 Selected category from URL
+                        $selected_category = isset($_GET['registry_category']) ? sanitize_text_field($_GET['registry_category']) : '';
                         ?>
 
-                        <select name="registry_category" id="registry_category" class="form-select">
+                        <!-- Category Dropdown -->
+                        <select name="registry_category" id="registry_category" class="form-select mb-2">
                             <option value="">-Category-</option>
-
-                            <?php if (!is_wp_error($terms) && !empty($terms)): ?>
-                                <?php foreach ($terms as $term): ?>
-
-                                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected($current, $term->slug); ?>>
-                                        <?php echo esc_html($term->name); ?> (<?php echo $term->count; ?>)
-                                    </option>
-
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-
+                            <?php foreach ($filtered_terms as $term): ?>
+                                <?php
+                                $slug  = $term->slug;
+                                $label = isset($custom_labels[$slug]) ? $custom_labels[$slug] : $term->name;
+                                $selected = ($slug === $selected_category) ? 'selected' : '';
+                                ?>
+                                <option value="<?php echo esc_attr($slug); ?>" <?php echo $selected; ?>>
+                                    <?php echo esc_html($label); ?> (<?php echo $term->count; ?>)
+                                </option>
+                            <?php endforeach; ?>
                         </select>
 
+
                         <?php
-                        global $wpdb;
+                        $post_type = 'historical-sites';
+                        $taxonomy  = 'labels';
 
-                        $field_name = 'type';
-                        $current = $_GET['type'] ?? '';
+                        // Kunin lahat ng terms sa taxonomy
+                        $terms = get_terms(array(
+                            'taxonomy' => $taxonomy,
+                            'hide_empty' => true, // true para i-display lang yung may posts
+                        ));
 
-                        $results = $wpdb->get_results("
-                        SELECT meta_value, COUNT(*) as total
-                        FROM {$wpdb->postmeta}
-                        WHERE meta_key = '{$field_name}'
-                        AND meta_value != ''
-                        GROUP BY meta_value
-                        ORDER BY meta_value ASC
-                    ");
+                        // Filter terms para lang sa post type
+                        $filtered_terms = array();
+                        foreach ($terms as $term) {
+                            $query = new WP_Query(array(
+                                'post_type' => $post_type,
+                                'tax_query' => array(
+                                    array(
+                                        'taxonomy' => $taxonomy,
+                                        'field'    => 'slug',
+                                        'terms'    => $term->slug,
+                                    ),
+                                ),
+                                'posts_per_page' => -1, // kunin lahat para mabilang
+                                'fields' => 'ids'
+                            ));
+
+                            if ($query->have_posts()) {
+                                // ✅ dito mo ilalagay yung count
+                                $term->custom_count = $query->post_count;
+
+                                $filtered_terms[] = $term;
+                            }
+
+                            wp_reset_postdata();
+                        }
                         ?>
 
-                        <select name="type" id="type" class="form-select mb-2 mt-2">
+                        <?php
+                        $selected_type = isset($_GET['labels']) ? sanitize_text_field($_GET['labels']) : '';
+
+                        // Custom labels
+                        $levelI_labels = [
+                            "bank" => "Bank*",
+                            "battle-site-2" => "Battle Site*",
+                            "belfry" => "Belfry*",
+                            "buildings-structures" => "Buildings/Structures*",
+                            "capitol-building" => "Capitol Building*",
+                            "cemetery" => "Cemetery*",
+                            "clubhouse" => "Clubhouse*",
+                            "convent" => "Convent*",
+                            "declaration-marker" => "Declaration Marker*",
+                            "fortification" => "Fortification*",
+                            "garden" => "Garden",
+                            "historic-center" => "Historic Center*",
+                            "hotel" => "Hotel",
+                            "house-of-worship" => "House of Worship*",
+                            "house" => "House*",
+                            "kampanaryo-ng-jaro" => "Kampanaryo ng Jaro*",
+                            "lighthouse" => "Lighthouse*",
+                            "memorial" => "Memorial*",
+                            "monument" => "Monument*",
+                            "nhcp-museum" => "NHCP Museum*",
+                            "penitentiary" => "Penitentiary*",
+                            "plaza" => "Plaza*",
+                            "prison-cell" => "Prison Cell*",
+                            "school" => "School",
+                            "site-of-important-event" => "Site of an Important Event*",
+                            "site" => "Site*",
+                            "university" => "University*",
+                            "watchtower" => "Watchtower*",
+
+                            // LEVEL II
+                            "aquarium" => "Aquarium",
+                            "battle-site" => "Battle Site",
+                            "beach" => "Beach",
+                            "belfry" => "Belfry",
+                            "biographical-marker" => "Biographical Marker",
+                            "bridge" => "Bridge",
+                            "capitol-building" => "Capitol Building",
+                            "cathedral" => "Cathedral",
+                            "cemetery" => "Cemetery",
+                            "convent" => "Convent",
+                            "dam" => "Dam",
+                            "fortification" => "Fortification",
+                            "foundation-site" => "Foundation Site",
+                            "fountain" => "Fountain",
+                            "gabaldon-school" => "Gabaldon School",
+                            "gateway" => "Gateway",
+                            "golf-course" => "Golf Course",
+                            "group-of-houses" => "Group of Houses",
+                            "hospital" => "Hospital",
+                            "house" => "House",
+                            "house-of-worship" => "House of Worship",
+                            "lighthouse" => "Lighthouse",
+                            "memorare" => "Memorare",
+                            "memorial" => "Memorial",
+                            "military-camp" => "Military Camp",
+                            "military-structure" => "Military Structure",
+                            "monument" => "Monument",
+                            "museum" => "Museum",
+                            "office-building" => "Office Building",
+                            "plaza" => "Plaza",
+                            "polvorin" => "Polvorin",
+                            "post-office" => "Post Office",
+                            "prison" => "Prison",
+                            "private-company" => "Private Company",
+                            "private-institution" => "Private Institution",
+                            "ranch" => "Ranch",
+                            "restaurant" => "Restaurant",
+                            "retreat-house" => "Retreat House",
+                            "ridge" => "Ridge",
+                            "rizal-monuments" => "Rizal monuments",
+                            "room" => "Room",
+                            "ruins" => "Ruins",
+                            "school" => "School",
+                            "seminary" => "Seminary",
+                            "simbahan-ng-canaman" => "Simbahan ng Canaman",
+                            "site" => "Site",
+                            "site-of-an-important-event" => "Site of an Important Event",
+                            "tomas-pinpin" => "Tomas Pinpin",
+                            "town-city-hall" => "Town/City Hall",
+                            "trading-house" => "Trading house",
+                            "train-station" => "Train Station",
+                            "university" => "University",
+                            "watchtower" => "Watchtower"
+                        ];
+                        ?>
+                        <select name="labels" id="type" class="form-select mb-2">
                             <option value="">-Type-</option>
 
-                            <?php if ($results): ?>
-                                <?php foreach ($results as $row): ?>
+                            <?php foreach ($filtered_terms as $term): ?>
+                                <?php
+                                $slug = $term->slug;
+                                $label = isset($levelI_labels[$slug]) ? $levelI_labels[$slug] : $term->name;
+                                $count = isset($term->custom_count) ? $term->custom_count : 0;
 
-                                    <option value="<?php echo esc_attr($row->meta_value); ?>" <?php selected($current, $row->meta_value); ?>>
-                                        <?php echo esc_html($row->meta_value); ?> (<?php echo $row->total; ?>)
-                                    </option>
+                                $selected = ($slug === $selected_type) ? 'selected' : '';
+                                ?>
 
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                                <option value="<?php echo esc_attr($slug); ?>"
+                                    data-key="<?php echo esc_attr($slug); ?>"
+                                    <?php echo $selected; ?>>
+                                    <?php echo esc_html($label . ' (' . $count . ')'); ?>
+                                </option>
 
+                            <?php endforeach; ?>
                         </select>
                     </div>
 
@@ -413,97 +579,104 @@
                     <div class="col-12 mb-3">
                         <h6 class="mb-3 fw-bold">Filter by Place</h6>
 
-                        <!-- REGION -->
-                        <select name="region_for_historic" class="form-select mb-2">
-                            <option value="">Region</option>
+                        <?php
+                        // 👉 Kunin selected value (important)
+                        $selected_region = $_GET['acf']['region_for_historic'] ?? '';
+
+                        // 👉 Static regions list
+                        $regions = [
+                            'BARMM (Bangsamoro Autonomous Region)',
+                            'CAR (Cordillera Administrative Region)',
+                            'NCR (National Capital Region)',
+                            'Negros Island Region (NIR)',
+                            'Region I (Ilocos Region)',
+                            'Region II (Cagayan Valley)',
+                            'Region III (Central Luzon)',
+                            'Region IV-A (CALABARZON)',
+                            'Region IV-B (MIMAROPA)',
+                            'Region V (Bicol Region)',
+                            'Region VI (Western Visayas)',
+                            'Region VII (Central Visayas)',
+                            'Region VIII (Eastern Visayas)',
+                            'Region IX (Zamboanga Peninsula)',
+                            'Region X (Northern Mindanao)',
+                            'Region XI (Davao Region)',
+                            'Region XII (SOCCSKSARGEN)',
+                            'Region XIII (Caraga)',
+                        ];
+
+                        // 👉 DB connection
+                        global $wpdb;
+                        $meta_key = 'region_for_historic';
+
+                        // 👉 Query para sa counts
+                        $results = $wpdb->get_results(
+                            $wpdb->prepare(
+                                "
+            SELECT pm.meta_value, COUNT(*) as count
+            FROM {$wpdb->postmeta} pm
+            INNER JOIN {$wpdb->posts} p ON pm.post_id = p.ID
+            WHERE pm.meta_key = %s
+            AND p.post_status = 'publish'
+            AND p.post_type = 'historical-sites'
+            GROUP BY pm.meta_value
+            ",
+                                $meta_key
+                            ),
+                            OBJECT_K
+                        );
+                        ?>
+
+                        <select id="acf-region" name="acf[region_for_historic]" class="form-select mb-2">
+                            <option value="">Select Region</option>
 
                             <?php
-                            global $wpdb;
-
-                            $regions = $wpdb->get_col("
-                            SELECT DISTINCT meta_value 
-                            FROM $wpdb->postmeta 
-                            WHERE meta_key = 'region_for_historic'
-                              AND meta_value != ''
-                            ORDER BY meta_value ASC
-                        ");
-
-                            $current_region = $_GET['region_for_historic'] ?? '';
-
                             foreach ($regions as $region) {
-                                // Count how many posts have this region
-                                $count = $wpdb->get_var($wpdb->prepare("
-                                SELECT COUNT(*) 
-                                FROM $wpdb->postmeta 
-                                WHERE meta_key = 'region_for_historic' 
-                                  AND meta_value = %s
-                            ", $region));
 
-                                echo '<option value="' . esc_attr($region) . '" ' . selected($current_region, $region, false) . '>';
-                                echo esc_html($region . " ($count)");
-                                echo '</option>';
+                                $count = 0;
+
+                                // 👉 compute count per region
+                                if ($results) {
+                                    foreach ($results as $meta_value => $row) {
+
+                                        $value = maybe_unserialize($meta_value);
+
+                                        if (is_array($value) && in_array($region, $value)) {
+                                            $count += $row->count;
+                                        } elseif ($value === $region) {
+                                            $count += $row->count;
+                                        }
+                                    }
+                                }
+
+                                // 👉 retain selected
+                                $selected = ($selected_region === $region) ? 'selected="selected"' : '';
+
+                                echo '<option value="' . esc_attr($region) . '" ' . $selected . '>'
+                                    . esc_html($region . ' (' . $count . ')')
+                                    . '</option>';
                             }
                             ?>
                         </select>
 
-                        <!-- PROVINCE -->
-                        <select name="province_for_historic" class="form-select mb-2">
+
+                        <?php
+                        $selected_province = $_GET['acf']['field_69b646224193d'] ?? '';
+                        $selected_city     = $_GET['acf']['field_69b6462d4193e'] ?? '';
+                        ?>
+                        <select id="acf-province"
+                            name="acf[field_69b646224193d]"
+                            class="form-select mb-2"
+                            data-selected="<?php echo esc_attr($selected_province); ?>">
                             <option value="">Select Province</option>
-                            <?php
-                            $provinces = $wpdb->get_col("
-                            SELECT DISTINCT meta_value
-                            FROM $wpdb->postmeta
-                            WHERE meta_key = 'province_for_historic'
-                              AND meta_value != ''
-                            ORDER BY meta_value ASC
-                        ");
-
-                            $current_province = $_GET['province_for_historic'] ?? '';
-
-                            foreach ($provinces as $province) {
-                                $count = $wpdb->get_var($wpdb->prepare("
-                                SELECT COUNT(*) 
-                                FROM $wpdb->postmeta 
-                                WHERE meta_key = 'province_for_historic' 
-                                  AND meta_value = %s
-                            ", $province));
-
-                                echo '<option value="' . esc_attr($province) . '" ' . selected($current_province, $province, false) . '>';
-                                echo esc_html($province . " ($count)");
-                                echo '</option>';
-                            }
-                            ?>
                         </select>
 
-                        <!-- CITY -->
-                        <select name="city_and_municipality_for_historic" class="form-select mb-2">
+                        <select id="acf-city"
+                            name="acf[field_69b6462d4193e]"
+                            class="form-select mb-2"
+                            data-selected="<?php echo esc_attr($selected_city); ?>">
                             <option value="">Select City / Municipality</option>
-                            <?php
-                            $cities = $wpdb->get_col("
-                            SELECT DISTINCT meta_value
-                            FROM $wpdb->postmeta
-                            WHERE meta_key = 'city_and_municipality_for_historic'
-                              AND meta_value != ''
-                            ORDER BY meta_value ASC
-                        ");
-
-                            $current_city = $_GET['city_and_municipality_for_historic'] ?? '';
-
-                            foreach ($cities as $city) {
-                                $count = $wpdb->get_var($wpdb->prepare("
-                                SELECT COUNT(*) 
-                                FROM $wpdb->postmeta 
-                                WHERE meta_key = 'city_and_municipality_for_historic' 
-                                  AND meta_value = %s
-                            ", $city));
-
-                                echo '<option value="' . esc_attr($city) . '" ' . selected($current_city, $city, false) . '>';
-                                echo esc_html($city . " ($count)");
-                                echo '</option>';
-                            }
-                            ?>
                         </select>
-
                         <!-- INTERNATIONAL -->
                         <select name="international_for_historic" class="form-select mb-2">
                             <option value="">Select International</option>
@@ -655,13 +828,13 @@
 
                         if ($series_field && !empty($series_field['choices'])) :
 
-                            // ✅ ALWAYS get ALL posts (not affected by filters)
+                            // âœ… ALWAYS get ALL posts (not affected by filters)
                             $all_posts = get_posts([
                                 'post_type'        => 'historical-sites',
                                 'posts_per_page'   => -1,
                                 'post_status'      => 'publish',
                                 'fields'           => 'ids',
-                                'suppress_filters' => true // 🔥 important fix
+                                'suppress_filters' => true // ðŸ”¥ important fix
                             ]);
 
                             $series_counts = [];
@@ -672,7 +845,7 @@
                                 $series_counts[$value] = 0;
                             }
 
-                            // ✅ CORRECT counting for multiple ACF field
+                            // âœ… CORRECT counting for multiple ACF field
                             foreach ($all_posts as $post_id) {
                                 $series = get_field('marker_series', $post_id);
 
@@ -894,7 +1067,15 @@
 
                                 <?php foreach ($terms_in_order as $term) :
                                     $bg_class = isset($colors[$term->slug]) ? $colors[$term->slug] : 'bg-primary primary-hover';
-                                    $filter_link = home_url('/historical-sites/?s=&level_status=' . $term->slug . '&registry_category=&region=&province=&city=&location=&year_filter=&orderby=date-desc');
+
+                                    // Grab current URL parameters
+                                    $current_params = $_GET;
+
+                                    // Replace level_status with current term
+                                    $current_params['level_status'] = $term->slug;
+
+                                    // Build full URL with all existing filters
+                                    $filter_link = add_query_arg($current_params, home_url('/historical-sites/'));
                                 ?>
 
                                     <div class="col-md-5 col-6">
@@ -924,7 +1105,6 @@
             </form>
 
         </div>
-
 
 
 
