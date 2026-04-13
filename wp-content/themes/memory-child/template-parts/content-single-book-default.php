@@ -11,7 +11,13 @@
 $memory_hide_featured_image = get_theme_mod('hide_featured_image', 'show-ft');
 ?>
 <style>
-    .single-book div#content {
+    .wp-singular {
+        background: #F7F7F7;
+    }
+
+    .list-group-flush li{
+    font-size: 18px;
+    } .single-book div#content {
         background: #fff;
     }
 
@@ -301,30 +307,60 @@ if (
                     <div class="row align-items-start gap-5 books-single-content">
 
                         <!-- Left Side (Description Box) -->
-                        <div class="col-md-5 mb-4">
-                            <div class="  p-4 h-100">
-                                <p class="mb-0">
-                                    <em>
-                                        <?php the_content(); ?>
-                                    </em>
-                                </p>
+                        <?php if (get_the_content()) : ?>
+                            <!-- Left Side (Description Box) -->
+                            <div class="col-md-3 mb-4">
+                                <div class="p-4 h-100">
+                                    <p class="mb-0">
+                                        <em>
+                                            <?php the_content(); ?>
+                                        </em>
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-
+                        <?php endif; ?>
                         <!-- Right Side (Details List) -->
-                        <div class="col-md-5">
+                        <div class="col-md-8">
                             <div class="">
                                 <div class="card-body">
-                                    <ul class="">
-                                        <li class="list-group-item">Title</li>
-                                        <li class="list-group-item">Description</li>
-                                        <li class="list-group-item">Author/Creator/Proponent/Artist</li>
-                                        <li class="list-group-item">Date Created/Published</li>
-                                        <li class="list-group-item">Type of Artifact</li>
-                                        <li class="list-group-item">Location</li>
-                                        <li class="list-group-item">Collection Series</li>
-                                        <li class="list-group-item">Number of Views</li>
-                                        <li class="list-group-item">Subject / Keyword</li>
+                                    <ul class="list-group list-group-flush">
+
+                                        <?php if (get_field('call_number')) : ?>
+                                            <li class="">
+                                                <strong>Call Number:</strong> <?php the_field('call_number'); ?>
+                                            </li>
+                                        <?php endif; ?>
+
+                                        <?php if (get_field('accession_number')) : ?>
+                                            <li class="">
+                                                <strong>Accession Number:</strong> <?php the_field('accession_number'); ?>
+                                            </li>
+                                        <?php endif; ?>
+
+                                        <?php if (get_field('statement_of_responsibility')) : ?>
+                                            <li class="">
+                                                <strong>Author/Creator:</strong> <?php the_field('statement_of_responsibility'); ?>
+                                            </li>
+                                        <?php endif; ?>
+
+                                        <?php if (get_field('location')) : ?>
+                                            <li class="">
+                                                <strong>Location:</strong> <?php the_field('location'); ?>
+                                            </li>
+                                        <?php endif; ?>
+
+                                        <?php if (get_field('level')) : ?>
+                                            <li class="">
+                                                <strong>Access Level:</strong> <?php the_field('level'); ?>
+                                            </li>
+                                        <?php endif; ?>
+
+                                        <?php if (get_field('access_point_tropical')) : ?>
+                                            <li class="">
+                                                <strong>Keywords:</strong> <?php the_field('access_point_tropical'); ?>
+                                            </li>
+                                        <?php endif; ?>
+
                                     </ul>
                                 </div>
                             </div>
