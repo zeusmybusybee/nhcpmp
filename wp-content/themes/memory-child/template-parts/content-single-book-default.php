@@ -377,6 +377,7 @@ if (
 
                 $current_id = get_the_ID();
                 $current_title = get_the_title();
+                $current_level = get_field('level', $current_id);
 
                 // kunin first word lang (example: "How")
                 $title_words = explode(' ', $current_title);
@@ -387,7 +388,13 @@ if (
                     'posts_per_page' => 6,
                     'post_status'    => 'publish',
                     'post__not_in'   => [$current_id],
-                    'title_like'     => $keyword,
+                    'meta_query'     => [
+                        [
+                            'key'     => 'level',
+                            'value'   => $current_level,
+                            'compare' => '='
+                        ]
+                    ]
                 ];
 
                 $artifacts = new WP_Query($args);
