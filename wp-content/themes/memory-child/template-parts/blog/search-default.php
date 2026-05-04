@@ -1,67 +1,252 @@
 <?php get_header(); ?>
 <style>
-    .see-more-btn {
-        width: 100%;
-        border-radius: 0;
-        background: #eee;
-        border: none;
-        font-size: 18px;
-        text-transform: none;
-        color: #000;
-        font-weight: 300;
-    }
-
-    .pagination {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin: 40px 0;
-        list-style: none;
-        padding: 0;
-    }
-
-    .pagination a,
-    .pagination span {
-        display: inline-block;
-        padding: 10px 15px;
-        background-color: #eee;
-        color: #000;
-        border-radius: 5px;
-        text-decoration: none;
-        transition: 0.3s;
-    }
-
-    .pagination a:hover {
-        background-color: #3ec5628a;
-    }
-
-    .pagination .current {
-        background-color: #8b5e3c;
-        font-weight: bold;
-    }
-
-    .search-no-results div#content {
-        background-color: #fff !important;
-    }
-
     .search-results {
-        background-color: #f8f8f8 !important;
+        background: #F7F7F7;
     }
 
-    .search-img img {
-        margin: 0;
-        border-radius: 15px;
-        width: 100%;
-        object-fit: cover;
-        height: clamp(185px, 25vw, 366px);
+    .search-item h4 {
+        font-size: 30px;
+        color: #8b5e3c !important;
+        margin: 10px 0 25px;
     }
 
-    .full-content {
-        /* font-size: 20px; */
+    .c_meduim {
+        font-size: 18px;
+        margin-right: 19px;
+    }
+
+    .pagination .current,
+    .pagination a:hover {
+        background: #8b5e3c;
+        color: #fff;
+        border-radius: 100%;
+    }
+
+    .see-more {
+        font-size: 17px;
+        color: #3ec562;
+    }
+
+    .see-more-show-item p {
         font-size: 18px;
     }
 
     .view-btn-search {
+        display: flex;
+        font-family: 'Poppins';
+        align-items: center;
+        justify-content: center;
+        max-width: 200px;
+        width: 100%;
+        height: 40px;
+        font-size: 18px;
+        background-color: #3ec562;
+        color: #ffffff !important;
+        border: none;
+        border-radius: 10px;
+        transition: 0.3s ease-in;
+        margin: 20px 0;
+        text-decoration: none;
+    }
+
+    .btn-primary {
+        color: #fff !important;
+    }
+
+    .btn-primary:hover,
+    .btn-primary:active,
+    .btn-primary:focus {
+
+        background: var(--main-color) !important;
+    }
+</style>
+
+
+
+
+<section class="py-5"> <!-- Nagdagdag ng padding top/bottom -->
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+
+                <!-- Header Section -->
+                <div class="search-header mb-4 pb-3 border-bottom">
+                    <h2>Search Results for: <?php echo get_search_query(); ?></h2>
+
+                    <?php
+                    $s = get_search_query();
+                    $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
+
+                    $allsearch = new WP_Query(array(
+                        's' => $s,
+                        'post_type' => 'any',
+                        'posts_per_page' => 10,
+                        'paged' => $paged
+                    ));
+
+                    $total_posts = $allsearch->found_posts;
+                    echo "<p class='text-muted'>Total results found: <span class='badge bg-secondary'>{$total_posts}</span></p>";
+                    ?>
+                </div>
+
+                <!-- Body Section -->
+                <div class="search-body">
+                    <?php if ($allsearch->have_posts()): ?>
+                        <div class="row g-4"> <!-- Bootstrap Grid with gap -->
+                            <?php
+                            while ($allsearch->have_posts()): $allsearch->the_post();
+
+                                // Sanitize GET parameters
+                                $searched = isset($_GET['s']) ? sanitize_text_field($_GET['s']) : '';
+                                $filter = isset($_GET['f']) ? sanitize_text_field($_GET['f']) : '';
+
+                                // Wrapper para sa bawat result para maging responsive (col-md-6 o col-12)
+                                echo '<div class="col-12">';
+
+                                if ($filter) {
+                                    if ($filter === "Publisher" && str_contains(strtolower(get_field('publisher')), strtolower($searched))) {
+                                        include 'your-publisher-template.php';
+                                    } elseif ($filter === "Title" && str_contains(strtolower(get_the_title()), strtolower($searched))) {
+                                        include 'your-title-template.php';
+                                    } elseif ($filter === "Subject" && (str_contains(strtolower(get_field('access_point_tropical')), strtolower($searched)))) {
+                                        include 'your-subject-template.php';
+                                    } elseif ($filter === "Creator" && (str_contains(strtolower(get_field('creator')), strtolower($searched)))) {
+                                        include 'your-creator-template.php';
+                                    } else {
+                                        get_template_part('partials/content', 'search');
+                                    }
+                                } else {
+                                    get_template_part('partials/content', 'search');
+                                }
+
+                                echo '</div>'; // Close col-12
+                            endwhile;
+                            ?>
+                        </div>
+
+                        <!-- Pagination Section -->
+                        <div class="mt-5 d-flex justify-content-center">
+                            <nav aria-label="Search results pages">
+                                <?php
+                                // Siguraduhin na ang function na ito ay nag-ooutput ng Bootstrap compatible na HTML
+                                custom_numeric_posts_nav($allsearch);
+                                ?>
+                            </nav>
+                        </div>
+
+                    <?php else: ?>
+                        <div class="alert alert-info py-5 text-center">
+                            <?php get_template_part('partials/content', 'none'); ?>
+                        </div>
+                    <?php endif;
+                    wp_reset_postdata(); ?>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tinanggal ang inline <style> dahil mas mainam gamitin ang Bootstrap classes -->
+<style>
+    /* Custom tweak para sa pagination kung ang function mo ay hindi default bootstrap */
+    .navigation ul {
+        display: flex;
+        list-style: none;
+        gap: 10px;
+        padding-left: 0;
+    }
+
+    .navigation ul li a {
+        text-decoration: none;
+        color: #232426;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 700;
+        padding: 8px 16px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+    .navigation ul li.active a,
+    .navigation ul li a:hover {
+        background-color: #2f78cf;
+        color: white;
+        border-color: #2f78cf;
+    }
+</style>
+
+<style>
+    .open {
+        margin-top: 10px;
+        margin-bottom: 10px;
+        background: #eee;
+        padding: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        color: #000000;
+        text-align: center;
+        transition: .3s ease;
+        font-family: 'Poppins';
+    }
+
+    .open:hover {
+        transition: .3s ease;
+        background: #2f78cf;
+        color: #fff;
+    }
+
+    .search-result__info--row {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .search-result__info--desc {
+        flex-basis: 50%;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .search-result__info--desc p {
+        margin: 0;
+    }
+
+    .reveal {
+        display: none;
+    }
+
+    .reveal.is-active {
+        display: block;
+    }
+
+    .search-result__cover--btn {
+        max-width: 100%;
+        font-size: 14px;
+        line-height: 1.2;
+        text-align: center;
+
+    }
+
+    .search-result__cover--btn a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 200px;
+        width: 100%;
+        height: 50px;
+        font-size: 18px;
+        background-color: #3ec562;
+        color: #ffffff;
+        border: none;
+        border-radius: 10px;
+        transition: 0.3s ease-in;
+        margin: 20px auto;
+
+    }
+
+    .search-result__cover--btn ._df_button {
         display: flex;
         font-family: 'Poppins';
         align-items: center;
@@ -76,246 +261,79 @@
         border-radius: 10px;
         transition: 0.3s ease-in;
         margin: 20px auto;
-        text-decoration: none;
+
     }
 
-    .no-result-section {
-        margin: 50px 0 78px !important;
-    }
-
-    .search-result {
-        border-top: 1px solid #dbdbdb;
-        padding-top: 50px;
-        padding-bottom: 50px;
-        display: flex;
-        justify-content: space-between;
-        gap: 45px;
-        margin: 0 !important;
-    }
-
-    .search-item h4 {
-        font-size: 30px;
-        color: #8b5e3c;
-        margin: 10px 0 25px;
-    }
-
-    .no-views,
-    .search-item p {
-        font-size: 20px;
-        margin-bottom: 13px;
-    }
-
-    .readbtn-subscriber {
-        color: #fff !important;
-    }
-
-    .view-btn-search:hover {
-        background-color: #3ec5628a;
-    }
-
-    @media (max-width: 768px) {
-        .search-result {
-            flex-direction: column;
-        }
-
-        .search-img {
-            margin: auto;
-            width: 100%;
-            max-width: 700px;
-        }
-
-        .search-item {
-            width: 100%;
-            max-width: 100%;
-        }
-
-        .search-img img {
-            height: auto;
-        }
+    .searchresults {
+        text-align: center;
     }
 </style>
-<div class="container my-5">
 
-    <?php if (have_posts()) : ?>
-        <h2>Search Results for: <?php echo get_search_query(); ?></h2>
-        <?php
-        $count = 0;
-        while (have_posts()) : the_post();
-            $count++;
-            $collapse_id = 'collapseContent' . $count;
-        ?>
-            <div class="search-result mb-4 d-flex gap-4">
-                <div class="me-3 col-3 search-img">
-                    <?php
-
-                    if (has_post_thumbnail()) {
-                        the_post_thumbnail('medium', ['class' => 'img-fluid']);
-                    } else {
-                        echo '<img src="' . get_stylesheet_directory_uri() . '/assets/images/temp-logo.png" class="img-fluid" alt="No image">';
-                    }
-
-                    ?>
-                    <a id="views-btn_<?php the_ID(); ?>"
-                        class="_df_button readbtn-subscriber view-btn-search"
-                        data-postid="<?php the_ID(); ?>"
-                        href="<?php echo esc_url(get_permalink()); ?>">
-                        View Item
-                    </a>
-                </div>
-
-                <div class="col-8 search-item">
-                    <h4><?php the_title(); ?></h4>
-
-
-
-                    <?php if (get_post_type() !== 'historical-sites') : ?>
-
-                        <!-- Excerpt -->
-                        <p><strong>Description :</strong> <?php the_excerpt(); ?></p>
-
-                        <div class="no-views">
-                            <strong>No. of Views: 0</strong>
-                        </div>
-
-                        <!-- Hidden full content -->
-                        <div class="full-content" id="<?php echo $collapse_id; ?>" style="display:none;">
-                            <p><?php the_content(); ?></p>
-                        </div>
-
-                        <!-- Toggle button -->
-                        <button class="btn btn-sm btn-outline-primary see-more-btn" data-target="#<?php echo $collapse_id; ?>">
-                            See More
-                        </button>
-
-                    <?php else : ?>
-                        <div class="full-content">
-                            <div class="details">
-
-                                <?php if (get_field('citymunicipality_hidden_text') || get_field('province_hidden_text')) : ?>
-                                    <div>
-                                        <strong>Location:</strong>
-                                        <?php the_field('citymunicipality_hidden_text'); ?>,
-                                        <?php the_field('province_hidden_text'); ?>
-                                    </div>
-                                <?php endif; ?>
-
-                                <?php
-                                $terms = get_the_terms(get_the_ID(), 'registry_category');
-                                if ($terms && !is_wp_error($terms)) :
-                                ?>
-                                    <div>
-                                        <strong>Category:</strong>
-                                        <?php echo esc_html($terms[0]->name); ?>
-                                    </div>
-                                <?php endif; ?>
-
-                                <?php
-                                $type_field = get_field_object('type');
-                                $type_value = get_field('type');
-                                if ($type_value):
-                                    $type_label = $type_field['choices'][$type_value] ?? $type_value;
-                                ?>
-                                    <div><strong>Type:</strong> <?php echo esc_html($type_label); ?></div>
-                                <?php endif; ?>
-
-                                <?php
-                                $status_field = get_field_object('status');
-                                $status_value = get_field('status');
-                                if ($status_value):
-                                    $status_label = $status_field['choices'][$status_value] ?? $status_value;
-                                ?>
-                                    <div><strong>Status:</strong> <?php echo esc_html($status_label); ?></div>
-                                <?php endif; ?>
-
-                                <?php if (get_field('cultural_property')): ?>
-                                    <div><?php echo esc_html(get_field('cultural_property')); ?></div>
-                                <?php endif; ?>
-
-
-                                <?php if (get_field('legal_basis')): ?>
-                                    <div><strong>Legal basis:</strong> <?php echo esc_html(get_field('legal_basis')); ?></div>
-                                <?php endif; ?>
-
-                                <?php
-                                $year_found = get_field('year_found');
-                                $date_text = get_field('date_text');
-
-                                if ($year_found): ?>
-                                    <div>
-                                        <strong>
-                                            <?php echo $date_text ? esc_html($date_text) : 'Marker Date'; ?>:
-                                        </strong>
-                                        <?php echo esc_html($year_found); ?>
-                                    </div>
-                                <?php endif; ?>
-
-
-                                <?php
-                                $installed_by = get_field('installed_by');
-                                $removed_label = get_field('removed_by_label');
-                                ?>
-
-                                <div>
-                                    <strong>
-                                        <?php echo $removed_label ? esc_html($removed_label) : 'Installed By:'; ?>
-                                    </strong>
-                                    <?php echo esc_html($installed_by); ?>
-                                </div>
-                            </div>
-                        </div>
-
-                    <?php endif; ?>
-
-                </div>
-            </div>
-        <?php endwhile; ?>
-        <?php
-        the_posts_pagination(array(
-            'mid_size'  => 2,
-            'prev_text' => __('« Previous', 'textdomain'),
-            'next_text' => __('Next »', 'textdomain'),
-            'screen_reader_text' => ' ',
-        ));
-        ?>
-    <?php else : ?>
-
-        <div class="d-flex align-items-center mb-5 mt-4 no-result-section">
-
-            <div class="archive-no-results-icon col-3">
-                <img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/images/404-img.png" alt="404">
-            </div>
-            <div class="col-9">
-                <h2>We're still gathering memories.</h2>
-
-                <p class="archive-subtext">
-                    It looks like nothing was found at this location. Maybe try one of the links below or a search?
-                </p>
-
-                <a href="javascript:history.back()" class="archive-back">
-                    Back to previous
-                </a>
-            </div>
-
-        </div>
-
-    <?php endif; ?>
-</div>
-
-<!-- jQuery toggle script -->
 <script>
-    jQuery(document).ready(function($) {
-        $('.see-more-btn').click(function() {
-            var target = $(this).data('target');
-            $(target).slideToggle(300);
-
-            // Toggle button text
-            if ($(this).text() === 'See More') {
-                $(this).text('See Less');
-            } else {
-                $(this).text('See More');
-            }
-        });
+    var $ = jQuery;
+    $('.open').click(function(e) {
+        e.preventDefault();
+        var currentIsActive = $(this).hasClass('is-active');
+        $(this).parent('.search-result__info--body').find('> *').removeClass('is-active');
+        if (currentIsActive != 1) {
+            $(this).addClass('is-active');
+            $(this).next('.reveal').addClass('is-active');
+        }
     });
 </script>
 
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">-->
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>-->
+<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>-->
+
+<style>
+    .modal-footer button {
+        background: #2f78cf;
+        background-color: #2f78cf;
+        color: #fff;
+        padding: 6px 12px;
+        border-color: #2f78cf;
+        border-top: none;
+    }
+
+    .modal-footer button:hover,
+    .modal-footer button:active,
+    .modal-footer button:focus {
+        background: #97c9ec !important;
+        background-color: #97c9ec !important;
+        border-color: #97c9ec !important;
+        border-top: none;
+    }
+</style>
+
+<div class="container">
+    <!-- Modal -->
+    <div class="modal modal-lg fade" id="myModal" role="dialog" style="width: 100%; padding-right: 0!important;">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <iframe src="<?php echo site_url('/login-employee'); ?>" style="width: 100%; height: 500px" scrolling="no"></iframe>
+                    <!--<?php wp_login_form(); ?>-->
+                </div>
+                <div class="modal-footer">
+                    <!--<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>-->
+                    <button type="button" class="btn btn-default" onClick="refreshPage()">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#myModal').modal({
+        backdrop: 'static',
+        keyboard: true,
+        show: false
+    });
+
+    function refreshPage() {
+        window.location.reload();
+    }
+</script>
 <?php get_footer(); ?>

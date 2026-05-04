@@ -210,7 +210,8 @@ function custom_footer_script()
 add_action('wp_enqueue_scripts', 'custom_footer_script');
 
 // load if archgiving or library
-function memory_child_additional_styles() {
+function memory_child_additional_styles()
+{
     // Front-end only
     if (!is_admin()) {
 
@@ -226,7 +227,6 @@ function memory_child_additional_styles() {
                 array(),
                 '1.0'
             );
-
         }
     }
 }
@@ -1457,12 +1457,16 @@ function custom_pagination_shortcode()
     $current = max(1, get_query_var('paged'));
     $total   = $wp_query->max_num_pages;
 
+    // UNIQUE ID
+    $uid = uniqid('pagination_');
+
     ob_start(); ?>
 
     <nav class="custom-pagination">
         <div class="pagination-inner">
 
-            <div class="pagination-prev" id="pagination-prev"
+            <div class="pagination-prev"
+                id="<?php echo $uid; ?>-prev"
                 style="display:inline-block;margin-right:10px;cursor:pointer;opacity: <?php echo $current <= 1 ? '0.5' : '1'; ?>;">
                 <i class="fa-solid fa-angles-left"></i> prev
             </div>
@@ -1471,7 +1475,7 @@ function custom_pagination_shortcode()
                 Page
                 <input
                     type="number"
-                    id="custom-page-input"
+                    id="<?php echo $uid; ?>-input"
                     min="1"
                     max="<?php echo $total; ?>"
                     value="<?php echo $current; ?>"
@@ -1479,7 +1483,8 @@ function custom_pagination_shortcode()
                 of <?php echo $total; ?>
             </div>
 
-            <div class="pagination-next" id="pagination-next"
+            <div class="pagination-next"
+                id="<?php echo $uid; ?>-next"
                 style="display:inline-block;margin-left:10px;cursor:pointer;opacity: <?php echo $current >= $total ? '0.5' : '1'; ?>;">
                 next <i class="fa-solid fa-angles-right"></i>
             </div>
@@ -1493,64 +1498,29 @@ function custom_pagination_shortcode()
             var maxPages = <?php echo $total; ?>;
 
             function goToPage(page) {
-
                 if (page < 1) page = 1;
                 if (page > maxPages) page = maxPages;
 
                 var url = new URL(window.location.href);
                 url.searchParams.set('paged', page);
-
                 window.location.href = url.toString();
             }
 
-            // PREV
-            $('#pagination-prev').on('click', function() {
-
-                var inputVal = parseInt($('#custom-page-input').val());
-                var currentPage = !isNaN(inputVal) ? inputVal : <?php echo $current; ?>;
-
-                if (currentPage > 1) {
-                    goToPage(currentPage - 1);
-                }
-
+            $('#<?php echo $uid; ?>-prev').on('click', function() {
+                var val = parseInt($('#<?php echo $uid; ?>-input').val());
+                if (!isNaN(val) && val > 1) goToPage(val - 1);
             });
 
-            // NEXT
-            $('#pagination-next').on('click', function() {
-
-                var inputVal = parseInt($('#custom-page-input').val());
-                var currentPage = !isNaN(inputVal) ? inputVal : <?php echo $current; ?>;
-
-                if (currentPage < maxPages) {
-                    goToPage(currentPage + 1);
-                }
-
+            $('#<?php echo $uid; ?>-next').on('click', function() {
+                var val = parseInt($('#<?php echo $uid; ?>-input').val());
+                if (!isNaN(val) && val < maxPages) goToPage(val + 1);
             });
 
-            // ENTER KEY
-            $('#custom-page-input').on('keypress', function(e) {
-
-                if (e.which === 13) {
-
+            $('#<?php echo $uid; ?>-input').on('change keypress', function(e) {
+                if (e.type === 'change' || e.which === 13) {
                     var page = parseInt($(this).val());
-
-                    if (!isNaN(page)) {
-                        goToPage(page);
-                    }
-
+                    if (!isNaN(page)) goToPage(page);
                 }
-
-            });
-
-            // AUTO CHANGE
-            $('#custom-page-input').on('change', function() {
-
-                var page = parseInt($(this).val());
-
-                if (!isNaN(page)) {
-                    goToPage(page);
-                }
-
             });
 
         })(jQuery);
@@ -1559,7 +1529,6 @@ function custom_pagination_shortcode()
 <?php
     return ob_get_clean();
 }
-
 add_shortcode('custom_pagination', 'custom_pagination_shortcode');
 
 
@@ -1726,7 +1695,8 @@ add_action('admin_init', function () {
     }
 });
 
-function remove_dash_prefix_in_terms() {
+function remove_dash_prefix_in_terms()
+{
 
     $taxonomy = 'collection_management';
 
@@ -1762,56 +1732,58 @@ add_action('init', 'remove_dash_prefix_in_terms');
 // -----------------------------
 // Region → Province mapping
 // -----------------------------
-function get_region_province_map() {
+function get_region_province_map()
+{
     return [
-        'BARMM (Bangsamoro Autonomous Region)' => ['Basilan','Lanao del Sur','Maguindanao','Sulu','Tawi-Tawi'],
-        'CAR (Cordillera Administrative Region)' => ['Abra','Apayao','Benguet','Ifugao','Kalinga','Mountain Province'],
+        'BARMM (Bangsamoro Autonomous Region)' => ['Basilan', 'Lanao del Sur', 'Maguindanao', 'Sulu', 'Tawi-Tawi'],
+        'CAR (Cordillera Administrative Region)' => ['Abra', 'Apayao', 'Benguet', 'Ifugao', 'Kalinga', 'Mountain Province'],
         'NCR (National Capital Region)' => ['NCR'],
-        'Negros Island Region (NIR)' => ['Negros Occidental','Negros Oriental'],
-        'Region I (Ilocos Region)' => ['Ilocos Norte','Ilocos Sur','La Union','Pangasinan'],
-        'Region II (Cagayan Valley)' => ['Batanes','Cagayan','Isabela','Nueva Vizcaya','Quirino'],
-        'Region III (Central Luzon)' => ['Aurora','Bataan','Bulacan','Nueva Ecija','Pampanga','Tarlac','Zambales'],
-        'Region IV-A (CALABARZON)' => ['Batangas','Cavite','Laguna','Quezon','Rizal'],
-        'Region IV-B (MIMAROPA)' => ['Marinduque','Occidental Mindoro','Oriental Mindoro','Palawan','Romblon'],
-        'Region V (Bicol Region)' => ['Albay','Camarines Norte','Camarines Sur','Catanduanes','Masbate','Sorsogon'],
-        'Region VI (Western Visayas)' => ['Aklan','Antique','Capiz','Guimaras','Iloilo','Negros Occidental'],
-        'Region VII (Central Visayas)' => ['Bohol','Cebu','Negros Oriental','Siquijor'],
-        'Region VIII (Eastern Visayas)' => ['Biliran','Eastern Samar','Leyte','Northern Samar','Samar','Southern Leyte'],
-        'Region IX (Zamboanga Peninsula)' => ['Zamboanga del Norte','Zamboanga del Sur','Zamboanga Sibugay'],
-        'Region X (Northern Mindanao)' => ['Bukidnon','Camiguin','Lanao del Norte','Misamis Occidental','Misamis Oriental'],
-        'Region XI (Davao Region)' => ['Davao del Norte','Davao del Sur','Davao Occidental','Davao Oriental','Davao de Oro'],
-        'Region XII (SOCCSKSARGEN)' => ['Cotabato','Sarangani','South Cotabato','Sultan Kudarat','General Santos'],
-        'Region XIII (Caraga)' => ['Agusan del Norte','Agusan del Sur','Dinagat Islands','Surigao del Norte','Surigao del Sur'],
+        'Negros Island Region (NIR)' => ['Negros Occidental', 'Negros Oriental'],
+        'Region I (Ilocos Region)' => ['Ilocos Norte', 'Ilocos Sur', 'La Union', 'Pangasinan'],
+        'Region II (Cagayan Valley)' => ['Batanes', 'Cagayan', 'Isabela', 'Nueva Vizcaya', 'Quirino'],
+        'Region III (Central Luzon)' => ['Aurora', 'Bataan', 'Bulacan', 'Nueva Ecija', 'Pampanga', 'Tarlac', 'Zambales'],
+        'Region IV-A (CALABARZON)' => ['Batangas', 'Cavite', 'Laguna', 'Quezon', 'Rizal'],
+        'Region IV-B (MIMAROPA)' => ['Marinduque', 'Occidental Mindoro', 'Oriental Mindoro', 'Palawan', 'Romblon'],
+        'Region V (Bicol Region)' => ['Albay', 'Camarines Norte', 'Camarines Sur', 'Catanduanes', 'Masbate', 'Sorsogon'],
+        'Region VI (Western Visayas)' => ['Aklan', 'Antique', 'Capiz', 'Guimaras', 'Iloilo', 'Negros Occidental'],
+        'Region VII (Central Visayas)' => ['Bohol', 'Cebu', 'Negros Oriental', 'Siquijor'],
+        'Region VIII (Eastern Visayas)' => ['Biliran', 'Eastern Samar', 'Leyte', 'Northern Samar', 'Samar', 'Southern Leyte'],
+        'Region IX (Zamboanga Peninsula)' => ['Zamboanga del Norte', 'Zamboanga del Sur', 'Zamboanga Sibugay'],
+        'Region X (Northern Mindanao)' => ['Bukidnon', 'Camiguin', 'Lanao del Norte', 'Misamis Occidental', 'Misamis Oriental'],
+        'Region XI (Davao Region)' => ['Davao del Norte', 'Davao del Sur', 'Davao Occidental', 'Davao Oriental', 'Davao de Oro'],
+        'Region XII (SOCCSKSARGEN)' => ['Cotabato', 'Sarangani', 'South Cotabato', 'Sultan Kudarat', 'General Santos'],
+        'Region XIII (Caraga)' => ['Agusan del Norte', 'Agusan del Sur', 'Dinagat Islands', 'Surigao del Norte', 'Surigao del Sur'],
     ];
 }
 
 // -----------------------------
 // Province → Cities mapping
 // -----------------------------
-function get_province_city_map() {
+function get_province_city_map()
+{
     return [
-        'Abra' => ['Barlig','Bangued', 'Danglas', 'Barlig', 'Lubuagan'],
-        'Aklan' => ['Batan','Kalibo', 'Ibajay'],
+        'Abra' => ['Barlig', 'Bangued', 'Danglas', 'Barlig', 'Lubuagan'],
+        'Aklan' => ['Batan', 'Kalibo', 'Ibajay'],
         'Albay' => ['Daraga', 'Camalig', 'Guinobatan', 'Juban', 'Legazpi City', 'Daraga', 'Libon', 'Malilipot', 'Tabaco', 'Malinao', 'Oas'],
         'Antique' => ['Anini-y', 'Bugasong', 'Hamtic'],
-        'Aurora' => ['Baler','Dilasag', 'Dinalungan', 'Dipaculao'],
-        'Basilan' => ['Bataraza','Isabela City'], // actually Palawan
+        'Aurora' => ['Baler', 'Dilasag', 'Dinalungan', 'Dipaculao'],
+        'Basilan' => ['Bataraza', 'Isabela City'], // actually Palawan
         'Bataan' => ['Bataan', 'Balanga', 'Limay', 'Orion', 'Morong', 'Dinalupihan'],
         'Batanes' => ['Basco'],
         'Batangas' => ['Batangas City', 'Bauan', 'Calatagan', 'Lipa City', 'Ibaan', 'Lemery', 'Lobo', 'Mariveles', 'Nasugbu'],
         'Biliran' => ['Biliran'],
-        'Bohol' => ['Baclayon', 'Balilihan', 'Inabanga', 'Guindulman','Loay', 'Loboc', 'Inabanga','Maribojoc'],
+        'Bohol' => ['Baclayon', 'Balilihan', 'Inabanga', 'Guindulman', 'Loay', 'Loboc', 'Inabanga', 'Maribojoc'],
         'Bukidnon' => ['Bukidnon', 'Jasaan', 'Malaybalay'], // province-level
         'Camiguin' => ['Mambajao'],
-        'Cavite' => ['Imus', 'Indang', 'General Trias', 'General Emilio Aguinaldo','Kawit', 'Maragondon', 'Naic', 'Noveleta'],
+        'Cavite' => ['Imus', 'Indang', 'General Trias', 'General Emilio Aguinaldo', 'Kawit', 'Maragondon', 'Naic', 'Noveleta'],
         'Bulacan' => ['Bulakan', 'Baliwag', 'Bustos', 'Calumpit', 'Plaridel', 'San Rafael', 'Hagonoy', 'Malolos City', 'Marilao', 'Meycauayan', 'Norzağaray'],
         'Pampanga' => ['Guagua', 'Lubao', 'Mabalacat', 'Macabebe', 'Magalang'],
         'Cagayan' => ['Camalaniugan', 'Tuguegarao'],
         'Camarines Sur' => ['Baao', 'Bato', 'Buhi', 'Canaman'],
-        'Cebu' => ['Malabuyoc', 'Oslob','Cebu City', 'Carcar', 'Dalaguete', 'Boljoon', 'Bantayan','Dumanjug', 'Hilongos', 'Hindang', 'Hinunangan', 'Dumaguete City (technically Negros Oriental)', 'Cebu City', 'Lapu-Lapu City', 'Dalaguete', 'Liloan', 'Loay', 'Badian'],
+        'Cebu' => ['Malabuyoc', 'Oslob', 'Cebu City', 'Carcar', 'Dalaguete', 'Boljoon', 'Bantayan', 'Dumanjug', 'Hilongos', 'Hindang', 'Hinunangan', 'Dumaguete City (technically Negros Oriental)', 'Cebu City', 'Lapu-Lapu City', 'Dalaguete', 'Liloan', 'Loay', 'Badian'],
         'Cotabato' => ['Cotabato City'],
         'Davao del Sur' => ['Davao City'],
-        'Eastern Samar' => ['Borongan', 'Balangiga','Dulag', 'Guiuan'],
+        'Eastern Samar' => ['Borongan', 'Balangiga', 'Dulag', 'Guiuan'],
         'Guimaras' => ['Buenavista', 'Jaro'],
         'Ifugao' => ['Banaue', 'Hungduan', 'Kiangan'],
         'Iloilo' => ['Dingle', 'Dingras (actually Ilocos Norte)'],
@@ -1819,15 +1791,15 @@ function get_province_city_map() {
         'Ilocos Sur' => ['Cervantes', 'Burgos', 'Dingras (actually Ilocos Norte)',  'Magsingal'],
         'Isabela' => ['Bayombong', 'Ilagan', 'Iguig'], // actually Nueva Vizcaya
         'Laguna' => ['Biñan', 'Cabuyao City', 'Calamba', 'Cavinti', 'Los Baños', 'Liliw', 'Luisiana', 'Magdalena', 'Majayjay'],
-        'Leyte' => ['Baybay City','Hilongos', 'Hindang', 'Dulag', 'Baybay City', 'Maasin City', 'Burauen', 'Hilongos', 'Hindang', 'Dulag', 'Limasawa', 'Macrohon'],
+        'Leyte' => ['Baybay City', 'Hilongos', 'Hindang', 'Dulag', 'Baybay City', 'Maasin City', 'Burauen', 'Hilongos', 'Hindang', 'Dulag', 'Limasawa', 'Macrohon'],
         'Maguindanao del Norte' => ['Datu Odin Sinsuat'],
         'Marinduque' => ['Boac', 'Buenavista'],
         'Oriental Mindoro' => ['Lubang', 'Looc', 'Calapan'],
-        'Mindoro Occidental' => ['Mamburao','Iba'],
+        'Mindoro Occidental' => ['Mamburao', 'Iba'],
         'Mindoro Oriental' => ['Calapan'],
         'Misamis Oriental' => ['Cagayan de Oro', 'Jasaan'],
         'Negros Occidental' => ['Bago City', 'Binalbagan', 'La Carlota City', 'Binalbagan'],
-        'Negros Oriental' => ['Dauin', 'Bacong','Dumaguete City', 'Dumangas (technically Iloilo)', 'Dumaguete City', 'Bayawan City'],
+        'Negros Oriental' => ['Dauin', 'Bacong', 'Dumaguete City', 'Dumangas (technically Iloilo)', 'Dumaguete City', 'Bayawan City'],
         'Nueva Ecija' => ['Cabanatuan City', 'Cabiao', 'Cuyapo', 'Bongabon'],
         'Nueva Vizcaya' => ['Bayombong'],
         'Palawan' => ['Bataraza', 'Culion', 'Cuyo', 'Ipil (if listed)', 'Culion', 'Coron', 'Bataraza', 'Roxas', 'Cuyo'],
@@ -1837,7 +1809,7 @@ function get_province_city_map() {
         'Samar (Western)' => ['Calbayog City', 'Catarman', 'Basey', 'Dulug'],
         'Sarangani' => ['Glan'],
         'Southern Leyte' => ['Limasawa', 'Macrohon', 'Limasawa', 'Macrohon'],
-        'Sorsogon' => ['Bulusan','Juban'],
+        'Sorsogon' => ['Bulusan', 'Juban'],
         'Zambales' => ['Castillejos', 'Botolan'],
         'Zamboanga Sibugay' => ['Ipil'],
         'Capiz' => ['Cuartero'],
@@ -1854,7 +1826,7 @@ function get_province_city_map() {
         'Lanao del Sur' => ['Malabang', 'Marawi City'],
         'Samar' => ['Dulug'],
         'Zamboanga del Norte' => ['Labason'],
-        'NCR' => ['Caloocan City','Manila','Quezon City','Makati','Pasig','Taguig','Las Piñas','Muntinlupa City','Paco','Muntinlupa','Navotas','Valenzuela','Mandaluyong','Marikina','Parañaque','San Juan','Pateros', 'Caloocan City', 'Quezon City','Intramuros, Manila', 'Las Piñas City', 'Intramuros, Manila', 'Caloocan City', 'Makati City', 'Malabon', 'Mandaluyong'],
+        'NCR' => ['Caloocan City', 'Manila', 'Quezon City', 'Makati', 'Pasig', 'Taguig', 'Las Piñas', 'Muntinlupa City', 'Paco', 'Muntinlupa', 'Navotas', 'Valenzuela', 'Mandaluyong', 'Marikina', 'Parañaque', 'San Juan', 'Pateros', 'Caloocan City', 'Quezon City', 'Intramuros, Manila', 'Las Piñas City', 'Intramuros, Manila', 'Caloocan City', 'Makati City', 'Malabon', 'Mandaluyong'],
     ];
 }
 
@@ -1982,3 +1954,32 @@ function enqueue_acf_cascade_script()
 
 // Only enqueue for front-end forms
 add_action('wp_enqueue_scripts', 'enqueue_acf_cascade_script');
+
+
+function custom_numeric_posts_nav($query = null)
+{
+    if (is_null($query)) {
+        global $wp_query;
+        $query = $wp_query; // Fall back to global query if no custom query is passed
+    }
+
+    $big = 999999999; // Need an unlikely integer
+
+    $pages = paginate_links(array(
+        'base' => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
+        'format' => '?paged=%#%',
+        'current' => max(1, get_query_var('paged')),
+        'total' => $query->max_num_pages,
+        'type' => 'array',
+        'prev_text' => __('« Prev'),
+        'next_text' => __('Next »'),
+    ));
+
+    if (is_array($pages)) {
+        echo '<ul class="pagination">';
+        foreach ($pages as $page) {
+            echo '<li>' . $page . '</li>';
+        }
+        echo '</ul>';
+    }
+}
